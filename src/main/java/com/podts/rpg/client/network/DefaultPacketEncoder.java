@@ -24,15 +24,12 @@ public class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 		
 		if(en == null) {
 			System.out.println(cp.getName());
-			System.out.println("No encoder found.");
+			System.out.println("No encoder found for " + p.getClass());
 			return;
 		}
 		
 		Stream s = (Stream) c.channel();
-		
 		en.encode(s, p, buf);
-		
-		System.out.println("Encoded packet.");
 		
 	}
 	
@@ -48,9 +45,7 @@ public class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 				if(!(op instanceof RSAHandShakePacket)) throw new IllegalArgumentException();
 				RSAHandShakePacket p = (RSAHandShakePacket) op;
 				buf.writeByte(OP_RSAHANDSHAKE);
-				byte[] bytes = p.getKeyPair().getPublic().getEncoded();
-				System.out.println("Handshake was of size " + bytes.length);
-				buf.writeBytes(bytes);
+				buf.writeBytes(p.getKeyPair().getPublic().getEncoded());
 			}
 		});
 	}

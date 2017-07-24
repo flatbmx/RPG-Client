@@ -13,7 +13,7 @@ public class Client extends StateBasedGame {
 	
 	private static Client instance;
 	
-	public static final Client getInstance() {
+	public static final Client get() {
 		return instance;
 	}
 	
@@ -38,7 +38,7 @@ public class Client extends StateBasedGame {
 		instance = new Client();
 		AppGameContainer app;
 		try {
-			app = new AppGameContainer(getInstance());
+			app = new AppGameContainer(get());
 			app.setDisplayMode(800, 600, false);
 			app.setTargetFrameRate(60);
 			app.start();

@@ -162,7 +162,7 @@ public class ConnectingState implements GameState {
 
 	@Override
 	public void enter(final GameContainer app, final StateBasedGame game) throws SlickException {
-		NetworkManager net = Client.getInstance().getNetworkManager();
+		NetworkManager net = Client.get().getNetworkManager();
 		connectionFuture = net.connect("localhost", 1999);
 
 		message = "Connecting";
@@ -185,7 +185,7 @@ public class ConnectingState implements GameState {
 							c.pipeline().addLast(new DefaultPacketHandler());
 						}
 					});
-
+					
 					s.sendPacket(new RSAHandShakePacket(s.getKeyPair()));
 				} else {
 					message = "Failed to connect";
