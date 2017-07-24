@@ -31,7 +31,6 @@ public class DefaultPacketDecoder extends ByteToMessageDecoder {
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
 				int playerID = buf.readInt();
-				int shipID = buf.readInt();
 				byte[] encryptedBytes = new byte[buf.readableBytes()];
 				buf.readBytes(encryptedBytes, 0, buf.readableBytes());
 
