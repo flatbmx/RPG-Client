@@ -12,12 +12,10 @@ import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.network.DefaultPacketHandler;
 import com.podts.rpg.client.network.NettyStream;
 import com.podts.rpg.client.network.NetworkManager;
-import com.podts.rpg.client.network.Stream;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
 import com.podts.rpg.client.network.packet.RSAHandShakePacket;
 
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.GenericFutureListener;
