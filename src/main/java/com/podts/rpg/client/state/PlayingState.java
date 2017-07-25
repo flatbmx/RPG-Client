@@ -10,7 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.podts.rpg.client.model.Player;
 
 public class PlayingState implements GameState {
-
+	
 	@Override
 	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {
 		// TODO Auto-generated method stub
@@ -149,8 +149,8 @@ public class PlayingState implements GameState {
 	}
 
 	@Override
-	public int getID() {
-		return 1;
+	public final int getID() {
+		return States.PLAYING.getID();
 	}
 
 	@Override

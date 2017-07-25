@@ -196,7 +196,7 @@ public class ConnectingState implements GameState {
 
 	@Override
 	public int getID() {
-		return 0;
+		return -1;
 	}
 
 	@Override

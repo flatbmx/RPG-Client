@@ -1,6 +1,5 @@
 package com.podts.rpg.client.state;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -16,8 +15,7 @@ public abstract class UIState implements GameState {
 
 	@Override
 	public final void mouseClicked(int clickNumber, int x, int y, int count) {
-		MouseClickType clickType = MouseClickType.getFromID(clickNumber);
-		if(!UIManager.handleMouseClick(clickType, x, y)) onMouseClick(clickType,x,y);
+		
 	}
 	
 	public void onMouseClick(MouseClickType type, int x, int y) {
@@ -37,9 +35,12 @@ public abstract class UIState implements GameState {
 	}
 
 	@Override
-	public void mousePressed(int arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-
+	public void mousePressed(int clickNumber, int x, int y) {
+		MouseClickType clickType = MouseClickType.getFromID(clickNumber);
+		if(!UIManager.handleMouseClick(clickType, x, y)) {
+			onMouseClick(clickType,x,y);
+			System.out.print("Clicked outside");
+		}
 	}
 
 	@Override
@@ -179,6 +180,7 @@ public abstract class UIState implements GameState {
 		for(UIObject obj : UIManager.getUObjects()) {
 			obj.render(gc, g);
 		}
+		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
 	}
 
 	@Override

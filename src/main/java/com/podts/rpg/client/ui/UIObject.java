@@ -43,6 +43,10 @@ public abstract class UIObject {
 	private Color BorderColor;
 	private Color backgroundColor;
 	
+	public final UILocation getTopLeft() {
+		return getCorner(Corner.TOP_LEFT);
+	}
+	
 	public boolean isCenterX() {
 		return centerX;
 	}
