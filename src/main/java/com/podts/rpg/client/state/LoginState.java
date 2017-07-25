@@ -13,13 +13,12 @@ public class LoginState extends UIState {
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame g) throws SlickException {
-		UIManager.clear();
 		
 		UIWindow loginWindow = new UIWindow(gc.getWidth()/2, gc.getHeight()/2, 500, 300);
 		loginWindow.setCenterX(true);
 		loginWindow.setCenterY(true);
 		
-		UIManager.addObject(loginWindow);
+		UIManager.get().clear().addObject(loginWindow);
 	}
 	
 	@Override

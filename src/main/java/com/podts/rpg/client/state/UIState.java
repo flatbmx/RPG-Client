@@ -36,11 +36,8 @@ public abstract class UIState implements GameState {
 	@Override
 	public void mousePressed(int clickNumber, int x, int y) {
 		MouseClickType clickType = MouseClickType.getFromID(clickNumber);
-		if(!UIManager.handleMouseClick(clickType, x, y)) {
+		if(!UIManager.get().handleMouseClick(clickType, x, y)) {
 			onMouseClick(clickType,x,y);
-			System.out.println("Clicked outside");
-		} else {
-			System.out.println("Clicked inside");
 		}
 	}
 
@@ -177,10 +174,11 @@ public abstract class UIState implements GameState {
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
-		for(UIObject obj : UIManager.getUObjects()) {
+		for(UIObject obj : UIManager.get().getUObjects()) {
 			obj.render(gc, g);
 		}
 		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
+		g.drawString("mx " + gc.getInput().getMouseX() + ", my " + gc.getInput().getMouseY(), 0, 0);
 	}
 
 	@Override

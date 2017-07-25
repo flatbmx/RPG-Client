@@ -23,9 +23,9 @@ public abstract class UIObject {
 	}
 	
 	public enum Corner {
-		TOP_LEFT(0,0),
-		TOP_RIGHT(1,0),
-		BOTTOM_LEFT(1,0),
+		TOP_LEFT(-1,-1),
+		TOP_RIGHT(1,-1),
+		BOTTOM_LEFT(-1,1),
 		BOTTOM_RIGHT(1,1);
 		
 		private int x, y;
@@ -100,14 +100,14 @@ public abstract class UIObject {
 		int ly = 0;
 		
 		if(isCenterX()) {
-			lx -= width/2;
+			lx = width/2;
 		}
 		
 		if(isCenterY()) {
-			ly -= height/2;
+			ly = height/2;
 		}
 		
-		return new UILocation(lx + c.x*getWidth()/2 + x,ly + c.y*getHeight()/2 + y);
+		return new UILocation(x + c.x*lx,y + c.y*ly);
 	}
 	
 	public void handleMouseClick(MouseClickType clickType) {

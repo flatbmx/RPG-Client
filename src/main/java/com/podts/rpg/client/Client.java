@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.state.LoginState;
 import com.podts.rpg.client.state.PlayingState;
+import com.podts.rpg.client.ui.UIManager;
 
 public class Client extends StateBasedGame {
 	
@@ -41,6 +42,8 @@ public class Client extends StateBasedGame {
 			app = new AppGameContainer(get());
 			app.setDisplayMode(800, 600, false);
 			app.setTargetFrameRate(60);
+			app.setAlwaysRender(true);
+			UIManager.get().setGameContainer(app);
 			app.start();
 		} catch (SlickException e) {
 			e.printStackTrace();
