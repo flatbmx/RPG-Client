@@ -30,8 +30,7 @@ public abstract class UIState implements GameState {
 
 	@Override
 	public void mouseMoved(int arg0, int arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -39,7 +38,9 @@ public abstract class UIState implements GameState {
 		MouseClickType clickType = MouseClickType.getFromID(clickNumber);
 		if(!UIManager.handleMouseClick(clickType, x, y)) {
 			onMouseClick(clickType,x,y);
-			System.out.print("Clicked outside");
+			System.out.println("Clicked outside");
+		} else {
+			System.out.println("Clicked inside");
 		}
 	}
 
@@ -69,8 +70,7 @@ public abstract class UIState implements GameState {
 
 	@Override
 	public boolean isAcceptingInput() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -185,8 +185,7 @@ public abstract class UIState implements GameState {
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 }

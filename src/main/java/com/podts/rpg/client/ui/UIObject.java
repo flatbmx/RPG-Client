@@ -96,8 +96,8 @@ public abstract class UIObject {
 	}
 	
 	protected UILocation getCorner(Corner c) {
-		int lx = x;
-		int ly = y;
+		int lx = 0;
+		int ly = 0;
 		
 		if(isCenterX()) {
 			lx -= width/2;
@@ -107,7 +107,7 @@ public abstract class UIObject {
 			ly -= height/2;
 		}
 		
-		return new UILocation(lx,ly);
+		return new UILocation(lx + c.x*getWidth()/2 + x,ly + c.y*getHeight()/2 + y);
 	}
 	
 	public void handleMouseClick(MouseClickType clickType) {
