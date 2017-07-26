@@ -1,6 +1,5 @@
 package com.podts.rpg.client.ui;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
@@ -25,10 +24,11 @@ public class UIText extends UIObject {
 	}
 
 	@Override
-	public void render(GameContainer gc, Graphics g, int oX, int oY) {
-		g.setColor(Color.white);
+	public void render(GameContainer gc, Graphics g) {
+		g.setColor(UIManager.DEFAULT_FONT_COLOR);
+		g.setFont(UIManager.DEFAULT_FONT);
 		UILocation topLeft = getCorner(Corner.TOP_LEFT);
-		g.drawString(getText(), oX + getX(), oY + getY());
+		g.drawString(getText(), topLeft.getX(), topLeft.getY());
 	}
 
 }

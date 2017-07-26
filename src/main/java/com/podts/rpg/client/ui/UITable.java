@@ -15,7 +15,7 @@ public class UITable extends SimpleUIParent {
 	}
 
 	@Override
-	public void render(GameContainer gc, Graphics g, int x , int y) {
+	public void render(GameContainer gc, Graphics g) {
 		// TODO Auto-generated method stub
 
 	}

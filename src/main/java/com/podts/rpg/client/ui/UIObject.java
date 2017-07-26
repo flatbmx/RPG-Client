@@ -6,6 +6,8 @@ import org.newdawn.slick.Graphics;
 
 public abstract class UIObject {
 	
+	public static final int DEFAULT_PADDING = 10;
+	
 	public enum MouseClickType {
 		LEFT_CLICK(),
 		RIGHT_CLICK(),
@@ -28,7 +30,7 @@ public abstract class UIObject {
 		BOTTOM_LEFT(-1,1),
 		BOTTOM_RIGHT(1,1);
 		
-		private int x, y;
+		public final int x, y;
 		
 		private Corner(int x, int y) {
 			this.x = x;
@@ -38,7 +40,9 @@ public abstract class UIObject {
 	
 	private int x, y;
 	private int width,height;
+	private int paddingX = DEFAULT_PADDING, paddingY = DEFAULT_PADDING;
 	private boolean centerX, centerY;
+	private boolean centerParentX, centerParentY;
 	
 	private Color BorderColor;
 	private Color backgroundColor;
@@ -53,44 +57,67 @@ public abstract class UIObject {
 		return centerX;
 	}
 
-	public void setCenterX(boolean centerX) {
+	public UIObject setCenterX(boolean centerX) {
 		this.centerX = centerX;
+		return this;
 	}
 
 	public int getX() {
 		return x;
 	}
 	
-	public void setX(int x) {
+	public UIObject setX(int x) {
 		this.x = x;
+		return this;
 	}
 	
 	public int getY() {
 		return y;
 	}
 	
-	public void setY(int y) {
+	public UIObject setY(int y) {
 		this.y = y;
+		return this;
 	}
 
 	public int getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public UIObject setWidth(int width) {
 		this.width = width;
+		return this;
 	}
 
 	public int getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public UIObject setHeight(int height) {
 		this.height = height;
+		return this;
 	}
 	
 	public UIParent getParent() {
 		return parent;
+	}
+	
+	public int getPaddingX() {
+		return paddingX;
+	}
+
+	public UIObject setPaddingX(int paddingX) {
+		this.paddingX = paddingX;
+		return this;
+	}
+
+	public int getPaddingY() {
+		return paddingY;
+	}
+
+	public UIObject setPaddingY(int paddingY) {
+		this.paddingY = paddingY;
+		return this;
 	}
 	
 	public final boolean isIn(int mx, int my) {
@@ -118,6 +145,12 @@ public abstract class UIObject {
 			UILocation topLeftParent = prnt.getCorner(Corner.TOP_LEFT);
 			ox = topLeftParent.getX();
 			oy = topLeftParent.getY();
+			if(isCenterParentX()) ox += prnt.getWidth()/2;
+			if(isCenterParentY()) oy += prnt.getHeight()/2;
+			if(!(prnt instanceof UIManager)) {
+				ox += getPaddingX();
+				oy += getPaddingY();
+			}
 		}
 		
 		if(isCenterX()) {
@@ -144,21 +177,19 @@ public abstract class UIObject {
 	}
 	
 	/**
-	 * Renders this UIObject with the given GameContainer and Graphics with a given x and y coordinates
-	 * as the initial origin for where to draw.
+	 * Renders this UIObject with the given GameContainer and Graphics.
 	 * @param gc - The GameContainer
 	 * @param g - The Graphics
-	 * @param x - Origin X
-	 * @param y
 	 */
-	public abstract void render(GameContainer gc, Graphics g, int x, int y);
+	public abstract void render(GameContainer gc, Graphics g);
 
 	public boolean isCenterY() {
 		return centerY;
 	}
 
-	public void setCenterY(boolean centerY) {
+	public UIObject setCenterY(boolean centerY) {
 		this.centerY = centerY;
+		return this;
 	}
 
 	public Color getBorderColor() {
@@ -189,6 +220,24 @@ public abstract class UIObject {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+	}
+
+	public boolean isCenterParentX() {
+		return centerParentX;
+	}
+
+	public UIObject setCenterParentX(boolean centerParentX) {
+		this.centerParentX = centerParentX;
+		return this;
+	}
+
+	public boolean isCenterParentY() {
+		return centerParentY;
+	}
+
+	public UIObject setCenterParentY(boolean centerParentY) {
+		this.centerParentY = centerParentY;
+		return this;
 	}
 	
 }

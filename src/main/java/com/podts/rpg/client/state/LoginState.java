@@ -20,29 +20,26 @@ public class LoginState extends UIState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame g) throws SlickException {
 		
-		UIWindow loginWindow = new UIWindow(gc.getWidth()/2, gc.getHeight()/2, 500, 300);
-		loginWindow.setCenterX(true);
-		loginWindow.setCenterY(true);
+		UIManager.get().setGameContainer(gc);
 		
-		UIWindow sub = new UIWindow(20,20,200,200);
+		UIWindow loginWindow = new UIWindow(500, 300);
+		loginWindow.setCenterX(true)
+		.setCenterY(true)
+		.setCenterParentX(true)
+		.setCenterParentY(true);
 		
-		UIWindow sub2 = new UIWindow(20,20,100,100);
-		sub.addChild(sub2);
-		
-		UIText helloText = new UIText(0,0);
-		helloText.setText("Hello World!");
-		sub2.addChild(helloText);
+		UIWindow sub = new UIWindow(300,200);
+		UIText text = new UIText(0,0,100,100);
+		text.setText("Hello World!");
+		sub.addChild(text);
 		
 		loginWindow.addChild(sub);
 		
-		UIWindow sub3 = new UIWindow(250,20,200,200);
-		loginWindow.addChild(sub3);
-		
 		//UITable table = new UITable(2,2);
 		
-		//table.addChild(new UIText(), 0, 0) //Username
+		//table.addChild(new UIText("Username:"), 0, 0) //Username
 		//table.addChild(new UITextBox(), 0, 1) //Username Box
-		//table.addChild(new UIText(), 0, 0) //Password
+		//table.addChild(new UIText("Password:"), 0, 0) //Password
 		//table.addChild(new UITextBox(), 0, 1) //Password Box
 		
 		//loginWindow.addChild(table);
@@ -52,7 +49,7 @@ public class LoginState extends UIState {
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
-		g.setColor(Color.orange);
+		g.setColor(Color.black);
 		g.fillRect(0, 0, gc.getWidth(), gc.getHeight());
 		super.render(gc, game, g);
 	}
