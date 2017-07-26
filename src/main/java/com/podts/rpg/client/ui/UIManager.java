@@ -24,13 +24,13 @@ public final class UIManager implements UIParent {
 		return uiObjects;
 	}
 	
-	public UIManager addObject(UIObject newObject) {
+	public UIManager addChild(UIObject newObject) {
 		if(!uiObjects.contains(newObject))
 			uiObjects.add(newObject);
 		return this;
 	}
 	
-	public UIManager removeObject(UIObject object) {
+	public UIManager removeChild(UIObject object) {
 		uiObjects.remove(object);
 		return this;
 	}

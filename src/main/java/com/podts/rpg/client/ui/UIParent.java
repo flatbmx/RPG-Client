@@ -8,4 +8,7 @@ public interface UIParent {
 	public int getWidth();
 	public int getHeight();
 	
+	public UIParent addChild(UIObject o);
+	public UIParent removeChild(UIObject o);
+	
 }
