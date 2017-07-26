@@ -4,6 +4,11 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
+/**
+ * The simplest user interface class that stores variables associated with centering, spacing and position.
+ * @author dpodkowi
+ *
+ */
 public abstract class UIObject {
 	
 	public static final int DEFAULT_PADDING = 10;

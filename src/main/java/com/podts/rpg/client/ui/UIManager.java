@@ -11,6 +11,10 @@ import org.newdawn.slick.TrueTypeFont;
 import com.podts.rpg.client.ui.UIObject.Corner;
 import com.podts.rpg.client.ui.UIObject.MouseClickType;
 
+/**
+ * A class that manages the entire Games user interface.
+ *
+ */
 public final class UIManager implements UIParent {
 	
 	private static UIManager instance;
@@ -34,6 +38,7 @@ public final class UIManager implements UIParent {
 		return uiObjects;
 	}
 	
+	
 	public UIManager addChild(UIObject newObject) {
 		if(!uiObjects.contains(newObject)) {
 			uiObjects.add(newObject);
@@ -47,6 +52,13 @@ public final class UIManager implements UIParent {
 		return this;
 	}
 	
+	/**
+	 * Handles a mouse click event and will pass the event down to children if they are clicked in.
+	 * @param type - The type of mouse click.
+	 * @param x - The x position of the mouse relative to the game window.
+	 * @param y - The y position of the mouse relative to the game window.
+	 * @return True if a UIObject was clicked on, false otherwise.
+	 */
 	public boolean handleMouseClick(MouseClickType type, int x, int y) {
 		for(UIObject obj : uiObjects) {
 			if(obj.isIn(x, y)) {
@@ -56,7 +68,11 @@ public final class UIManager implements UIParent {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * Clears all child UIObjects.
+	 * @return The UIManager for chaining.
+	 */
 	public UIManager clear() {
 		uiObjects.clear();
 		return this;

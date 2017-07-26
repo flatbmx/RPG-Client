@@ -3,6 +3,10 @@ package com.podts.rpg.client.ui;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
+/**
+ * Text that will be displayed somewhere. This does not handle input at all, this simply is meant to display text.
+ *
+ */
 public class UIText extends UIObject {
 	
 	private String text;

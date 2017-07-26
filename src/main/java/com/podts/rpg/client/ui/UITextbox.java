@@ -16,8 +16,21 @@ public class UITextbox extends UIObject{
 	
 		
 	}
-
-	public String getText() {
+	
+	protected void handleTextInput(String character) {
+		text += character;
+	}
+	
+	protected void handleBackSpace() {
+		if(text.length() == 0) return;
+		text = text.substring(0, text.length()-1);
+	}
+	
+	public String getDisplayText() {
+		return getText();
+	}
+	
+	public final String getText() {
 		return text;
 	}
 

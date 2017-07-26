@@ -1,5 +1,6 @@
 package com.podts.rpg.client.state;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -155,12 +156,6 @@ public abstract class UIState implements GameState {
 	}
 
 	@Override
-	public int getID() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		// TODO Auto-generated method stub
 
@@ -179,6 +174,7 @@ public abstract class UIState implements GameState {
 			obj.render(gc, g);
 		}
 		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
+		g.setColor(Color.white);
 		g.drawString("mx " + gc.getInput().getMouseX() + ", my " + gc.getInput().getMouseY(), 0, 0);
 	}
 
