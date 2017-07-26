@@ -6,6 +6,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.podts.rpg.client.ui.UIButton;
 import com.podts.rpg.client.ui.UIManager;
 import com.podts.rpg.client.ui.UITable;
 import com.podts.rpg.client.ui.UIText;
@@ -33,11 +34,18 @@ public class LoginState extends UIState {
 		UITable table = new UITable(2,2);
 		
 		table.addChild(new UIText("Username:"), 0, 0); //Username
-		table.addChild(new UITextBox(), 0, 1); //Username Box
-		table.addChild(new UIText("Password:"), 0, 0); //Password
+		table.addChild(new UITextBox(), 1, 0); //Username Box
+		table.addChild(new UIText("Password:"), 0, 1); //Password
 		table.addChild(new UITextBox(), 0, 1); //Password Box
 		
-		loginWindow.addChild(table);
+		UIButton loginButton = new UIButton(50,20) {
+			@Override
+			public void handleMouseClick(MouseClickType clickType) {
+				//Handle login info here
+			}
+		};
+		
+		loginWindow.addChild(table).addChild(loginButton);
 		
 		UIManager.get().clear().addChild(loginWindow);
 	}

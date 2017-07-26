@@ -18,9 +18,8 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 		super();
 	}
 
-	private final List<UIObject> children = new LinkedList<UIObject>(), safeChildren = Collections.unmodifiableList(children);
-	
-	
+	private final LinkedList<UIObject> children = new LinkedList<UIObject>();
+	private final List<UIObject> safeChildren = Collections.unmodifiableList(children);
 	
 	@Override
 	public List<UIObject> getChildren() {
@@ -28,15 +27,32 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 	}
 	
 	public SimpleUIParent addChild(UIObject o) {
-		children.add(o);
+		children.addLast(o);
 		o.parent = this;
+		if(o.getWidth() == 0 || o.getHeight() == 0) {
+			o.autoSizing = true;
+		}
+		autoSizeAll();
 		return this;
 	}
 	
 	public SimpleUIParent removeChild(UIObject o) {
 		if(children.remove(o)) o.parent = null;
+		autoSizeAll();
 		return this;
 	}
-
+	
+	private void autoSizeAll() {
+		//TODO Get our shit together, all objects should be autoSized(X and/or Y) or static sizes.
+		int x,y;
+		for(UIObject child : children) {
+			if(child.autoSizing) {
+				int newWidth = getWidth() - child.getPaddingX()*2;
+				int newHeight = getHeight() - child.getPaddingY()*2;
+				child.setWidth(newWidth);
+				child.setHeight(newHeight);
+			}
+		}
+	}
 	
 }
