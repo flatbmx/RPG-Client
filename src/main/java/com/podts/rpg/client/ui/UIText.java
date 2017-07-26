@@ -27,6 +27,10 @@ public class UIText extends UIObject {
 		super(x, y, width, height);
 	}
 
+	public UIText(String string) {
+		
+	}
+
 	@Override
 	public void render(GameContainer gc, Graphics g) {
 		g.setColor(UIManager.DEFAULT_FONT_COLOR);

@@ -1,7 +1,5 @@
 package com.podts.rpg.client.ui;
 
-import java.util.List;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
@@ -14,10 +12,14 @@ public class UITable extends SimpleUIParent {
 		grid = new UIObject[rows][columns];
 	}
 
+	public UITable(int rows, int columns) {
+		super();
+		grid = new UIObject[rows][columns];
+	}
+
 	@Override
 	public void render(GameContainer gc, Graphics g) {
-		// TODO Auto-generated method stub
-
+		
 	}
 	
 	private void removeGridChild(UIObject o) {

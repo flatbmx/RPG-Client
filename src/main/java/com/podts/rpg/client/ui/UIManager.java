@@ -43,12 +43,20 @@ public final class UIManager implements UIParent {
 		if(!uiObjects.contains(newObject)) {
 			uiObjects.add(newObject);
 			newObject.parent = this;
+			if(newObject.getWidth() == 0 || newObject.getHeight() == 0) {
+				newObject.autoSizing = true;
+			}
 		}
 		return this;
 	}
 	
 	public UIManager removeChild(UIObject object) {
-		if(uiObjects.remove(object)) object.parent = null;
+		if(uiObjects.remove(object)) {
+			object.parent = null;
+			if(object.autoSizing) {
+				object.autoSizing = false;
+			}
+		}
 		return this;
 	}
 	

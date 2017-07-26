@@ -8,7 +8,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.state.LoginState;
 import com.podts.rpg.client.state.PlayingState;
-import com.podts.rpg.client.ui.UIManager;
 
 public class Client extends StateBasedGame {
 	

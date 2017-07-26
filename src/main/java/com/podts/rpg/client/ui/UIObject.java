@@ -48,6 +48,7 @@ public abstract class UIObject {
 	private int paddingX = DEFAULT_PADDING, paddingY = DEFAULT_PADDING;
 	private boolean centerX, centerY;
 	private boolean centerParentX, centerParentY;
+	protected boolean autoSizing;
 	
 	private Color BorderColor;
 	private Color backgroundColor;
@@ -225,6 +226,10 @@ public abstract class UIObject {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+	}
+
+	public UIObject() {
+		
 	}
 
 	public boolean isCenterParentX() {

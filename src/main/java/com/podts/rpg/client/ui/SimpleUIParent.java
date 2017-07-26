@@ -14,6 +14,10 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 		super(width, height);
 	}
 
+	public SimpleUIParent() {
+		super();
+	}
+
 	private final List<UIObject> children = new LinkedList<UIObject>(), safeChildren = Collections.unmodifiableList(children);
 	
 	

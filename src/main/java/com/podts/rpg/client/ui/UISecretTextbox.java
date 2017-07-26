@@ -1,6 +1,6 @@
 package com.podts.rpg.client.ui;
 
-public class UISecretTextbox extends UITextbox {
+public class UISecretTextbox extends UITextBox {
 	
 	private String displayText;
 	
