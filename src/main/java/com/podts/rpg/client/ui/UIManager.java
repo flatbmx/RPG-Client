@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 
+import com.podts.rpg.client.ui.UIObject.Corner;
 import com.podts.rpg.client.ui.UIObject.MouseClickType;
 
 public final class UIManager implements UIParent {
@@ -68,6 +69,12 @@ public final class UIManager implements UIParent {
 	@Override
 	public int getHeight() {
 		return gc.getHeight();
+	}
+
+	@Override
+	public UILocation getCorner(Corner c) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

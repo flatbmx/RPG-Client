@@ -1,14 +1,12 @@
 package com.podts.rpg.client.state;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.ui.UIManager;
-import com.podts.rpg.client.ui.UITable;
 import com.podts.rpg.client.ui.UIText;
 import com.podts.rpg.client.ui.UIWindow;
 
@@ -26,7 +24,19 @@ public class LoginState extends UIState {
 		loginWindow.setCenterX(true);
 		loginWindow.setCenterY(true);
 		
-		UITable table = new UITable(100,100, 350, 200, 2, 2);
+		UIWindow sub = new UIWindow(20,20,200,200);
+		
+		UIWindow sub2 = new UIWindow(20,20,100,100);
+		sub.addChild(sub2);
+		
+		UIText helloText = new UIText(0,0);
+		helloText.setText("Hello World!");
+		sub2.addChild(helloText);
+		
+		loginWindow.addChild(sub);
+		
+		UIWindow sub3 = new UIWindow(250,20,200,200);
+		loginWindow.addChild(sub3);
 		
 		//UITable table = new UITable(2,2);
 		
@@ -35,16 +45,21 @@ public class LoginState extends UIState {
 		//table.addChild(new UIText(), 0, 0) //Password
 		//table.addChild(new UITextBox(), 0, 1) //Password Box
 		
-		loginWindow.addChild(table);
+		//loginWindow.addChild(table);
 		
 		UIManager.get().clear().addChild(loginWindow);
 	}
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
-		g.setColor(new Color(50,20,0));
+		g.setColor(Color.orange);
 		g.fillRect(0, 0, gc.getWidth(), gc.getHeight());
 		super.render(gc, game, g);
+	}
+	
+	@Override
+	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		
 	}
 	
 	public final int getID() {

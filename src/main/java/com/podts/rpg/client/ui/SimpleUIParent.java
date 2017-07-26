@@ -12,6 +12,8 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 
 	private final List<UIObject> children = new LinkedList<UIObject>(), safeChildren = Collections.unmodifiableList(children);
 	
+	
+	
 	@Override
 	public List<UIObject> getChildren() {
 		return safeChildren;
@@ -19,11 +21,14 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 	
 	public SimpleUIParent addChild(UIObject o) {
 		children.add(o);
+		o.parent = this;
 		return this;
 	}
 	
 	public SimpleUIParent removeChild(UIObject o) {
-		children.remove(o);
+		if(children.remove(o)) o.parent = null;
 		return this;
 	}
+
+	
 }

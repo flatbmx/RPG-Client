@@ -12,7 +12,7 @@ public class UITextbox extends UIObject{
 	}
 	
 	@Override
-	public void render(GameContainer gc, Graphics g) {
+	public void render(GameContainer gc, Graphics g, int x, int y) {
 	
 		
 	}

@@ -40,8 +40,9 @@ public class Client extends StateBasedGame {
 		AppGameContainer app;
 		try {
 			app = new AppGameContainer(get());
-			app.setDisplayMode(800, 600, false);
+			app.setDisplayMode(1920,1080,true);
 			app.setTargetFrameRate(60);
+			app.setMaximumLogicUpdateInterval(60);
 			app.setAlwaysRender(true);
 			UIManager.get().setGameContainer(app);
 			app.start();

@@ -6,7 +6,7 @@ import org.newdawn.slick.Graphics;
 
 public class UIWindow extends SimpleUIParent {
 	
-	public static final Color DEFAULT_BACKGROUND_COLOR = new Color(0,0,175);
+	public static final Color DEFAULT_BACKGROUND_COLOR = new Color(100,100,150);
 	public static final Color DEFAULT_BORDER_COLOR = new Color(100,100,100);
 	
 	private String title;
@@ -42,17 +42,26 @@ public class UIWindow extends SimpleUIParent {
 	}
 
 	@Override
-	public void render(GameContainer gc, Graphics g) {
+	public void render(GameContainer gc, Graphics g, int oX, int Oy) {
 		UILocation topLeft = getCorner(Corner.TOP_LEFT);
 		
+		int lineWidth = 10;
+		
+		//Draw the whole background.
 		g.setClip(topLeft.getX(), topLeft.getY(), getWidth()+1, getHeight()+1);
-		g.setColor(getBackgroundColor());
-		g.setLineWidth(10);
+		g.setColor(DEFAULT_BACKGROUND_COLOR);
 		g.fillRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
 		
-		if(getBorderColor() != null) {
-			g.setColor(getBorderColor());
-			g.drawRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
+		//Draw the border
+		g.setLineWidth(lineWidth);
+		g.setColor(DEFAULT_BORDER_COLOR);
+		g.drawRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
+		
+		g.setClip(topLeft.getX() + lineWidth/2, topLeft.getY() + lineWidth/2,
+				getWidth() - lineWidth/2, getHeight() - lineWidth/2);
+		
+		for(UIObject child : getChildren()) {
+			child.render(gc, g, topLeft.getX() + lineWidth/2, topLeft.getY() + lineWidth/2);
 		}
 	}
 	

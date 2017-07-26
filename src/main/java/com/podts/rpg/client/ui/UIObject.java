@@ -43,6 +43,8 @@ public abstract class UIObject {
 	private Color BorderColor;
 	private Color backgroundColor;
 	
+	protected UIParent parent;
+	
 	public final UILocation getTopLeft() {
 		return getCorner(Corner.TOP_LEFT);
 	}
@@ -87,6 +89,10 @@ public abstract class UIObject {
 		this.height = height;
 	}
 	
+	public UIParent getParent() {
+		return parent;
+	}
+	
 	public final boolean isIn(int mx, int my) {
 		if(mx < getCorner(Corner.TOP_LEFT).getX()) return false;
 		if(mx > getCorner(Corner.TOP_RIGHT).getX()) return false;
@@ -95,9 +101,24 @@ public abstract class UIObject {
 		return true;
 	}
 	
-	protected UILocation getCorner(Corner c) {
+	/**
+	 * Returns the absolute UILocation of the game screen for this object.
+	 * @param c - The chosen corner.
+	 * @return The Corners location.
+	 */
+	public UILocation getCorner(Corner c) {
 		int lx = 0;
 		int ly = 0;
+		
+		int ox = 0;
+		int oy = 0;
+		
+		UIParent prnt = getParent();
+		if(prnt != null) {
+			UILocation topLeftParent = prnt.getCorner(Corner.TOP_LEFT);
+			ox = topLeftParent.getX();
+			oy = topLeftParent.getY();
+		}
 		
 		if(isCenterX()) {
 			lx = width/2;
@@ -107,7 +128,7 @@ public abstract class UIObject {
 			ly = height/2;
 		}
 		
-		return new UILocation(x + c.x*lx,y + c.y*ly);
+		return new UILocation(x + c.x*lx + ox,y + c.y*ly + oy);
 	}
 	
 	public void handleMouseClick(MouseClickType clickType) {
@@ -122,14 +143,15 @@ public abstract class UIObject {
 		
 	}
 	
-	public abstract void render(GameContainer gc, Graphics g);
-	
-	public UIObject(int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
+	/**
+	 * Renders this UIObject with the given GameContainer and Graphics with a given x and y coordinates
+	 * as the initial origin for where to draw.
+	 * @param gc - The GameContainer
+	 * @param g - The Graphics
+	 * @param x - Origin X
+	 * @param y
+	 */
+	public abstract void render(GameContainer gc, Graphics g, int x, int y);
 
 	public boolean isCenterY() {
 		return centerY;
@@ -153,6 +175,20 @@ public abstract class UIObject {
 
 	public void setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
+	}
+	
+	public UIObject(int width, int height) {
+		x = 0;
+		y = 0;
+		this.width = width;
+		this.height = height;
+	}
+	
+	public UIObject(int x, int y, int width, int height) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 	}
 	
 }
