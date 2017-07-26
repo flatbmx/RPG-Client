@@ -6,6 +6,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.util.concurrent.GenericFutureListener;
 
 public class NetworkManager {
@@ -65,5 +67,22 @@ public class NetworkManager {
 		}
 		
 	}
+	
+	private class DefaultFrameEncoder extends LengthFieldPrepender {
+		
+		public DefaultFrameEncoder() {
+			super(4);
+		}
+		
+	}
+	
+	private class DefaultFrameDecoder extends LengthFieldBasedFrameDecoder {
+
+		public DefaultFrameDecoder() {
+			super(20_000, 0, 4);
+		}
+
+	}
+
 	
 }
