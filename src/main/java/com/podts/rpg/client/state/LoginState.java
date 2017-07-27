@@ -6,8 +6,11 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.podts.rpg.client.Client;
+import com.podts.rpg.client.network.packet.LoginPacket;
 import com.podts.rpg.client.ui.UIButton;
 import com.podts.rpg.client.ui.UIManager;
+import com.podts.rpg.client.ui.UISecretTextbox;
 import com.podts.rpg.client.ui.UITable;
 import com.podts.rpg.client.ui.UIText;
 import com.podts.rpg.client.ui.UITextBox;
@@ -33,15 +36,20 @@ public class LoginState extends UIState {
 		
 		UITable table = new UITable(2,2);
 		
+		UITextBox userNameBox = new UITextBox();
+		UISecretTextbox passwordBox = new UISecretTextbox();
+		
 		table.addChild(new UIText("Username:"), 0, 0); //Username
-		table.addChild(new UITextBox(), 1, 0); //Username Box
+		table.addChild(userNameBox, 1, 0); //Username Box
 		table.addChild(new UIText("Password:"), 0, 1); //Password
-		table.addChild(new UITextBox(), 0, 1); //Password Box
+		table.addChild(passwordBox, 0, 1); //Password Box
 		
 		UIButton loginButton = new UIButton(50,20) {
 			@Override
 			public void handleMouseClick(MouseClickType clickType) {
-				//Handle login info here
+				LoginPacket loginPacket = new LoginPacket(userNameBox.getText(), passwordBox.getText());
+				//TODO Make easier/faster/cleaner way of sending packets.
+				Client.get().getNetworkManager().getStream().sendPacket(loginPacket);
 			}
 		};
 		

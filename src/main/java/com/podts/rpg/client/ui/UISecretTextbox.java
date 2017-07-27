@@ -26,4 +26,8 @@ public class UISecretTextbox extends UITextBox {
 		super(x, y, width, height);
 	}
 
+	public UISecretTextbox() {
+		
+	}
+
 }

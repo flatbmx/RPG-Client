@@ -28,7 +28,7 @@ public class UIText extends UIObject {
 	}
 
 	public UIText(String string) {
-		
+		text = string;
 	}
 
 	@Override
