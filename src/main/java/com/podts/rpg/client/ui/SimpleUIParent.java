@@ -68,8 +68,9 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 		int totalHeight = getHeight();
 		Iterator<UIObject> it = children.iterator();
 		UIObject ch = it.next();
-		totalHeight -= ch.getPaddingY() + ch.getHeight();
+		totalHeight -= ch.getHeight() + ch.getPaddingY();
 		int nextY = ch.getPaddingY();
+		
 		while(it.hasNext()) {
 			ch = it.next();
 			totalHeight -= ch.getPaddingY() * 2 + ch.getHeight();
@@ -83,12 +84,16 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 				}
 				if(child.getWidth() == 0) {
 					child.setWidth(getWidth() - child.getPaddingX() * 2);
-				} else if(child.isCenterX()) {
-					
 				}
-				child.setX(child.getPaddingX());
+				
+				if(child.isCenterX()) {
+					child.setX(child.getParent().getWidth()/2 - child.getWidth()/2);
+				} else {
+					child.setX(child.getPaddingX());
+				}
+				
 				child.setY(nextY);
-				nextY += child.getPaddingY() + child.getHeight();
+				nextY += child.getHeight() + child.getPaddingY();
 			}
 		}
 	}

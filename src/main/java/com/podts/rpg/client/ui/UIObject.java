@@ -126,6 +126,12 @@ public abstract class UIObject {
 		return this;
 	}
 	
+	public UIObject setPadding(int padding) {
+		setPaddingX(padding);
+		setPaddingY(padding);
+		return this;
+	}
+	
 	public final boolean isIn(int mx, int my) {
 		if(mx < getCorner(Corner.TOP_LEFT).getX()) return false;
 		if(mx > getCorner(Corner.TOP_RIGHT).getX()) return false;
