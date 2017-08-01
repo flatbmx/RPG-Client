@@ -175,7 +175,6 @@ public class ConnectingState implements GameState {
 					s.getChannel().pipeline().addLast(new SimpleChannelInboundHandler<AESReplyPacket>() {
 						@Override
 						protected void channelRead0(ChannelHandlerContext c, AESReplyPacket p) throws Exception {
-							Player.me = new Player(p.getPlayerID());
 							NettyStream stream = (NettyStream) c.channel();
 							stream.setSecretKey(p.getSecretKey());
 							game.enterState(1);

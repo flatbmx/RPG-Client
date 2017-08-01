@@ -7,19 +7,13 @@ import com.podts.rpg.client.network.Packet;
 public class AESReplyPacket extends Packet {
 	
 	private final SecretKey secret;
-	private final int playerID;
-	
-	public final int getPlayerID() {
-		return playerID;
-	}
 	
 	public final SecretKey getSecretKey() {
 		return secret;
 	}
 	
-	public AESReplyPacket(SecretKey secret, int playerID) {
+	public AESReplyPacket(SecretKey secret) {
 		this.secret = secret;
-		this.playerID = playerID;
 	}
 	
 }

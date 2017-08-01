@@ -9,25 +9,25 @@ public class UITable extends SimpleUIParent {
 	private final int[] columnWidths;
 	private final int[] rowHeights;
 	
-	public UITable(int x, int y, int width, int height, int rows, int columns) {
+	public UITable(int x, int y, int width, int height, int columns, int rows) {
 		super(x, y, width, height);
 		grid = new UIObject[columns][rows];
-		columnWidths = new int[grid[0].length];
-		rowHeights = new int[grid.length];
+		columnWidths = new int[columns];
+		rowHeights = new int[rows];
 	}
 	
-	public UITable(int width, int height, int rows, int columns) {
+	public UITable(int width, int height, int columns, int rows) {
 		super(width, height);
 		grid = new UIObject[columns][rows];
-		columnWidths = new int[grid[0].length];
-		rowHeights = new int[grid.length];
+		columnWidths = new int[columns];
+		rowHeights = new int[rows];
 	}
 	
-	public UITable(int rows, int columns) {
+	public UITable(int columns, int rows) {
 		super();
 		grid = new UIObject[columns][rows];
-		columnWidths = new int[grid[0].length];
-		rowHeights = new int[grid.length];
+		columnWidths = new int[columns];
+		rowHeights = new int[rows];
 	}
 	
 	@Override

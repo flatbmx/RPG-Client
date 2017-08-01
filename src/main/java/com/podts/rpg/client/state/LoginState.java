@@ -45,29 +45,36 @@ public class LoginState extends UIState {
 		.setCenterParentX(true)
 		.setCenterParentY(true);
 		
-		UITable table = new UITable(300,75,2,2);
+		UITable table = new UITable(300,150,2,4);
 		table.setCenterX(true)
 		.setCenterY(true);
 		
 		UITextBox userNameBox = new UITextBox(120,20);
 		UISecretTextbox passwordBox = new UISecretTextbox(120, 20);
 		
-		table.addChild(new UIText("Username:", 75, 20), 0, 0); //Username
-		table.addChild(userNameBox, 1, 0); //Username Box
-		table.addChild(new UIText("Password:", 75, 20), 0, 1); //Password
-		table.addChild(passwordBox, 1, 1); //Password Box
+		UITextBox addressBox = new UITextBox(120,20);
+		addressBox.setText("localhost");
+		UITextBox portBox = new UITextBox(120,20);
+		portBox.setText("1999");
 		
-		userNameBox.setText("blurh");
-		passwordBox.setText("123456");
+		table.addChild(new UIText("Address:", 75, 20), 0, 0);
+		table.addChild(addressBox, 1, 0);
+		table.addChild(new UIText("Port:", 75, 20), 0, 1);
+		table.addChild(portBox, 1, 1);
+		table.addChild(new UIText("Username:", 75, 20), 0, 2); //Username
+		table.addChild(userNameBox, 1, 2); //Username Box
+		table.addChild(new UIText("Password:", 75, 20), 0, 3); //Password
+		table.addChild(passwordBox, 1, 3); //Password Box
 		
 		UIButton loginButton = new UIButton(50,20) {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
 			public void handleMouseClick(MouseClickType clickType) {
 				LoginPacket loginPacket = new LoginPacket(userNameBox.getText(), passwordBox.getText());
 				System.out.println("Clicked login button");
 				
-				Client.get().getNetworkManager().connect("localhost", 1999).addListener(new GenericFutureListener<ChannelFuture>() {
+				int port = Integer.parseInt(portBox.getText());
+				
+				Client.get().getNetworkManager().connect(addressBox.getText(), port).addListener(new GenericFutureListener<ChannelFuture>() {
 					@Override
 					public void operationComplete(ChannelFuture f) throws Exception {
 						if(f.isSuccess()) {
@@ -77,7 +84,6 @@ public class LoginState extends UIState {
 							s.getChannel().pipeline().addLast(new SimpleChannelInboundHandler<AESReplyPacket>() {
 								@Override
 								protected void channelRead0(ChannelHandlerContext c, AESReplyPacket p) throws Exception {
-									Player.me = new Player(p.getPlayerID());
 									NettyStream stream = (NettyStream) c.channel();
 									stream.setSecretKey(p.getSecretKey());
 									System.out.println("Recieved AES reply.");

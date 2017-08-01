@@ -30,7 +30,6 @@ public class DefaultPacketDecoder extends ByteToMessageDecoder {
 		addConstructor(0, new PacketConstructor() {
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
-				int playerID = buf.readInt();
 				byte[] encryptedBytes = new byte[buf.readableBytes()];
 				buf.readBytes(encryptedBytes, 0, buf.readableBytes());
 
@@ -41,7 +40,7 @@ public class DefaultPacketDecoder extends ByteToMessageDecoder {
 
 					SecretKey secret = new SecretKeySpec(secretBytes, 0, secretBytes.length, "AES");
 
-					return new AESReplyPacket(secret, playerID);
+					return new AESReplyPacket(secret);
 
 				} catch (Exception e) {
 					e.printStackTrace();	

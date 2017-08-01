@@ -35,6 +35,8 @@ public class NetworkManager {
 		
 		this.host = host;
 		this.port = port;
+		System.out.println("Connecting to " + host + ":" + port);
+		
 		try {
 			b = new Bootstrap();
 			workerGroup = new NioEventLoopGroup();
@@ -50,7 +52,7 @@ public class NetworkManager {
 				}
 			});
 			
-			return b.connect("localhost", 1999).addListener(new GenericFutureListener<ChannelFuture>() {
+			return b.connect(host, port).addListener(new GenericFutureListener<ChannelFuture>() {
 				@Override
 				public void operationComplete(ChannelFuture f) throws Exception {
 					if(f.isSuccess()) {
