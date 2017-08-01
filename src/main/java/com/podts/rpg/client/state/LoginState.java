@@ -34,7 +34,9 @@ public class LoginState extends UIState {
 		.setCenterParentX(true)
 		.setCenterParentY(true);
 		
-		UITable table = new UITable(400,400,2,2);
+		UITable table = new UITable(200,200,2,2);
+		table.setCenterX(true)
+		.setCenterY(true);
 		
 		UITextBox userNameBox = new UITextBox(0,20);
 		UISecretTextbox passwordBox = new UISecretTextbox(0, 20);

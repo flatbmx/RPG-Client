@@ -22,8 +22,6 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 	private final LinkedList<UIObject> children = new LinkedList<UIObject>();
 	private final List<UIObject> safeChildren = Collections.unmodifiableList(children);
 	
-	private int nextY;
-	
 	@Override
 	public List<UIObject> getChildren() {
 		return safeChildren;
@@ -69,13 +67,14 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 		Iterator<UIObject> it = children.iterator();
 		UIObject ch = it.next();
 		totalHeight -= ch.getHeight() + ch.getPaddingY();
-		int nextY = ch.getPaddingY();
 		
 		while(it.hasNext()) {
 			ch = it.next();
 			totalHeight -= ch.getPaddingY() * 2 + ch.getHeight();
 		}
 		int eachHeight = totalHeight / children.size();
+		
+		int nextY = 0;
 		
 		for(UIObject child : children) {
 			if(child.autoSizing) {
@@ -86,15 +85,8 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 					child.setWidth(getWidth() - child.getPaddingX() * 2);
 				}
 				
-				if(child.isCenterX()) {
-					child.setX(child.getParent().getWidth()/2 - child.getWidth()/2);
-				} else {
-					child.setX(child.getPaddingX());
-				}
-				
-				child.setY(nextY);
-				nextY += child.getHeight() + child.getPaddingY();
 			}
+			
 			if(child.isCenterX()) {
 				int extraRoom = (getWidth() - child.getWidth()) / 2;
 				child.setX(child.getPaddingX() + extraRoom);

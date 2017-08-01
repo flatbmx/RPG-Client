@@ -40,7 +40,7 @@ public class UIText extends UIObject {
 	@Override
 	public void render(GameContainer gc, Graphics g) {
 		UILocation topLeft = getCorner(Corner.TOP_LEFT);
-		g.setColor(Color.yellow);
+		g.setColor(Color.pink);
 		g.fillRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
 		g.setColor(UIManager.DEFAULT_FONT_COLOR);
 		g.setFont(UIManager.DEFAULT_FONT);
