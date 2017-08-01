@@ -61,7 +61,7 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 		}
 	}*/
 	
-	private void compact() {
+	protected void compact() {
 		if(children.isEmpty()) return;
 		int totalHeight = getHeight();
 		Iterator<UIObject> it = children.iterator();
@@ -84,7 +84,6 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 				if(child.getWidth() == 0) {
 					child.setWidth(getWidth() - child.getPaddingX() * 2);
 				}
-				
 			}
 			
 			if(child.isCenterX()) {

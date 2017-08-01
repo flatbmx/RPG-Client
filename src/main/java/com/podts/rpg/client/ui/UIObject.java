@@ -6,12 +6,16 @@ import org.newdawn.slick.Graphics;
 
 /**
  * The simplest user interface class that stores variables associated with centering, spacing and position.
- * @author dpodkowi
  *
  */
 public abstract class UIObject {
 	
 	public static final int DEFAULT_PADDING = 10;
+	
+	public enum SizeBehavior {
+		STRETCH(),
+		SLIM();
+	}
 	
 	public enum MouseClickType {
 		LEFT_CLICK(),
@@ -48,7 +52,7 @@ public abstract class UIObject {
 	private int paddingX = DEFAULT_PADDING, paddingY = DEFAULT_PADDING;
 	private boolean centerX, centerY;
 	private boolean centerParentX, centerParentY;
-	protected boolean autoSizing;
+	protected boolean autoSizing, autoArrange;
 	
 	private Color BorderColor;
 	private Color backgroundColor;
@@ -145,37 +149,6 @@ public abstract class UIObject {
 	 * @param c - The chosen corner.
 	 * @return The Corners location.
 	 */
-	/*public UILocation getCorner(Corner c) {
-		int lx = 0;
-		int ly = 0;
-		
-		int ox = 0;
-		int oy = 0;
-		
-		UIParent prnt = getParent();
-		if(prnt != null) {
-			UILocation topLeftParent = prnt.getCorner(Corner.TOP_LEFT);
-			ox = topLeftParent.getX();
-			oy = topLeftParent.getY();
-			if(isCenterParentX()) ox += prnt.getWidth()/2;
-			if(isCenterParentY()) oy += prnt.getHeight()/2;
-			if(!(prnt instanceof UIManager)) {
-				ox += getPaddingX();
-				oy += getPaddingY();
-			}
-		}
-		
-		if(isCenterX()) {
-			lx = width/2;
-		}
-		
-		if(isCenterY()) {
-			ly = height/2;
-		}
-		
-		return new UILocation(x + c.x*lx + ox,y + c.y*ly + oy);
-	}*/
-	
 	public UILocation getCorner(Corner c) {
 		UILocation prnt = getParent().getCorner(Corner.TOP_LEFT);
 		return new UILocation(x + c.x*getWidth() + prnt.getX(),y + c.y*getHeight() + prnt.getY());
@@ -259,6 +232,15 @@ public abstract class UIObject {
 	public UIObject setCenterParentY(boolean centerParentY) {
 		this.centerParentY = centerParentY;
 		return this;
+	}
+	
+	public UIObject setAutoArrange(boolean newAutoArrange) {
+		autoArrange = newAutoArrange;
+		return this;
+	}
+	
+	public boolean autoArranges() {
+		return autoArrange;
 	}
 	
 }

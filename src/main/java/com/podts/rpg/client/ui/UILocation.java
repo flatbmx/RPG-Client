@@ -17,4 +17,9 @@ public class UILocation {
 		return y;
 	}
 	
+	@Override
+	public final String toString() {
+		return "[" + x + ", " + y + "]";
+	}
+	
 }

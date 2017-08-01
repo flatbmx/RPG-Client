@@ -1,5 +1,6 @@
 package com.podts.rpg.client.ui;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
@@ -9,7 +10,9 @@ public abstract class UIButton extends UIObject {
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) {
-		
+		UILocation topLeft = getCorner(Corner.TOP_LEFT);
+		g.setColor(Color.pink);
+		g.fillRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());	
 	}
 	
 	public UIButton(int width, int height) {

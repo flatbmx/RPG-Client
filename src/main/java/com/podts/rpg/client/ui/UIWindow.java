@@ -58,8 +58,7 @@ public class UIWindow extends SimpleUIParent {
 		g.setColor(UIManager.DEFAULT_WINDOW_BORDER_COLOR);
 		g.drawRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
 		
-		g.setClip(topLeft.getX() + lineWidth/2, topLeft.getY() + lineWidth/2,
-				getWidth() - lineWidth/2, getHeight() - lineWidth/2);
+		g.setClip(topLeft.getX() + lineWidth/2, topLeft.getY() + lineWidth/2, getWidth() - lineWidth/2, getHeight() - lineWidth/2);
 		
 		for(UIObject child : getChildren()) {
 			child.render(gc, g);
