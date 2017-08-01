@@ -4,18 +4,11 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.model.Player;
 
-public class PlayingState implements GameState {
-	
-	@Override
-	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {
-		// TODO Auto-generated method stub
-		
-	}
+public class PlayingState extends UIState {
 
 	@Override
 	public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {

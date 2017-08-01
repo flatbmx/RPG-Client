@@ -7,7 +7,12 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.Client;
+import com.podts.rpg.client.model.Player;
+import com.podts.rpg.client.network.DefaultPacketHandler;
+import com.podts.rpg.client.network.NettyStream;
+import com.podts.rpg.client.network.packet.AESReplyPacket;
 import com.podts.rpg.client.network.packet.LoginPacket;
+import com.podts.rpg.client.network.packet.RSAHandShakePacket;
 import com.podts.rpg.client.ui.UIButton;
 import com.podts.rpg.client.ui.UIManager;
 import com.podts.rpg.client.ui.UISecretTextbox;
@@ -15,6 +20,12 @@ import com.podts.rpg.client.ui.UITable;
 import com.podts.rpg.client.ui.UIText;
 import com.podts.rpg.client.ui.UITextBox;
 import com.podts.rpg.client.ui.UIWindow;
+
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 
 /**
  * A state for when a user has not logged in.
@@ -50,11 +61,39 @@ public class LoginState extends UIState {
 		passwordBox.setText("123456");
 		
 		UIButton loginButton = new UIButton(50,20) {
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
 			public void handleMouseClick(MouseClickType clickType) {
 				LoginPacket loginPacket = new LoginPacket(userNameBox.getText(), passwordBox.getText());
-				//TODO Make easier/faster/cleaner way of sending packets.
-				Client.get().getNetworkManager().getStream().sendPacket(loginPacket);
+				System.out.println("Clicked login button");
+				
+				Client.get().getNetworkManager().connect("localhost", 1999).addListener(new GenericFutureListener<ChannelFuture>() {
+					@Override
+					public void operationComplete(ChannelFuture f) throws Exception {
+						if(f.isSuccess()) {
+							System.out.println("Connected");
+							NettyStream s = (NettyStream) f.channel();
+
+							s.getChannel().pipeline().addLast(new SimpleChannelInboundHandler<AESReplyPacket>() {
+								@Override
+								protected void channelRead0(ChannelHandlerContext c, AESReplyPacket p) throws Exception {
+									Player.me = new Player(p.getPlayerID());
+									NettyStream stream = (NettyStream) c.channel();
+									stream.setSecretKey(p.getSecretKey());
+									System.out.println("Recieved AES reply.");
+									c.pipeline().remove(this);
+									c.pipeline().addLast(new DefaultPacketHandler());
+									stream.sendPacket(loginPacket);
+								}
+							});
+							
+							s.sendPacket(new RSAHandShakePacket(s.getKeyPair()));
+						} else {
+							System.out.println("Failed to connect");
+						}
+					}
+				});
+				
 			}
 		};
 		

@@ -1,6 +1,5 @@
 package com.podts.rpg.client.state;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -9,13 +8,7 @@ import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.ui.UIManager;
-import com.podts.rpg.client.ui.UIObject;
 import com.podts.rpg.client.ui.UIObject.MouseClickType;
-import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
-
-import net.java.games.input.Keyboard;
-
-import com.podts.rpg.client.ui.UITextBox;
 
 public abstract class UIState implements GameState {
 
@@ -54,7 +47,7 @@ public abstract class UIState implements GameState {
 	}
 
 	@Override
-	public void mouseWheelMoved(int arg0) {
+	public void mouseWheelMoved(int change) {
 		// TODO Auto-generated method stub
 
 	}
@@ -86,7 +79,7 @@ public abstract class UIState implements GameState {
 	public void keyPressed(int key, char c) {
 		if(key == 14) {
 			UIManager.get().handleKeyPress(key);
-		} else {
+		} else if(Character.isLetterOrDigit(c)) {
 			UIManager.get().handleTextInput(c);
 		}
 	}

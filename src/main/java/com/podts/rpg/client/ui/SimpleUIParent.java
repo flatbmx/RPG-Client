@@ -66,7 +66,9 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 	public boolean handleMouseClick(MouseClickType clickType, int x, int y) {
 		for(UIObject obj : getChildren()) {
 			if(obj.isIn(x, y)) {
-				obj.handleMouseClick(clickType, x , y);
+				if(!obj.handleMouseClick(clickType, x , y)) {
+					UIManager.get().setFocus(null);
+				}
 				return true;
 			}
 		}

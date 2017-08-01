@@ -4,9 +4,16 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
+import com.podts.rpg.client.ui.UIObject.MouseClickType;
+
 public abstract class UIButton extends UIObject {
 	
 	public abstract void handleMouseClick(MouseClickType clickType);
+	
+	public final boolean handleMouseClick(MouseClickType clickType, int x, int y) {
+		handleMouseClick(clickType);
+		return true;
+	}
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) {

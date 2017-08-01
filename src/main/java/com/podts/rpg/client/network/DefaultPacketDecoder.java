@@ -27,7 +27,7 @@ public class DefaultPacketDecoder extends ByteToMessageDecoder {
 	static {
 		packetConstructors = new PacketConstructor[128];
 
-		addConstructor(1, new PacketConstructor() {
+		addConstructor(0, new PacketConstructor() {
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
 				int playerID = buf.readInt();

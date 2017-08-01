@@ -45,7 +45,7 @@ public final class UIManager extends SimpleUIParent {
 	public UIManager setFocus(UIObject o) {
 		if(focus != null) focus.focused = false;
 		focus = o;
-		o.focused = true;
+		if(o != null) o.focused = true;
 		return this;
 	}
 	
@@ -65,9 +65,18 @@ public final class UIManager extends SimpleUIParent {
 	public boolean handleMouseClick(MouseClickType type, int x, int y) {
 		for(UIObject obj : getChildren()) {
 			if(obj.isIn(x, y)) {
-				obj.handleMouseClick(type, x, y);
+				if(!obj.handleMouseClick(type, x, y)) {
+					if(focus != null) {
+						focus.focused = false;
+						focus = null;
+					}
+				}
 				return true;
 			}
+		}
+		if(focus != null) {
+			focus.focused = false;
+			focus = null;
 		}
 		return false;
 	}
