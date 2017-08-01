@@ -45,7 +45,7 @@ public class LoginState extends UIState {
 		.setCenterParentX(true)
 		.setCenterParentY(true);
 		
-		UITable table = new UITable(300,150,2,4);
+		UITable table = new UITable(200,150,2,4);
 		table.setCenterX(true)
 		.setCenterY(true);
 		
@@ -86,7 +86,6 @@ public class LoginState extends UIState {
 								protected void channelRead0(ChannelHandlerContext c, AESReplyPacket p) throws Exception {
 									NettyStream stream = (NettyStream) c.channel();
 									stream.setSecretKey(p.getSecretKey());
-									System.out.println("Recieved AES reply.");
 									c.pipeline().remove(this);
 									c.pipeline().addLast(new DefaultPacketHandler());
 									stream.sendPacket(loginPacket);
@@ -94,6 +93,7 @@ public class LoginState extends UIState {
 							});
 							
 							s.sendPacket(new RSAHandShakePacket(s.getKeyPair()));
+							
 						} else {
 							System.out.println("Failed to connect");
 						}
