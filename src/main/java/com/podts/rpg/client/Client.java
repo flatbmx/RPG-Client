@@ -43,6 +43,7 @@ public class Client extends StateBasedGame {
 			app.setTargetFrameRate(60);
 			app.setMaximumLogicUpdateInterval(60);
 			app.setAlwaysRender(true);
+			app.setVerbose(true);
 			app.start();
 		} catch (SlickException e) {
 			e.printStackTrace();
