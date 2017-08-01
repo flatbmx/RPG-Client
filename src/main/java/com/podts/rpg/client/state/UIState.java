@@ -169,13 +169,7 @@ public abstract class UIState implements GameState {
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
-		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
-		for(UIObject obj : UIManager.get().getUObjects()) {
-			obj.render(gc, g);
-		}
-		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
-		g.setColor(Color.white);
-		g.drawString("mx " + gc.getInput().getMouseX() + ", my " + gc.getInput().getMouseY(), 0, 0);
+		UIManager.get().render(gc, g);
 	}
 
 }

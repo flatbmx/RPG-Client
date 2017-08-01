@@ -30,9 +30,9 @@ public abstract class UIObject {
 	}
 	
 	public enum Corner {
-		TOP_LEFT(-1,-1),
-		TOP_RIGHT(1,-1),
-		BOTTOM_LEFT(-1,1),
+		TOP_LEFT(0,0),
+		TOP_RIGHT(0,1),
+		BOTTOM_LEFT(1,0),
 		BOTTOM_RIGHT(1,1);
 		
 		public final int x, y;
@@ -139,7 +139,7 @@ public abstract class UIObject {
 	 * @param c - The chosen corner.
 	 * @return The Corners location.
 	 */
-	public UILocation getCorner(Corner c) {
+	/*public UILocation getCorner(Corner c) {
 		int lx = 0;
 		int ly = 0;
 		
@@ -168,6 +168,11 @@ public abstract class UIObject {
 		}
 		
 		return new UILocation(x + c.x*lx + ox,y + c.y*ly + oy);
+	}*/
+	
+	public UILocation getCorner(Corner c) {
+		UILocation prnt = getParent().getCorner(Corner.TOP_LEFT);
+		return new UILocation(x + c.x*getWidth() + prnt.getX(),y + c.y*getHeight() + prnt.getY());
 	}
 	
 	public void handleMouseClick(MouseClickType clickType) {

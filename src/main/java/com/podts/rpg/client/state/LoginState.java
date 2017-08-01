@@ -34,14 +34,14 @@ public class LoginState extends UIState {
 		.setCenterParentX(true)
 		.setCenterParentY(true);
 		
-		UITable table = new UITable(2,2);
+		UITable table = new UITable(400,400,2,2);
 		
-		UITextBox userNameBox = new UITextBox();
-		UISecretTextbox passwordBox = new UISecretTextbox();
+		UITextBox userNameBox = new UITextBox(0,20);
+		UISecretTextbox passwordBox = new UISecretTextbox(0, 20);
 		
-		table.addChild(new UIText("Username:"), 0, 0); //Username
+		table.addChild(new UIText("Username:", 0, 20), 0, 0); //Username
 		table.addChild(userNameBox, 1, 0); //Username Box
-		table.addChild(new UIText("Password:"), 0, 1); //Password
+		table.addChild(new UIText("Password:", 0, 20), 0, 1); //Password
 		table.addChild(passwordBox, 0, 1); //Password Box
 		
 		UIButton loginButton = new UIButton(50,20) {

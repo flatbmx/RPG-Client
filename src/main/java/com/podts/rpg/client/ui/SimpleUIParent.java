@@ -83,13 +83,23 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 				}
 				if(child.getWidth() == 0) {
 					child.setWidth(getWidth() - child.getPaddingX() * 2);
-				} else if(child.isCenterX()) {
-					
 				}
-				child.setX(child.getPaddingX());
-				child.setY(nextY);
-				nextY += child.getPaddingY() + child.getHeight();
 			}
+			if(child.isCenterX()) {
+				int extraRoom = (getWidth() - child.getWidth()) / 2;
+				child.setX(child.getPaddingX() + extraRoom);
+			} else {
+				child.setX(child.getPaddingX());
+			}
+			
+			if(child.isCenterY() && children.size() == 1) {
+				int extraRoom = (getHeight() - child.getHeight()) / 2;
+				child.setY(child.getPaddingY() + extraRoom);
+			} else {
+				child.setY(child.getPaddingY() + nextY);
+			}
+			
+			nextY += child.getPaddingY() + child.getHeight();
 		}
 	}
 	

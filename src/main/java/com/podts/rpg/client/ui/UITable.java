@@ -11,7 +11,12 @@ public class UITable extends SimpleUIParent {
 		super(x, y, width, height);
 		grid = new UIObject[rows][columns];
 	}
-
+	
+	public UITable(int width, int height, int rows, int columns) {
+		super(width, height);
+		grid = new UIObject[rows][columns];
+	}
+	
 	public UITable(int rows, int columns) {
 		super();
 		grid = new UIObject[rows][columns];
@@ -19,7 +24,9 @@ public class UITable extends SimpleUIParent {
 
 	@Override
 	public void render(GameContainer gc, Graphics g) {
-		
+		for(UIObject child : getChildren()) {
+			child.render(gc, g);
+		}
 	}
 	
 	private void removeGridChild(UIObject o) {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.TrueTypeFont;
 
 import com.podts.rpg.client.ui.UIObject.Corner;
@@ -15,7 +16,7 @@ import com.podts.rpg.client.ui.UIObject.MouseClickType;
  * A class that manages the entire Games user interface.
  *
  */
-public final class UIManager implements UIParent {
+public final class UIManager extends SimpleUIParent {
 	
 	private static UIManager instance;
 	
@@ -39,7 +40,7 @@ public final class UIManager implements UIParent {
 	}
 	
 	
-	public UIManager addChild(UIObject newObject) {
+	/*public UIManager addChild(UIObject newObject) {
 		if(!uiObjects.contains(newObject)) {
 			uiObjects.add(newObject);
 			newObject.parent = this;
@@ -58,7 +59,7 @@ public final class UIManager implements UIParent {
 			}
 		}
 		return this;
-	}
+	}*/
 	
 	/**
 	 * Handles a mouse click event and will pass the event down to children if they are clicked in.
@@ -85,11 +86,6 @@ public final class UIManager implements UIParent {
 		uiObjects.clear();
 		return this;
 	}
-
-	@Override
-	public List<UIObject> getChildren() {
-		return uiObjects;
-	}
 	
 	public UIManager setGameContainer(GameContainer newContainer) {
 		gc = newContainer;
@@ -108,7 +104,19 @@ public final class UIManager implements UIParent {
 
 	@Override
 	public UILocation getCorner(Corner c) {
-		return new UILocation(getWidth()*(c.x+1),getHeight()*(c.y+1));
+		return new UILocation(getWidth()*c.x,getHeight()*c.y);
+	}
+
+
+	@Override
+	public void render(GameContainer gc, Graphics g) {
+		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
+		for(UIObject obj : UIManager.get().getChildren()) {
+			obj.render(gc, g);
+		}
+		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
+		g.setColor(Color.white);
+		g.drawString("mx " + gc.getInput().getMouseX() + ", my " + gc.getInput().getMouseY(), 0, 0);
 	}
 	
 }

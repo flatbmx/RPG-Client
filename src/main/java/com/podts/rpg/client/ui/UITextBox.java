@@ -1,11 +1,12 @@
 package com.podts.rpg.client.ui;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 public class UITextBox extends UIObject{
 	
-	private String text;
+	private String text = "";
 	
 	public UITextBox() {
 		
@@ -15,10 +16,18 @@ public class UITextBox extends UIObject{
 		super(x, y, width, height);
 	}
 	
+	public UITextBox(int width, int height) {
+		super(width, height);
+	}
+	
 	@Override
 	public void render(GameContainer gc, Graphics g) {
-	
-		
+		UILocation topLeft = getCorner(Corner.TOP_LEFT);
+		g.setColor(Color.yellow);
+		g.fillRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
+		g.setColor(UIManager.DEFAULT_FONT_COLOR);
+		g.setFont(UIManager.DEFAULT_FONT);
+		g.drawString(getText(), topLeft.getX(), topLeft.getY());
 	}
 	
 	protected void handleTextInput(String character) {
