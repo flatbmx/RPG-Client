@@ -11,6 +11,11 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.podts.rpg.client.ui.UIManager;
 import com.podts.rpg.client.ui.UIObject;
 import com.podts.rpg.client.ui.UIObject.MouseClickType;
+import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
+
+import net.java.games.input.Keyboard;
+
+import com.podts.rpg.client.ui.UITextBox;
 
 public abstract class UIState implements GameState {
 
@@ -78,9 +83,12 @@ public abstract class UIState implements GameState {
 	}
 
 	@Override
-	public void keyPressed(int arg0, char arg1) {
-		// TODO Auto-generated method stub
-
+	public void keyPressed(int key, char c) {
+		if(key == 14) {
+			UIManager.get().handleKeyPress(key);
+		} else {
+			UIManager.get().handleTextInput(c);
+		}
 	}
 
 	@Override

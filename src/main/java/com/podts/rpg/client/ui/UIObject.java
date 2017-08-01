@@ -35,8 +35,8 @@ public abstract class UIObject {
 	
 	public enum Corner {
 		TOP_LEFT(0,0),
-		TOP_RIGHT(0,1),
-		BOTTOM_LEFT(1,0),
+		TOP_RIGHT(1,0),
+		BOTTOM_LEFT(0,1),
 		BOTTOM_RIGHT(1,1);
 		
 		public final int x, y;
@@ -53,6 +53,7 @@ public abstract class UIObject {
 	private boolean centerX, centerY;
 	private boolean centerParentX, centerParentY;
 	protected boolean autoSizing, autoArrange;
+	protected boolean focused;
 	
 	private Color BorderColor;
 	private Color backgroundColor;
@@ -154,8 +155,8 @@ public abstract class UIObject {
 		return new UILocation(x + c.x*getWidth() + prnt.getX(),y + c.y*getHeight() + prnt.getY());
 	}
 	
-	public void handleMouseClick(MouseClickType clickType) {
-		
+	public boolean handleMouseClick(MouseClickType clickType, int x, int y) {
+		return false;
 	}
 	
 	public void onHover() {

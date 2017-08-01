@@ -46,6 +46,9 @@ public class LoginState extends UIState {
 		table.addChild(new UIText("Password:", 75, 20), 0, 1); //Password
 		table.addChild(passwordBox, 1, 1); //Password Box
 		
+		userNameBox.setText("blurh");
+		passwordBox.setText("123456");
+		
 		UIButton loginButton = new UIButton(50,20) {
 			@Override
 			public void handleMouseClick(MouseClickType clickType) {
@@ -61,6 +64,7 @@ public class LoginState extends UIState {
 		loginWindow.addChild(loginButton);
 		
 		UIManager.get().clear().addChild(loginWindow);
+		UIManager.get().setFocus(userNameBox);
 	}
 	
 	@Override

@@ -2,7 +2,7 @@ package com.podts.rpg.client.ui;
 
 public class UISecretTextbox extends UITextBox {
 	
-	private String displayText;
+	private String displayText = "";
 	
 	@Override
 	protected void handleTextInput(String character) {
@@ -20,6 +20,15 @@ public class UISecretTextbox extends UITextBox {
 	@Override
 	public String getDisplayText() {
 		return displayText;
+	}
+	
+	@Override
+	public void setText(String text) {
+		super.setText(text);
+		String newDisplay = "";
+		for(int i=0; i<text.length(); ++i)
+			newDisplay += "*";
+		displayText = newDisplay;
 	}
 	
 	public UISecretTextbox(int x, int y, int width, int height) {

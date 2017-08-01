@@ -4,7 +4,11 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
+import com.podts.rpg.client.ui.UIObject.MouseClickType;
+
 public class UITextBox extends UIObject{
+	
+	public static final String focusCharater = "|";
 	
 	private String text = "";
 	
@@ -23,11 +27,17 @@ public class UITextBox extends UIObject{
 	@Override
 	public void render(GameContainer gc, Graphics g) {
 		UILocation topLeft = getCorner(Corner.TOP_LEFT);
-		g.setColor(Color.yellow);
+		g.setColor(Color.orange);
 		g.fillRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
 		g.setColor(UIManager.DEFAULT_FONT_COLOR);
 		g.setFont(UIManager.DEFAULT_FONT);
-		g.drawString(getText(), topLeft.getX(), topLeft.getY());
+		g.drawString(getDisplayText() + UIManager.get().getFocusCharacter(this), topLeft.getX(), topLeft.getY());
+	}
+	
+	@Override
+	public boolean handleMouseClick(MouseClickType clickType, int x, int y) {
+		UIManager.get().setFocus(this);
+		return true;
 	}
 	
 	protected void handleTextInput(String character) {

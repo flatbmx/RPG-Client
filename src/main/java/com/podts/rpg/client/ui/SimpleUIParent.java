@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.podts.rpg.client.ui.UIObject.MouseClickType;
+
 public abstract class SimpleUIParent extends UIObject implements UIParent {
 	
 	public SimpleUIParent(int x, int y, int width, int height) {
@@ -60,6 +62,16 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 			
 		}
 	}*/
+	
+	public boolean handleMouseClick(MouseClickType clickType, int x, int y) {
+		for(UIObject obj : getChildren()) {
+			if(obj.isIn(x, y)) {
+				obj.handleMouseClick(clickType, x , y);
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	protected void compact() {
 		if(children.isEmpty()) return;

@@ -7,10 +7,8 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.TrueTypeFont;
-
-import com.podts.rpg.client.ui.UIObject.Corner;
-import com.podts.rpg.client.ui.UIObject.MouseClickType;
 
 /**
  * A class that manages the entire Games user interface.
@@ -28,6 +26,7 @@ public final class UIManager extends SimpleUIParent {
 	
 	private final List<UIObject> uiObjects = new LinkedList<UIObject>();
 	private GameContainer gc;
+	private UIObject focus;
 	
 	public static final TrueTypeFont DEFAULT_FONT = new TrueTypeFont(new Font("Courier",Font.BOLD,12), true);
 	public static final Color DEFAULT_FONT_COLOR = new Color(255,255,255);
@@ -39,27 +38,22 @@ public final class UIManager extends SimpleUIParent {
 		return uiObjects;
 	}
 	
+	public UIObject getFocus() {
+		return focus;
+	}
 	
-	/*public UIManager addChild(UIObject newObject) {
-		if(!uiObjects.contains(newObject)) {
-			uiObjects.add(newObject);
-			newObject.parent = this;
-			if(newObject.getWidth() == 0 || newObject.getHeight() == 0) {
-				newObject.autoSizing = true;
-			}
-		}
+	public UIManager setFocus(UIObject o) {
+		if(focus != null) focus.focused = false;
+		focus = o;
+		o.focused = true;
 		return this;
 	}
 	
-	public UIManager removeChild(UIObject object) {
-		if(uiObjects.remove(object)) {
-			object.parent = null;
-			if(object.autoSizing) {
-				object.autoSizing = false;
-			}
-		}
-		return this;
-	}*/
+	public String getFocusCharacter(UIObject o) {
+		if(!o.focused) return "";
+		if(System.currentTimeMillis() % 750 < 375) return UITextBox.focusCharater;
+		return "";
+	}
 	
 	/**
 	 * Handles a mouse click event and will pass the event down to children if they are clicked in.
@@ -69,13 +63,33 @@ public final class UIManager extends SimpleUIParent {
 	 * @return True if a UIObject was clicked on, false otherwise.
 	 */
 	public boolean handleMouseClick(MouseClickType type, int x, int y) {
-		for(UIObject obj : uiObjects) {
+		for(UIObject obj : getChildren()) {
 			if(obj.isIn(x, y)) {
-				obj.handleMouseClick(type);
+				obj.handleMouseClick(type, x, y);
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public void handleKeyPress(int key) {
+		if(key == 14) {
+			UIObject o = UIManager.get().getFocus();
+			if(o instanceof UITextBox) {
+				UITextBox box = (UITextBox) o;
+				box.handleBackSpace();
+			}
+		}
+	}
+	
+	public void handleTextInput(char c) {
+		if(c != 0) {
+			UIObject o = UIManager.get().getFocus();
+			if(o instanceof UITextBox) {
+				UITextBox box = (UITextBox) o;
+				box.handleTextInput("" + c);
+			}
+		}
 	}
 	
 	/**
