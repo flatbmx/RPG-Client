@@ -10,7 +10,7 @@ import org.newdawn.slick.Graphics;
  */
 public class UIText extends UIObject {
 	
-	private String text;
+	private String text = "";
 	
 	public String getText() {
 		return text;

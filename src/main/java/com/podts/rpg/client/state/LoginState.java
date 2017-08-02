@@ -33,7 +33,9 @@ import io.netty.util.concurrent.GenericFutureListener;
  *
  */
 public class LoginState extends UIState {
-
+	
+	public static UIText responseText;
+	
 	@Override
 	public void init(GameContainer gc, StateBasedGame g) throws SlickException {
 		
@@ -66,6 +68,9 @@ public class LoginState extends UIState {
 		table.addChild(new UIText("Password:", 75, 20), 0, 3); //Password
 		table.addChild(passwordBox, 1, 3); //Password Box
 		
+		responseText = new UIText(300,20);
+		responseText.setCenterX(true).setBackgroundColor(null);
+		
 		UIButton loginButton = new UIButton(50,20) {
 			@Override
 			public void handleMouseClick(MouseClickType clickType) {
@@ -74,13 +79,17 @@ public class LoginState extends UIState {
 				
 				int port = Integer.parseInt(portBox.getText());
 				
+				responseText.setText("Connecting");
+				
 				Client.get().getNetworkManager().connect(addressBox.getText(), port).addListener(new GenericFutureListener<ChannelFuture>() {
 					@Override
 					public void operationComplete(ChannelFuture f) throws Exception {
 						if(f.isSuccess()) {
-							System.out.println("Connected");
+							responseText.setText("Connected");
 							NettyStream s = (NettyStream) f.channel();
-
+							
+							
+							
 							s.getChannel().pipeline().addLast(new SimpleChannelInboundHandler<AESReplyPacket>() {
 								@Override
 								protected void channelRead0(ChannelHandlerContext c, AESReplyPacket p) throws Exception {
@@ -89,6 +98,7 @@ public class LoginState extends UIState {
 									c.pipeline().remove(this);
 									c.pipeline().addLast(new DefaultPacketHandler());
 									stream.sendPacket(loginPacket);
+									responseText.setText("Secured.");
 								}
 							});
 							
@@ -106,6 +116,7 @@ public class LoginState extends UIState {
 		loginButton.setCenterX(true);
 		
 		loginWindow.addChild(table);
+		loginWindow.addChild(responseText);
 		loginWindow.addChild(loginButton);
 		
 		UIManager.get().clear().addChild(loginWindow);

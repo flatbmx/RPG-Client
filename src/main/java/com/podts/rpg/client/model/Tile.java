@@ -1,0 +1,47 @@
+package com.podts.rpg.client.model;
+
+public final class Tile {
+	
+	public enum TileType {
+		VOID(false),
+		GRASS(),
+		DIRT(),
+		WATER(false);
+		
+		private final boolean traversable;
+		
+		public boolean isTraversable() {
+			return traversable;
+		}
+		
+		private TileType() {
+			traversable = true;
+		}
+		
+		private TileType(boolean travel) {
+			traversable = travel;
+		}
+		
+	}
+	
+	private final TileType type;
+	private final Location location;
+	
+	public TileType getType() {
+		return type;
+	}
+	
+	public Location getLocation() {
+		return location;
+	}
+	
+	public boolean isTraversable() {
+		return type.isTraversable();
+	}
+	
+	public Tile(TileType type, Location location) {
+		this.type = type;
+		this.location = location;
+	}
+	
+}

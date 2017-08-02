@@ -6,14 +6,14 @@ public class Location {
 	 * Declares two double variables(x and y).
 	 */
 	
-	private double x, y;
+	private int x, y, z;
 	
 	/**
 	 * Gets a locations X variable.
 	 * @return x
 	 */
 	
-	public double getX() {
+	public int getX() {
 		return x;
 	}
 	
@@ -22,22 +22,27 @@ public class Location {
 	 * @return y
 	 */
 	
-	public double getY() {
+	public int getY() {
 		return y;
+	}
+	
+	public Location move(int dx, int dy, int dz) {
+		return new Location(x + dx, y + dy, z + dz);
 	}
 	
 	public Location() {
 		
 	}
+	
 	/**
 	 * Constructs a Location object.
 	 * @param x the x coordinate.
 	 * @param y the y coordinate.
 	 */
-	
-	public Location(double x, double y) {
+	public Location(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
+		this.z = z;
 	}
 	
 }
