@@ -28,6 +28,13 @@ public class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 			}
 		});
 		
+		addHandler(TilePacket.class, new BiConsumer<Packet,Stream>() {
+			@Override
+			public void accept(Packet op, Stream s) {
+				
+			}
+		});
+		
 	}
 	
 	private static final void addHandler(Class<?> c, BiConsumer<Packet,Stream> handler) {
@@ -37,7 +44,13 @@ public class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 	@Override
 	protected void channelRead0(ChannelHandlerContext c, Packet op) throws Exception {
 		
-		handlers.get(op.getClass()).accept(op, Client.get().getNetworkManager().getStream());
+		BiConsumer<Packet,Stream> handler = handlers.get(op.getClass());
+		
+		if(handler != null) {
+			handler.accept(op, (Stream)c.channel());
+		} else {
+			System.out.println("Recieved unhandled " + op.getClass().getSimpleName());
+		}
 		
 	}
 	

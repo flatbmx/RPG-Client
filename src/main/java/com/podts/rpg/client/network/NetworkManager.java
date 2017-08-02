@@ -1,8 +1,13 @@
 package com.podts.rpg.client.network;
 
+import com.podts.rpg.client.state.LoginState;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -35,7 +40,6 @@ public class NetworkManager {
 		
 		this.host = host;
 		this.port = port;
-		System.out.println("Connecting to " + host + ":" + port);
 		
 		try {
 			b = new Bootstrap();
@@ -48,7 +52,8 @@ public class NetworkManager {
 					channel.pipeline().addLast("frameEncoder", new DefaultFrameEncoder())
 					.addLast("packetEncoder", new DefaultPacketEncoder())
 					.addLast("frameDecoder", new DefaultFrameDecoder())
-					.addLast("packetDecoder", new DefaultPacketDecoder());
+					.addLast("packetDecoder", new DefaultPacketDecoder())
+					.addLast(new ChannelWatcher());
 				}
 			});
 			
@@ -66,6 +71,25 @@ public class NetworkManager {
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+		
+	}
+	
+	private final class ChannelWatcher extends ChannelOutboundHandlerAdapter {
+		
+		@Override
+	    public void close(ChannelHandlerContext ctx, ChannelPromise promise) {
+	        
+	    }
+		
+		@Override
+		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+			if(cause.getMessage().equals("An existing connection was forcibly closed by the remote host")) {
+				LoginState.responseText.setText("Disconnected!");
+			} else {
+				cause.printStackTrace();
+			}
+			ctx.close();
 		}
 		
 	}

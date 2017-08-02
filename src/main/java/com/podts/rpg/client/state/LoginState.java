@@ -75,7 +75,6 @@ public class LoginState extends UIState {
 			@Override
 			public void handleMouseClick(MouseClickType clickType) {
 				LoginPacket loginPacket = new LoginPacket(userNameBox.getText(), passwordBox.getText());
-				System.out.println("Clicked login button");
 				
 				int port = Integer.parseInt(portBox.getText());
 				
@@ -105,7 +104,7 @@ public class LoginState extends UIState {
 							s.sendPacket(new RSAHandShakePacket(s.getKeyPair()));
 							
 						} else {
-							System.out.println("Failed to connect");
+							responseText.setText("Failed to connect.");
 						}
 					}
 				});
