@@ -1,5 +1,8 @@
 package com.podts.rpg.client.network;
 
+import com.podts.rpg.client.network.packet.AESReplyPacket;
+import com.podts.rpg.client.network.packet.LoginPacket;
+import com.podts.rpg.client.network.packet.RSAHandShakePacket;
 import com.podts.rpg.client.state.LoginState;
 
 import io.netty.bootstrap.Bootstrap;
@@ -9,6 +12,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -36,7 +40,7 @@ public class NetworkManager {
 		return stream;
 	}
 	
-	public ChannelFuture connect(String host, int port) {
+	public ChannelFuture connect(LoginPacket loginPacket, String host, int port) {
 		
 		this.host = host;
 		this.port = port;
@@ -58,15 +62,30 @@ public class NetworkManager {
 			});
 			
 			return b.connect(host, port).addListener(new GenericFutureListener<ChannelFuture>() {
-				@Override
-				public void operationComplete(ChannelFuture f) throws Exception {
-					if(f.isSuccess()) {
-						stream = (NettyStream) f.channel();
-					} else {
-						
+					@Override
+					public void operationComplete(ChannelFuture f) throws Exception {
+						if(f.isSuccess()) {
+							stream = (NettyStream) f.channel();
+							LoginState.responseText.setText("Connected");
+							NettyStream s = (NettyStream) f.channel();
+							s.getChannel().pipeline().addLast(new SimpleChannelInboundHandler<AESReplyPacket>() {
+								@Override
+								protected void channelRead0(ChannelHandlerContext c, AESReplyPacket p) throws Exception {
+									NettyStream stream = (NettyStream) c.channel();
+									stream.setSecretKey(p.getSecretKey());
+									c.pipeline().remove(this);
+									c.pipeline().addLast(new DefaultPacketHandler());
+									stream.sendPacket(loginPacket);
+									LoginState.responseText.setText("Secured.");
+								}
+							});
+							
+							s.sendPacket(new RSAHandShakePacket(s.getKeyPair()));
+						} else {
+							LoginState.responseText.setText("Failed to connect.");
+						}
 					}
-				}
-			 });
+				});
 			
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -14,7 +14,7 @@ import com.podts.rpg.client.state.LoginState;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
+class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 	
 	private static final Map<Class<?>,BiConsumer<Packet,Stream>> handlers = new HashMap<>();
 	

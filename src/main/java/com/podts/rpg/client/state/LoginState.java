@@ -8,7 +8,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.Client;
 import com.podts.rpg.client.model.Player;
-import com.podts.rpg.client.network.DefaultPacketHandler;
 import com.podts.rpg.client.network.NettyStream;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
 import com.podts.rpg.client.network.packet.LoginPacket;
@@ -80,34 +79,7 @@ public class LoginState extends UIState {
 				
 				responseText.setText("Connecting");
 				
-				Client.get().getNetworkManager().connect(addressBox.getText(), port).addListener(new GenericFutureListener<ChannelFuture>() {
-					@Override
-					public void operationComplete(ChannelFuture f) throws Exception {
-						if(f.isSuccess()) {
-							responseText.setText("Connected");
-							NettyStream s = (NettyStream) f.channel();
-							
-							
-							
-							s.getChannel().pipeline().addLast(new SimpleChannelInboundHandler<AESReplyPacket>() {
-								@Override
-								protected void channelRead0(ChannelHandlerContext c, AESReplyPacket p) throws Exception {
-									NettyStream stream = (NettyStream) c.channel();
-									stream.setSecretKey(p.getSecretKey());
-									c.pipeline().remove(this);
-									c.pipeline().addLast(new DefaultPacketHandler());
-									stream.sendPacket(loginPacket);
-									responseText.setText("Secured.");
-								}
-							});
-							
-							s.sendPacket(new RSAHandShakePacket(s.getKeyPair()));
-							
-						} else {
-							responseText.setText("Failed to connect.");
-						}
-					}
-				});
+				Client.get().getNetworkManager().connect(loginPacket, addressBox.getText(), port);
 				
 			}
 		};

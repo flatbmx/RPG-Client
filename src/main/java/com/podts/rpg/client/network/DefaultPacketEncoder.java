@@ -8,17 +8,19 @@ import java.util.Map;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
-import com.podts.rpg.client.network.packet.LoginPacket;
-import com.podts.rpg.client.network.packet.RSAHandShakePacket;
+import com.podts.rpg.client.network.packet.*;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
-public class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
+class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 	
-	private static final byte OP_RSAHANDSHAKE = 0, OP_LOGIN = 1;
+	private static final byte PID_RSAHANDSHAKE = 0;
+	private static final byte PID_LOGIN = 1;
+	private static final int PID_MOVE = 2;
+	private static final int PID_MESSAGE = 3;
 	
 	private final Map<Class<?>,PacketEncoder> encoders = new HashMap<>();
 	
@@ -84,7 +86,7 @@ public class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 			public void encode(Stream s, Packet op, ByteBuf buf) {
 				if(!(op instanceof RSAHandShakePacket)) throw new IllegalArgumentException();
 				RSAHandShakePacket p = (RSAHandShakePacket) op;
-				buf.writeByte(OP_RSAHANDSHAKE);
+				buf.writeByte(PID_RSAHANDSHAKE);
 				buf.writeBytes(p.getKeyPair().getPublic().getEncoded());
 			}
 		});
@@ -93,9 +95,18 @@ public class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 			public void encode(Stream s, Packet op, ByteBuf buf) {
 				if(!(op instanceof LoginPacket)) throw new IllegalArgumentException();
 				LoginPacket p = (LoginPacket) op;
-				buf.writeByte(OP_LOGIN);
+				buf.writeByte(PID_LOGIN);
 				writeEncryptedString(p.getUsername(), s, buf);
 				writeEncryptedString(p.getPassword(), s, buf);
+			}
+		});
+		encoders.put(MessagePacket.class, new PacketEncoder() {
+			@Override
+			public void encode(Stream s, Packet op, ByteBuf buf) {
+				if(!(op instanceof MessagePacket)) throw new IllegalArgumentException();
+				MessagePacket p = (MessagePacket) op;
+				buf.writeByte(PID_MESSAGE);
+				writeEncryptedString(p.getMessage(), s, buf);
 			}
 		});
 	}

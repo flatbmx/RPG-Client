@@ -20,7 +20,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
-public class DefaultPacketDecoder extends ByteToMessageDecoder {
+class DefaultPacketDecoder extends ByteToMessageDecoder {
 	
 	private static final PacketConstructor[] packetConstructors;
 	
@@ -28,11 +28,17 @@ public class DefaultPacketDecoder extends ByteToMessageDecoder {
 		packetConstructors[id] = c;
 		c.init();
 	}
-
+	
+	private static final int PID_RSAHANDSHAKE = 0;
+	private static final int PID_LOGINREQUST = 1;
+	private static final int PID_TILE = 2;
+	private static final int PID_ENTITY = 3;
+	private static final int PID_MESSAGE = 4;
+	
 	static {
 		packetConstructors = new PacketConstructor[128];
 
-		addConstructor(0, new PacketConstructor() {
+		addConstructor(PID_RSAHANDSHAKE, new PacketConstructor() {
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
 				byte[] encryptedBytes = new byte[buf.readableBytes()];
@@ -55,7 +61,7 @@ public class DefaultPacketDecoder extends ByteToMessageDecoder {
 			}
 		});
 		
-		addConstructor(1, new PacketConstructor() {
+		addConstructor(PID_LOGINREQUST, new PacketConstructor() {
 			private final LoginResponseType[] type = new LoginResponseType[LoginResponseType.values().length];
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
@@ -69,7 +75,7 @@ public class DefaultPacketDecoder extends ByteToMessageDecoder {
 			}
 		});
 		
-		addConstructor(2, new PacketConstructor() {
+		addConstructor(PID_TILE, new PacketConstructor() {
 			private final TileSendType[] sendTypes = new TileSendType[TileSendType.values().length];
 			private final TileType[] types = new TileType[TileType.values().length];
 			public void init() {
@@ -191,12 +197,6 @@ public class DefaultPacketDecoder extends ByteToMessageDecoder {
 			
 		}
 		
-	}
-	
-	public DefaultPacketDecoder() {
-	
-	
-	
 	}
 	
 }
