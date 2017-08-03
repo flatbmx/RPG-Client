@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.SecretKey;
 
+import com.podts.rpg.client.network.packet.ActionSender;
+
 import io.netty.channel.Channel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
@@ -22,6 +24,7 @@ public class NettyStream extends NioSocketChannel implements Stream {
 		}
 	}
 	
+	private final ActionSender sender = new ActionSender(this);
 	private final KeyPair keyPair;
 	private SecretKey secret;
 	
@@ -52,6 +55,11 @@ public class NettyStream extends NioSocketChannel implements Stream {
 	
 	public NettyStream() {
 		keyPair = keyPairGenerator.generateKeyPair();
+	}
+
+	@Override
+	public ActionSender getActionSender() {
+		return sender;
 	}
 	
 }

@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.podts.rpg.client.Client;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.network.NettyStream;
+import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
 import com.podts.rpg.client.network.packet.LoginPacket;
 import com.podts.rpg.client.network.packet.RSAHandShakePacket;
@@ -35,6 +36,9 @@ public class LoginState extends UIState {
 	
 	public static UIText responseText;
 	
+	public static UITextBox userNameBox;
+	public static UISecretTextbox passwordBox;
+	
 	@Override
 	public void init(GameContainer gc, StateBasedGame g) throws SlickException {
 		
@@ -50,8 +54,8 @@ public class LoginState extends UIState {
 		table.setCenterX(true)
 		.setCenterY(true);
 		
-		UITextBox userNameBox = new UITextBox(120,20);
-		UISecretTextbox passwordBox = new UISecretTextbox(120, 20);
+		userNameBox = new UITextBox(120,20);
+		passwordBox = new UISecretTextbox(120, 20);
 		
 		UITextBox addressBox = new UITextBox(120,20);
 		addressBox.setText("localhost");
@@ -73,13 +77,14 @@ public class LoginState extends UIState {
 		UIButton loginButton = new UIButton(50,20) {
 			@Override
 			public void handleMouseClick(MouseClickType clickType) {
-				LoginPacket loginPacket = new LoginPacket(userNameBox.getText(), passwordBox.getText());
 				
 				int port = Integer.parseInt(portBox.getText());
 				
 				responseText.setText("Connecting");
 				
-				Client.get().getNetworkManager().connect(loginPacket, addressBox.getText(), port);
+				NetworkManager netManager = Client.get().getNetworkManager();
+				
+				netManager.connect(addressBox.getText(), port);
 				
 			}
 		};

@@ -40,7 +40,7 @@ public class NetworkManager {
 		return stream;
 	}
 	
-	public ChannelFuture connect(LoginPacket loginPacket, String host, int port) {
+	public ChannelFuture connect(String host, int port) {
 		
 		this.host = host;
 		this.port = port;
@@ -75,8 +75,8 @@ public class NetworkManager {
 									stream.setSecretKey(p.getSecretKey());
 									c.pipeline().remove(this);
 									c.pipeline().addLast(new DefaultPacketHandler());
-									stream.sendPacket(loginPacket);
 									LoginState.responseText.setText("Secured.");
+									getStream().getActionSender().sendLoginRequest(LoginState.userNameBox.getText(), LoginState.passwordBox.getText());
 								}
 							});
 							
@@ -110,6 +110,10 @@ public class NetworkManager {
 			}
 			ctx.close();
 		}
+		
+	}
+	
+	public void waitForSecuredConnection() {
 		
 	}
 	

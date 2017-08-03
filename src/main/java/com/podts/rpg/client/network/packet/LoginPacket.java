@@ -14,7 +14,7 @@ public final class LoginPacket extends Packet {
 		return password;
 	}
 
-	public LoginPacket(String username, String password) {
+	LoginPacket(String username, String password) {
 		this.username = username;
 		this.password = password;
 	}
