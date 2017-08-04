@@ -27,6 +27,9 @@ public abstract class World {
 		
 	}
 	
+	public abstract Tile getTile(Location loc);
+	public abstract void addTile(Tile newTile);
+	
 	/**
 	 * Constructs a World object.
 	 * @param name - The name of the world.

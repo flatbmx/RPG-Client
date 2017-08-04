@@ -35,4 +35,9 @@ public class Player implements Locatable {
 		location = new Location();
 	}
 	
+	public Player(int id, Location loc) {
+		this.id = id;
+		location = loc;
+	}
+	
 }

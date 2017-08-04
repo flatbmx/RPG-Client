@@ -133,5 +133,9 @@ public class NetworkManager {
 
 	}
 
+	public void close() {
+		workerGroup.shutdownGracefully();
+	}
+
 	
 }

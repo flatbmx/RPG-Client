@@ -5,8 +5,13 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import com.podts.rpg.client.Client;
+import com.podts.rpg.client.model.Location;
+import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.model.Tile;
+import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.packet.LoginResponsePacket;
+import com.podts.rpg.client.network.packet.LoginResponsePacket.LoginResponseType;
+import com.podts.rpg.client.network.packet.PlayerInitPacket;
 import com.podts.rpg.client.network.packet.TilePacket;
 import com.podts.rpg.client.network.packet.TilePacket.TileSendType;
 import com.podts.rpg.client.state.LoginState;
@@ -25,19 +30,44 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 			public void accept(Packet op, Stream s) {
 				LoginResponsePacket p = (LoginResponsePacket) op;
 				LoginState.responseText.setText(p.getResponse());
+				if(p.getType().equals(LoginResponseType.DECLINE)) {
+					Client.get().getNetworkManager().close();
+				}
+			}
+		});
+		
+		addHandler(PlayerInitPacket.class, new BiConsumer<Packet,Stream>() {
+			@Override
+			public void accept(Packet op, Stream s) {
+				PlayerInitPacket p = (PlayerInitPacket) op;
+				int id = p.getId();
+				Location point = p.getLocation();
+				Player.me = new Player(id, point);
 			}
 		});
 		
 		addHandler(TilePacket.class, new BiConsumer<Packet,Stream>() {
 			@Override
 			public void accept(Packet op, Stream s) {
-				
+				TilePacket p = (TilePacket) op;
+				World world = Client.get().getWorld();
+				if(TileSendType.GROUP.equals(p.getType())) {
+					Tile[][] tiles = p.getTiles();
+					for(int i=0; i<tiles.length; ++i) {
+						for(int j=0; j<tiles[i].length; ++j) {
+							world.addTile(tiles[i][j]);
+						}
+					}
+				} else if(TileSendType.SINGLE.equals(p.getType())) {
+					world.addTile(p.getTile());
+				}
 			}
 		});
 		
 	}
 	
 	private static final void addHandler(Class<?> c, BiConsumer<Packet,Stream> handler) {
+		if(handlers.containsKey(c)) throw new IllegalArgumentException("There is already a packet handler for " + c.getSimpleName());
 		handlers.put(c, handler);
 	}
 	
@@ -49,7 +79,7 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 		if(handler != null) {
 			handler.accept(op, (Stream)c.channel());
 		} else {
-			System.out.println("Recieved unhandled " + op.getClass().getSimpleName());
+			System.out.println("WARNING: Recieved unhandled " + op.getClass().getSimpleName());
 		}
 		
 	}

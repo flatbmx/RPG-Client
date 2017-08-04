@@ -13,6 +13,7 @@ import com.podts.rpg.client.model.Tile.TileType;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket.LoginResponseType;
+import com.podts.rpg.client.network.packet.PlayerInitPacket;
 import com.podts.rpg.client.network.packet.TilePacket;
 import com.podts.rpg.client.network.packet.TilePacket.TileSendType;
 
@@ -29,16 +30,17 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 		c.init();
 	}
 	
-	private static final int PID_RSAHANDSHAKE = 0;
-	private static final int PID_LOGINREQUST = 1;
+	private static final int PID_AESREPLY = 0;
+	private static final int PID_LOGINRESPONSE = 1;
 	private static final int PID_TILE = 2;
-	private static final int PID_ENTITY = 3;
-	private static final int PID_MESSAGE = 4;
+	private static final int PID_INIT = 3;
+	private static final int PID_ENTITY = 4;
+	private static final int PID_MESSAGE = 5;
 	
 	static {
 		packetConstructors = new PacketConstructor[128];
 
-		addConstructor(PID_RSAHANDSHAKE, new PacketConstructor() {
+		addConstructor(PID_AESREPLY, new PacketConstructor() {
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
 				byte[] encryptedBytes = new byte[buf.readableBytes()];
@@ -61,7 +63,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			}
 		});
 		
-		addConstructor(PID_LOGINREQUST, new PacketConstructor() {
+		addConstructor(PID_LOGINRESPONSE, new PacketConstructor() {
 			private final LoginResponseType[] type = new LoginResponseType[LoginResponseType.values().length];
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
@@ -108,6 +110,16 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 					return new TilePacket(tiles);
 				}
 				return null;
+			}
+		});
+		
+		addConstructor(PID_INIT, new PacketConstructor() {
+			private final LoginResponseType[] type = new LoginResponseType[LoginResponseType.values().length];
+			@Override
+			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
+				int id = buf.readInt();
+				Location point = readLocation(buf);
+				return new PlayerInitPacket(id, point);
 			}
 		});
 		

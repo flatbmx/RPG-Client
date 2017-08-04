@@ -159,6 +159,9 @@ public class PlayingState extends UIState {
 	@Override
 	public void render(GameContainer app, StateBasedGame game, Graphics g) throws SlickException {
 		
+		
+		
+		super.render(app, game, g);
 	}
 
 	@Override

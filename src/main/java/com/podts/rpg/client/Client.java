@@ -5,6 +5,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.podts.rpg.client.model.HashWorld;
+import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.state.LoginState;
 import com.podts.rpg.client.state.PlayingState;
@@ -17,7 +19,12 @@ public class Client extends StateBasedGame {
 		return instance;
 	}
 	
+	private final World world;
 	private final NetworkManager networkManager = new NetworkManager();
+	
+	public final World getWorld() {
+		return world;
+	}
 	
 	public final NetworkManager getNetworkManager() {
 		return networkManager;
@@ -31,6 +38,7 @@ public class Client extends StateBasedGame {
 	
 	public Client() {
 		super("RPG-Client");
+		world = new HashWorld("Earth");
 	}
 
 	public static void main(String[] args) {
