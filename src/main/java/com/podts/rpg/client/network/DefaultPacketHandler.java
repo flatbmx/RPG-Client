@@ -12,9 +12,11 @@ import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.packet.LoginResponsePacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket.LoginResponseType;
 import com.podts.rpg.client.network.packet.PlayerInitPacket;
+import com.podts.rpg.client.network.packet.StatePacket;
 import com.podts.rpg.client.network.packet.TilePacket;
 import com.podts.rpg.client.network.packet.TilePacket.TileSendType;
 import com.podts.rpg.client.state.LoginState;
+import com.podts.rpg.client.state.States;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -33,6 +35,15 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 				if(p.getType().equals(LoginResponseType.DECLINE)) {
 					Client.get().getNetworkManager().close();
 				}
+			}
+		});
+		
+		addHandler(StatePacket.class, new BiConsumer<Packet,Stream>() {
+			@Override
+			public void accept(Packet op, Stream s) {
+				StatePacket p = (StatePacket) op;
+				States st = p.getState();
+				Client.get().enterState(st.getID());
 			}
 		});
 		

@@ -1,7 +1,9 @@
 package com.podts.rpg.client.network;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -14,8 +16,10 @@ import com.podts.rpg.client.network.packet.AESReplyPacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket.LoginResponseType;
 import com.podts.rpg.client.network.packet.PlayerInitPacket;
+import com.podts.rpg.client.network.packet.StatePacket;
 import com.podts.rpg.client.network.packet.TilePacket;
 import com.podts.rpg.client.network.packet.TilePacket.TileSendType;
+import com.podts.rpg.client.state.States;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,8 +38,9 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 	private static final int PID_LOGINRESPONSE = 1;
 	private static final int PID_TILE = 2;
 	private static final int PID_INIT = 3;
-	private static final int PID_ENTITY = 4;
-	private static final int PID_MESSAGE = 5;
+	private static final int PID_STATE = 4;
+	private static final int PID_ENTITY = 5;
+	private static final int PID_MESSAGE = 6;
 	
 	static {
 		packetConstructors = new PacketConstructor[128];
@@ -113,8 +118,17 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			}
 		});
 		
+		addConstructor(PID_STATE, new PacketConstructor() {
+			private final States[] states = States.values();
+			@Override
+			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
+				byte stateID = buf.readByte();
+				States st = states[stateID];
+				return new StatePacket(st);
+			}
+		});
+		
 		addConstructor(PID_INIT, new PacketConstructor() {
-			private final LoginResponseType[] type = new LoginResponseType[LoginResponseType.values().length];
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
 				int id = buf.readInt();
