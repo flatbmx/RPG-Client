@@ -101,15 +101,6 @@ public final class UIManager extends SimpleUIParent {
 		}
 	}
 	
-	/**
-	 * Clears all child UIObjects.
-	 * @return The UIManager for chaining.
-	 */
-	public UIManager clear() {
-		uiObjects.clear();
-		return this;
-	}
-	
 	public UIManager setGameContainer(GameContainer newContainer) {
 		gc = newContainer;
 		return this;

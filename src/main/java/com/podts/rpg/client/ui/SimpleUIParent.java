@@ -63,6 +63,11 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 		}
 	}*/
 	
+	public final SimpleUIParent clearChildren() {
+		children.clear();
+		return this;
+	}
+	
 	public boolean handleMouseClick(MouseClickType clickType, int x, int y) {
 		for(UIObject obj : getChildren()) {
 			if(obj.isIn(x, y)) {

@@ -5,6 +5,7 @@ import com.podts.rpg.client.network.Packet;
 public final class LoginResponsePacket extends Packet {
 	
 	public enum LoginResponseType {
+		WAIT(),
 		ACCEPT(),
 		DECLINE();
 	}

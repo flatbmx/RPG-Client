@@ -95,7 +95,7 @@ public class LoginState extends UIState {
 		loginWindow.addChild(responseText);
 		loginWindow.addChild(loginButton);
 		
-		UIManager.get().clear().addChild(loginWindow);
+		UIManager.get().clearChildren().addChild(loginWindow);
 		UIManager.get().setFocus(userNameBox);
 	}
 	

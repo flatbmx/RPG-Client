@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.model.Player;
+import com.podts.rpg.client.ui.UIManager;
 
 public class PlayingState extends UIState {
 
@@ -138,6 +139,7 @@ public class PlayingState extends UIState {
 
 	@Override
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		UIManager.get().clearChildren();
 		System.out.println("We are now playing as player " + Player.me.getID());
 	}
 
@@ -158,8 +160,6 @@ public class PlayingState extends UIState {
 
 	@Override
 	public void render(GameContainer app, StateBasedGame game, Graphics g) throws SlickException {
-		
-		
 		
 		super.render(app, game, g);
 	}

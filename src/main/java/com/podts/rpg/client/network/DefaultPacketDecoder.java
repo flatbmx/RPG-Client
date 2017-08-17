@@ -77,8 +77,9 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 				return new LoginResponsePacket(rType, response);
 			}
 			public void init() {
-				type[0] = LoginResponseType.ACCEPT;
-				type[1] = LoginResponseType.DECLINE;
+				type[0] = LoginResponseType.WAIT;
+				type[1] = LoginResponseType.ACCEPT;
+				type[2] = LoginResponseType.DECLINE;
 			}
 		});
 		
