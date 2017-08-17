@@ -110,6 +110,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 					Tile[][] tiles = new Tile[width][height];
 					for(int y=0; y<height; ++y) {
 						for(int x=0; x<height; ++x) {
+							System.out.println("Adding tile located at " + (x+topLeft.getX()) + ", " + (y+topLeft.getY()));
 							tiles[x][y] = new Tile(types[buf.readByte()], topLeft.move(x,y,0));
 						}
 					}

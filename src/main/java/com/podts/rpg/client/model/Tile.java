@@ -1,25 +1,34 @@
 package com.podts.rpg.client.model;
 
+import org.newdawn.slick.Color;
+
 public final class Tile {
 	
 	public enum TileType {
-		VOID(false),
-		GRASS(),
-		DIRT(),
-		WATER(false);
+		VOID(Color.black,false),
+		GRASS(Color.green),
+		DIRT(new Color(139,69,19)),
+		WATER(Color.blue,false);
 		
 		private final boolean traversable;
+		private final Color color;
 		
 		public boolean isTraversable() {
 			return traversable;
 		}
 		
-		private TileType() {
-			traversable = true;
+		public Color getColor() {
+			return color;
 		}
 		
-		private TileType(boolean travel) {
+		private TileType(Color color) {
+			traversable = true;
+			this.color = color;
+		}
+		
+		private TileType(Color color, boolean travel) {
 			traversable = travel;
+			this.color = color;
 		}
 		
 	}

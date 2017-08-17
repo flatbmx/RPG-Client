@@ -1,5 +1,7 @@
 package com.podts.rpg.client.model;
 
+import java.util.Collection;
+
 public abstract class World {
 	
 	private String worldname;
@@ -26,6 +28,8 @@ public abstract class World {
 		worldname = newname;
 		
 	}
+	
+	public abstract Collection<Tile> getTiles();
 	
 	public abstract Tile getTile(Location loc);
 	public abstract void addTile(Tile newTile);
