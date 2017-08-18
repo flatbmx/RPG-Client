@@ -9,10 +9,12 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.podts.rpg.client.model.EntityType;
 import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Tile;
 import com.podts.rpg.client.model.Tile.TileType;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
+import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket.LoginResponseType;
 import com.podts.rpg.client.network.packet.PlayerInitPacket;
@@ -50,7 +52,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
 				byte[] encryptedBytes = new byte[buf.readableBytes()];
 				buf.readBytes(encryptedBytes, 0, buf.readableBytes());
-
+				
 				try {
 					Cipher c = Cipher.getInstance("RSA");
 					c.init(Cipher.DECRYPT_MODE, s.getKeyPair().getPrivate());
@@ -110,7 +112,6 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 					Tile[][] tiles = new Tile[width][height];
 					for(int y=0; y<height; ++y) {
 						for(int x=0; x<height; ++x) {
-							System.out.println("Adding tile located at " + (x+topLeft.getX()) + ", " + (y+topLeft.getY()));
 							tiles[x][y] = new Tile(types[buf.readByte()], topLeft.move(x,y,0));
 						}
 					}
@@ -139,7 +140,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			}
 		});
 		
-		/*addConstructor(5, new PacketConstructor() {
+		addConstructor(PID_ENTITY, new PacketConstructor() {
 					private final EntityPacket.UpdateType[] updateTypes = new EntityPacket.UpdateType[EntityPacket.UpdateType.values().length];
 					private final EntityType[] entityTypes = new EntityType[EntityType.values().length];
 					
@@ -158,7 +159,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 						EntityPacket.UpdateType type = updateTypes[typeID];
 						int entityID = buf.readInt();
 						
-						double x, y;
+						int x, y;
 						EntityType eType = null;
 						
 						switch(type) {
@@ -168,15 +169,13 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 							int entityType = buf.readByte();
 							eType = entityTypes[entityType];
 						case UPDATE:
-							x = buf.readDouble();
-							y = buf.readDouble();
-							Location loc = new Location(x, y);
+							Location loc = readLocation(buf);
 							return new EntityPacket(type, entityID, eType, loc);
 						}
 						
 						return null;
 					}
-				});*/
+				});
 		
 	}
 	
@@ -212,6 +211,9 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 					out.add(p);
 				}
 					
+			} else {
+				System.out.println("WARNING ==== Recieved unknown Packet OPCODE = " + opCode + " with size " + (size-1));
+				buf.skipBytes(size-1);
 			}
 		}
 		
