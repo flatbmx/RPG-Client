@@ -1,9 +1,7 @@
 package com.podts.rpg.client.network;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -150,7 +148,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 						updateTypes[1] = EntityPacket.UpdateType.UPDATE;
 						updateTypes[2] = EntityPacket.UpdateType.DESTROY;
 						
-						entityTypes[0] = EntityType.SHIP_ESCAPEPOD;
+						entityTypes[0] = EntityType.PLAYER;
 					}
 					
 					@Override
@@ -159,7 +157,6 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 						EntityPacket.UpdateType type = updateTypes[typeID];
 						int entityID = buf.readInt();
 						
-						int x, y;
 						EntityType eType = null;
 						
 						switch(type) {
