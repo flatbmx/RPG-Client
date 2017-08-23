@@ -15,6 +15,9 @@ import com.podts.rpg.client.ui.UIManager;
 
 public final class PlayingState extends UIState {
 	
+	private double zoom = 1;
+	private boolean showGrid = true;
+	
 	private void drawWorld(GameContainer app, Graphics g) {
 		
 		World world = Client.get().getWorld();
@@ -23,7 +26,7 @@ public final class PlayingState extends UIState {
 		int cx = app.getWidth()/2;
 		int cy = app.getHeight()/2;
 		
-		final int tileSize = 16;
+		final int tileSize = (int) (32 * zoom);
 		
 		for(Tile tile : world.getTiles()) {
 			Location tLoc = tile.getLocation();
@@ -40,10 +43,15 @@ public final class PlayingState extends UIState {
 		g.setColor(Color.orange);
 		g.drawRect(cx - tileSize, cy - tileSize, tileSize, tileSize);
 		
+		if(showGrid) {
+			g.setColor(Color.gray);
+			
+		}
+		
 	}
 	
 	@Override
-	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+	public void enter(GameContainer app, StateBasedGame game) throws SlickException {
 		UIManager.get().clearChildren();
 		System.out.println("We are now playing as player " + Player.me.getID());
 	}
@@ -52,7 +60,7 @@ public final class PlayingState extends UIState {
 	public final int getID() {
 		return States.PLAYING.getID();
 	}
-
+	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		
@@ -70,7 +78,13 @@ public final class PlayingState extends UIState {
 	}
 	
 	@Override
+	public void mouseWheelMoved(int change) {
+		zoom += zoom*change/4500;
+	}
+	
+	@Override
 	public void update(GameContainer app, StateBasedGame game, int delta) throws SlickException {
+		
 		
 	}
 	
