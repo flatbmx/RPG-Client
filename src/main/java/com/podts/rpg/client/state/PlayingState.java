@@ -10,9 +10,12 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.podts.rpg.client.Client;
 import com.podts.rpg.client.model.Locatable;
 import com.podts.rpg.client.model.Location;
+import com.podts.rpg.client.model.Location.Direction;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.model.Tile;
 import com.podts.rpg.client.model.World;
+import com.podts.rpg.client.network.packet.EntityPacket;
+import com.podts.rpg.client.network.packet.EntityPacket.UpdateType;
 import com.podts.rpg.client.ui.UIManager;
 
 public final class PlayingState extends UIState {
@@ -126,7 +129,29 @@ public final class PlayingState extends UIState {
 		super.keyPressed(key, c);
 		if(key == Input.KEY_SPACE) {
 			showGrid = !showGrid;
+			return;
 		}
+		
+		if(key == Input.KEY_UP) {
+			movePlayer(Direction.UP);
+			return;
+		} else if(key == Input.KEY_DOWN) {
+			movePlayer(Direction.DOWN);
+			return;
+		} else if(key == Input.KEY_LEFT) {
+			movePlayer(Direction.LEFT);
+			return;
+		} else if(key == Input.KEY_RIGHT) {
+			movePlayer(Direction.RIGHT);
+			return;
+		}
+		
+	}
+	
+	private void movePlayer(Direction dir) {
+		Location newLocation = dir.MoveFromLocation(Player.me.getLocation());
+		EntityPacket packet = new EntityPacket(UpdateType.UPDATE, Player.me.getPlayerEntity().getID(), newLocation);
+		Client.get().getNetworkManager().getStream().sendPacket(packet);
 	}
 	
 }

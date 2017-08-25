@@ -2,6 +2,25 @@ package com.podts.rpg.client.model;
 
 public class Location implements Locatable {
 	
+	public enum Direction {
+		UP(0,-1),
+		DOWN(0,1),
+		LEFT(-1,0),
+		RIGHT(1,0);
+		
+		private final int dx, dy;
+		
+		public Location MoveFromLocation(Location origin) {
+			return origin.move(dx, dy, 0);
+		}
+		
+		private Direction(int dx, int dy) {
+			this.dx = dx;
+			this.dy = dy;
+		}
+		
+	}
+	
 	/**
 	 * Declares two double variables(x and y).
 	 */
@@ -24,6 +43,10 @@ public class Location implements Locatable {
 	
 	public int getY() {
 		return y;
+	}
+	
+	public int getZ() {
+		return z;
 	}
 	
 	public Location move(int dx, int dy, int dz) {

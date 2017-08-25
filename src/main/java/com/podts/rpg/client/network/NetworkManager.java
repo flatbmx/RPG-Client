@@ -1,6 +1,8 @@
 package com.podts.rpg.client.network;
 
+import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
+import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.LoginPacket;
 import com.podts.rpg.client.network.packet.RSAHandShakePacket;
 import com.podts.rpg.client.state.LoginState;
@@ -73,8 +75,15 @@ public class NetworkManager {
 								protected void channelRead0(ChannelHandlerContext c, AESReplyPacket p) throws Exception {
 									NettyStream stream = (NettyStream) c.channel();
 									stream.setSecretKey(p.getSecretKey());
-									c.pipeline().remove(this);
-									c.pipeline().addLast(new DefaultPacketHandler());
+									c.pipeline().remove(this)
+									.addLast("player entity handler", new SimpleChannelInboundHandler<EntityPacket>() {
+										@Override
+										protected void channelRead0(ChannelHandlerContext ctx, EntityPacket p) throws Exception {
+											ctx.pipeline().remove(this);
+											Player.handleFirstEntityPacket(p);
+										}
+									})
+									.addLast("packetHandler", new DefaultPacketHandler());
 									LoginState.responseText.setText("Secured.");
 									getStream().getActionSender().sendLoginRequest(LoginState.userNameBox.getText(), LoginState.passwordBox.getText());
 								}

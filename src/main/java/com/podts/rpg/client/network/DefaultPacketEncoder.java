@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
+import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.network.packet.*;
 
 import io.netty.buffer.ByteBuf;
@@ -109,6 +110,21 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 				writeEncryptedString(p.getMessage(), s, buf);
 			}
 		});
+		encoders.put(EntityPacket.class, new PacketEncoder() {
+			@Override
+			public void encode(Stream s, Packet op, ByteBuf buf) {
+				if(!(op instanceof EntityPacket)) throw new IllegalArgumentException();
+				EntityPacket p = (EntityPacket) op;
+				buf.writeByte(PID_MOVE);
+				writeLocation(p.getLocation(), buf);
+			}
+		});
+	}
+	
+	private static final void writeLocation(Location loc, ByteBuf buf) {
+		buf.writeInt(loc.getX());
+		buf.writeInt(loc.getY());
+		buf.writeInt(loc.getZ());
 	}
 	
 }

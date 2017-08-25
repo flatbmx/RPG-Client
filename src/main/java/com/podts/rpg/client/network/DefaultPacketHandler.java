@@ -9,6 +9,7 @@ import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.model.Tile;
 import com.podts.rpg.client.model.World;
+import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket.LoginResponseType;
 import com.podts.rpg.client.network.packet.PlayerInitPacket;
@@ -34,6 +35,16 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 				LoginState.responseText.setText(p.getResponse());
 				if(p.getType().equals(LoginResponseType.DECLINE)) {
 					Client.get().getNetworkManager().close();
+				}
+			}
+		});
+		
+		addHandler(EntityPacket.class, new BiConsumer<Packet,Stream>() {
+			@Override
+			public void accept(Packet op, Stream s) {
+				EntityPacket p = (EntityPacket) op;
+				if(Player.me.getID() == p.getEntityID()) {
+					Player.me.getPlayerEntity().setLocation(p.getLocation());
 				}
 			}
 		});
