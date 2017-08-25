@@ -1,6 +1,6 @@
 package com.podts.rpg.client.model;
 
-public class Location {
+public class Location implements Locatable {
 	
 	/**
 	 * Declares two double variables(x and y).
@@ -28,6 +28,10 @@ public class Location {
 	
 	public Location move(int dx, int dy, int dz) {
 		return new Location(x + dx, y + dy, z + dz);
+	}
+	
+	public final Location getLocation() {
+		return this;
 	}
 	
 	public Location() {

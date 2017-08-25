@@ -2,13 +2,13 @@ package com.podts.rpg.client.model;
 
 import org.newdawn.slick.Color;
 
-public final class Tile {
+public final class Tile implements Locatable {
 	
 	public enum TileType {
 		VOID(Color.black,false),
 		GRASS(Color.green),
 		DIRT(new Color(139,69,19)),
-		WATER(Color.blue,false);
+		WATER(new Color(125,125,255),false);
 		
 		private final boolean traversable;
 		private final Color color;
