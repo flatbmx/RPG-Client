@@ -16,6 +16,7 @@ import com.podts.rpg.client.network.packet.PlayerInitPacket;
 import com.podts.rpg.client.network.packet.StatePacket;
 import com.podts.rpg.client.network.packet.TilePacket;
 import com.podts.rpg.client.network.packet.TilePacket.TileSendType;
+import com.podts.rpg.client.network.packet.TilePacket.TileUpdateType;
 import com.podts.rpg.client.state.LoginState;
 import com.podts.rpg.client.state.States;
 
@@ -73,15 +74,24 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 			public void accept(Packet op, Stream s) {
 				TilePacket p = (TilePacket) op;
 				World world = Client.get().getWorld();
+				TileUpdateType updateType = p.getUpdateType();
 				if(TileSendType.GROUP.equals(p.getType())) {
 					Tile[][] tiles = p.getTiles();
 					for(int i=0; i<tiles.length; ++i) {
 						for(int j=0; j<tiles[i].length; ++j) {
-							world.addTile(tiles[i][j]);
+							if(TileUpdateType.CREATE.equals(updateType)) {
+								world.addTile(tiles[i][j]);
+							} else {
+								world.removeTile(tiles[i][j]);
+							}
+							
 						}
 					}
 				} else if(TileSendType.SINGLE.equals(p.getType())) {
-					world.addTile(p.getTile());
+					if(TileUpdateType.CREATE.equals(updateType))
+						world.addTile(p.getTile());
+					else
+						world.removeTile(p.getTile());
 				}
 			}
 		});

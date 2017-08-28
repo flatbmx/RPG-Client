@@ -6,6 +6,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.model.HashWorld;
+import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.state.LoginState;
@@ -42,6 +43,11 @@ public class Client extends StateBasedGame {
 	}
 
 	public static void main(String[] args) {
+		
+		Location l1 = new Location(5,5,5);
+		Location l2 = new Location(5,5,5);
+		
+		System.out.println(l1.hashCode() + " " + l2.hashCode());
 		
 		instance = new Client();
 		AppGameContainer app;

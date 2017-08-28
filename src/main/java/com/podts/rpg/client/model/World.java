@@ -33,6 +33,7 @@ public abstract class World {
 	
 	public abstract Tile getTile(Location loc);
 	public abstract void addTile(Tile newTile);
+	public abstract void removeTile(Tile tile);
 	
 	/**
 	 * Constructs a World object.

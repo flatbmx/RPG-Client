@@ -7,6 +7,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.podts.rpg.client.Client;
 import com.podts.rpg.client.model.EntityType;
 import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Tile;
@@ -19,6 +20,7 @@ import com.podts.rpg.client.network.packet.PlayerInitPacket;
 import com.podts.rpg.client.network.packet.StatePacket;
 import com.podts.rpg.client.network.packet.TilePacket;
 import com.podts.rpg.client.network.packet.TilePacket.TileSendType;
+import com.podts.rpg.client.network.packet.TilePacket.TileUpdateType;
 import com.podts.rpg.client.state.States;
 
 import io.netty.buffer.ByteBuf;
@@ -84,9 +86,13 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 		});
 		
 		addConstructor(PID_TILE, new PacketConstructor() {
+			private final TileUpdateType[] updateTypes = new TileUpdateType[TileUpdateType.values().length];
 			private final TileSendType[] sendTypes = new TileSendType[TileSendType.values().length];
 			private final TileType[] types = new TileType[TileType.values().length];
 			public void init() {
+				updateTypes[0] = TileUpdateType.CREATE;
+				updateTypes[1] = TileUpdateType.DESTROY;
+				
 				sendTypes[0] = TileSendType.GROUP;
 				sendTypes[1] = TileSendType.SINGLE;
 				
@@ -97,24 +103,45 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			}
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
+				TileUpdateType updateType = updateTypes[buf.readByte()];
 				TileSendType sendType = sendTypes[buf.readByte()];
-				if(sendType.equals(TileSendType.SINGLE)) {
-					TileType type = types[buf.readByte()];
-					Location location = readLocation(buf);
-					Tile tile = new Tile(type, location);
-					return new TilePacket(tile);
-				} else if(sendType.equals(TileSendType.GROUP)) {
-					Location topLeft = readLocation(buf);
-					int width = buf.readInt();
-					int height = buf.readInt();
-					Tile[][] tiles = new Tile[width][height];
-					for(int y=0; y<height; ++y) {
-						for(int x=0; x<height; ++x) {
-							tiles[x][y] = new Tile(types[buf.readByte()], topLeft.move(x,y,0));
+				if(TileUpdateType.CREATE.equals(updateType)) {
+					if(sendType.equals(TileSendType.SINGLE)) {
+						TileType type = types[buf.readByte()];
+						Location location = readLocation(buf);
+						Tile tile = new Tile(type, location);
+						return new TilePacket(tile, updateType);
+					} else if(sendType.equals(TileSendType.GROUP)) {
+						Location topLeft = readLocation(buf);
+						int width = buf.readInt();
+						int height = buf.readInt();
+						Tile[][] tiles = new Tile[width][height];
+						for(int y=0; y<height; ++y) {
+							for(int x=0; x<height; ++x) {
+								tiles[x][y] = new Tile(types[buf.readByte()], topLeft.move(x,y,0));
+							}
 						}
+						return new TilePacket(tiles, updateType);
 					}
-					return new TilePacket(tiles);
+				} else if(TileUpdateType.DESTROY.equals(updateType)) {
+					if(sendType.equals(TileSendType.SINGLE)) {
+						Location location = readLocation(buf);
+						Tile tile = Client.get().getWorld().getTile(location);
+						return new TilePacket(tile, updateType);
+					} else if(sendType.equals(TileSendType.GROUP)) {
+						Location topLeft = readLocation(buf);
+						int width = buf.readInt();
+						int height = buf.readInt();
+						Tile[][] tiles = new Tile[width][height];
+						for(int y=0; y<height; ++y) {
+							for(int x=0; x<height; ++x) {
+								tiles[x][y] = Client.get().getWorld().getTile(topLeft.move(x,y,0));
+							}
+						}
+						return new TilePacket(tiles, updateType);
+					}
 				}
+				
 				return null;
 			}
 		});

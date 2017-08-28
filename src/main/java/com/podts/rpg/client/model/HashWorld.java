@@ -27,5 +27,10 @@ public final class HashWorld extends World {
 	public HashWorld(String name) {
 		super(name);
 	}
+
+	@Override
+	public void removeTile(Tile tile) {
+		tiles.remove(tile.getLocation());
+	}
 	
 }

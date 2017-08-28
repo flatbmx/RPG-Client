@@ -49,6 +49,25 @@ public class Location implements Locatable {
 		return z;
 	}
 	
+	@Override
+	public String toString() {
+		return x + ", " + y + ", " + z;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 79254 * 37 + x*25 + y*78 + z*112;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Location) {
+			Location oL = (Location) o;
+			return x == oL.x && y == oL.y && z == oL.z;
+		}
+		return false;
+	}
+	
 	public Location move(int dx, int dy, int dz) {
 		return new Location(x + dx, y + dy, z + dz);
 	}
