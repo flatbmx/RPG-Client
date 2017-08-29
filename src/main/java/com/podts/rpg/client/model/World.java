@@ -35,6 +35,12 @@ public abstract class World {
 	public abstract void addTile(Tile newTile);
 	public abstract void removeTile(Tile tile);
 	
+	public abstract Collection<Entity> getEntities();
+	
+	public abstract Entity getEntity(int id);
+	public abstract void addEntity(Entity entity);
+	public abstract void removeEntity(Entity entity);
+	
 	/**
 	 * Constructs a World object.
 	 * @param name - The name of the world.

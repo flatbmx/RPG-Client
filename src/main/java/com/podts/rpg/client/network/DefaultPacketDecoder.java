@@ -99,7 +99,8 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 				types[0] = TileType.VOID;
 				types[1] = TileType.DIRT;
 				types[2] = TileType.GRASS;
-				types[3] = TileType.WATER;
+				types[3] = TileType.SAND;
+				types[4] = TileType.WATER;
 			}
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {

@@ -10,6 +10,9 @@ public final class HashWorld extends World {
 	private final Map<Location,Tile> tiles = new ConcurrentHashMap<>();
 	private final Collection<Tile> safeTiles = Collections.unmodifiableCollection(tiles.values());
 	
+	private final Map<Integer,Entity> entities = new ConcurrentHashMap<>();
+	private final Collection<Entity> safeEntities = Collections.unmodifiableCollection(entities.values());
+	
 	public Collection<Tile> getTiles() {
 		return safeTiles;
 	}
@@ -31,6 +34,26 @@ public final class HashWorld extends World {
 	@Override
 	public void removeTile(Tile tile) {
 		tiles.remove(tile.getLocation());
+	}
+	
+	@Override
+	public Collection<Entity> getEntities() {
+		return safeEntities;
+	}
+	
+	@Override
+	public Entity getEntity(int id) {
+		return entities.get(id);
+	}
+	
+	@Override
+	public void addEntity(Entity entity) {
+		entities.put(entity.getID(), entity);
+	}
+	
+	@Override
+	public void removeEntity(Entity entity) {
+		entities.remove(entity.getID());
 	}
 	
 }

@@ -34,7 +34,7 @@ public class Client extends StateBasedGame {
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
 		addState(new LoginState());
-		addState(new PlayingState());
+		addState(new PlayingState(gc));
 	}
 	
 	public Client() {

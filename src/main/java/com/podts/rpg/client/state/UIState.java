@@ -33,7 +33,7 @@ public abstract class UIState implements GameState {
 	}
 
 	@Override
-	public void mousePressed(int clickNumber, int x, int y) {
+	public final void mousePressed(int clickNumber, int x, int y) {
 		MouseClickType clickType = MouseClickType.getFromID(clickNumber);
 		if(!UIManager.get().handleMouseClick(clickType, x, y)) {
 			onMouseClick(clickType,x,y);

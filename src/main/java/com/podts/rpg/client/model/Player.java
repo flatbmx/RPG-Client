@@ -7,7 +7,7 @@ public class Player implements Locatable {
 	public static Player me;
 	
 	public static final void handleFirstEntityPacket(EntityPacket p) {
-		me.playerEntity = new Entity(p.getEntityID(), p.getLocation());
+		me.playerEntity = EntityFactory.createEntity(p.getEntityID(), "Me", EntityType.PLAYER, p.getLocation());
 	}
 	
 	private final int id;

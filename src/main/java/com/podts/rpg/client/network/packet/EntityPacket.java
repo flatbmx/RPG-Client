@@ -4,7 +4,7 @@ import com.podts.rpg.client.model.EntityType;
 import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.network.Packet;
 
-public class EntityPacket extends Packet {
+public final class EntityPacket extends Packet {
 	
 	public enum UpdateType {
 		CREATE(),
@@ -16,21 +16,26 @@ public class EntityPacket extends Packet {
 	private final int entityID;
 	private final EntityType entityType;
 	private final Location location;
+	private final String name;
 	
-	public final UpdateType getUpdateType() {
+	public UpdateType getUpdateType() {
 		return type;
 	}
 	
-	public final int getEntityID() {
+	public int getEntityID() {
 		return entityID;
 	}
 	
-	public final Location getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 	
-	public final EntityType getEntityType() {
+	public EntityType getEntityType() {
 		return entityType;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public EntityPacket(UpdateType type, int entityID) {
@@ -38,6 +43,7 @@ public class EntityPacket extends Packet {
 		this.entityID = entityID;
 		location = null;
 		entityType = null;
+		name = null;
 	}
 	
 	public EntityPacket(UpdateType type, int entityID, Location l) {
@@ -45,6 +51,7 @@ public class EntityPacket extends Packet {
 		this.entityID = entityID;
 		location = l;
 		entityType = null;
+		name = null;
 	}
 	
 	public EntityPacket(UpdateType type, int entityID, EntityType eType, Location l) {
@@ -52,6 +59,7 @@ public class EntityPacket extends Packet {
 		this.entityID = entityID;
 		location = l;
 		entityType = eType;
+		name = null;
 	}
 	
 }

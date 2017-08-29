@@ -8,6 +8,7 @@ public final class Tile implements Locatable {
 		VOID(Color.black,false),
 		GRASS(Color.green),
 		DIRT(new Color(139,69,19)),
+		SAND(Color.yellow),
 		WATER(new Color(125,125,255),false);
 		
 		private final boolean traversable;
