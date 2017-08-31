@@ -232,7 +232,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			if(packetConstructors[opCode] != null) {
 				Packet p = packetConstructors[opCode].construct(stream, size - 5, opCode, buf);
 				if(p != null) {
-					System.out.println("Recieved " + p.getClass().getSimpleName());
+					//System.out.println("Recieved " + p.getClass().getSimpleName());
 					out.add(p);
 				}
 					

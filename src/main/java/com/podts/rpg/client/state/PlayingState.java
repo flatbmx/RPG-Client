@@ -25,6 +25,9 @@ import com.podts.rpg.client.ui.UIObject.MouseClickType;
 
 public final class PlayingState extends UIState {
 	
+	private static final int DEFAULT_TILE_SIZE = 64;
+	private static final int WALK_DELAY = 75;
+	
 	private double zoom = 1;
 	private boolean showGrid = true;
 	
@@ -34,6 +37,8 @@ public final class PlayingState extends UIState {
 	
 	private final GameContainer app;
 	private final Graphics g;
+	
+	private long lastStep = 0;
 	
 	private Collection<TileSelection> tileSelections = new HashSet<>();
 	
@@ -122,6 +127,11 @@ public final class PlayingState extends UIState {
 		return new Location((int)Math.ceil(tx),(int)Math.ceil(ty), Player.me.getLocation().getZ());
 	}
 	
+	private void setZoom(double zoom) {
+		this.zoom = zoom;
+		tileSize = (float) (DEFAULT_TILE_SIZE * zoom);
+	}
+	
 	@Override
 	public void enter(GameContainer app, StateBasedGame game) throws SlickException {
 		UIManager.get().clearChildren();
@@ -129,7 +139,7 @@ public final class PlayingState extends UIState {
 		ay = app.getHeight();
 		cx = ax/2;
 		cy = ay/2;
-		tileSize = (float) (32 * zoom);
+		setZoom(1);
 		System.out.println("We are now playing as player " + Player.me.getID());
 	}
 
@@ -156,8 +166,7 @@ public final class PlayingState extends UIState {
 	
 	@Override
 	public void mouseWheelMoved(int change) {
-		zoom += zoom*change/4500;
-		tileSize = (float) (32 * zoom);
+		setZoom(zoom + zoom*change/4500);
 	}
 	
 	@Override
@@ -174,14 +183,30 @@ public final class PlayingState extends UIState {
 	public void onMouseClick(MouseClickType type, int x, int y) {
 		if(type.equals(MouseClickType.LEFT_CLICK)) {
 			
+		} else if(MouseClickType.MIDDLE_CLICK.equals(type)) {
+			setZoom(1);
 		}
 	}
 	
 	@Override
 	public void update(GameContainer app, StateBasedGame game, int delta) throws SlickException {
 		
+		if(canWalk()) {
+			if(app.getInput().isKeyDown(Input.KEY_UP)) {
+				movePlayer(Direction.UP);
+			} else if(app.getInput().isKeyDown(Input.KEY_DOWN)) {
+				movePlayer(Direction.DOWN);
+			} else if(app.getInput().isKeyDown(Input.KEY_LEFT)) {
+				movePlayer(Direction.LEFT);
+			} else if(app.getInput().isKeyDown(Input.KEY_RIGHT)) {
+				movePlayer(Direction.RIGHT);
+			}
+		}
 		
-		
+	}
+	
+	private boolean canWalk() {
+		return System.currentTimeMillis() > lastStep + WALK_DELAY;
 	}
 	
 	@Override
@@ -192,23 +217,22 @@ public final class PlayingState extends UIState {
 			return;
 		}
 		
-		if(key == Input.KEY_UP) {
-			movePlayer(Direction.UP);
-			return;
-		} else if(key == Input.KEY_DOWN) {
-			movePlayer(Direction.DOWN);
-			return;
-		} else if(key == Input.KEY_LEFT) {
-			movePlayer(Direction.LEFT);
-			return;
-		} else if(key == Input.KEY_RIGHT) {
-			movePlayer(Direction.RIGHT);
-			return;
+		if(canWalk()) {
+			if(key == Input.KEY_UP) {
+				movePlayer(Direction.UP);
+			} else if(key == Input.KEY_DOWN) {
+				movePlayer(Direction.DOWN);
+			} else if(key == Input.KEY_LEFT) {
+				movePlayer(Direction.LEFT);
+			} else if(key == Input.KEY_RIGHT) {
+				movePlayer(Direction.RIGHT);
+			}
 		}
 		
 	}
 	
 	private void movePlayer(Direction dir) {
+		lastStep = System.currentTimeMillis();
 		Location newLocation = dir.MoveFromLocation(Player.me.getLocation());
 		EntityPacket packet = new EntityPacket(UpdateType.UPDATE, Player.me.getPlayerEntity().getID(), newLocation);
 		Client.get().getNetworkManager().getStream().sendPacket(packet);
