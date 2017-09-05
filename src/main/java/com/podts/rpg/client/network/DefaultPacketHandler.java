@@ -47,24 +47,26 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 			@Override
 			public void accept(Packet op, Stream s) {
 				EntityPacket p = (EntityPacket) op;
-				switch(p.getUpdateType()) {
-				case UPDATE:
-					if(Player.me.getID() == p.getEntityID()) {
-						Player.me.getPlayerEntity().setLocation(p.getLocation());
-					} else {
+				synchronized(Client.get().getWorld()) {
+					switch(p.getUpdateType()) {
+					case UPDATE:
+						if(Player.me.getID() == p.getEntityID()) {
+							Player.me.getPlayerEntity().setLocation(p.getLocation());
+						} else {
+							Entity e = Client.get().getWorld().getEntity(p.getEntityID());
+							e.setLocation(p.getLocation());
+						}
+						break;
+					case CREATE:
+						Client.get().getWorld().addEntity(EntityFactory.createEntity(p.getEntityID(), p.getName(), p.getEntityType(), p.getLocation()));
+						break;
+					case DESTROY:
 						Entity e = Client.get().getWorld().getEntity(p.getEntityID());
-						e.setLocation(p.getLocation());
+						Client.get().getWorld().removeEntity(e);
+						break;
+					default:
+						break;
 					}
-					break;
-				case CREATE:
-					Client.get().getWorld().addEntity(EntityFactory.createEntity(p.getEntityID(), p.getName(), p.getEntityType(), p.getLocation()));
-					break;
-				case DESTROY:
-					Entity e = Client.get().getWorld().getEntity(p.getEntityID());
-					Client.get().getWorld().removeEntity(e);
-					break;
-				default:
-					break;
 				}
 			}
 		});

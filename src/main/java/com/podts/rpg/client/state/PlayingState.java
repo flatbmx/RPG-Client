@@ -46,9 +46,10 @@ public final class PlayingState extends UIState {
 		
 		World world = Client.get().getWorld();
 		
-		
-		for(Tile tile : world.getTiles()) {
-			drawTile(tile);
+		synchronized(world) {
+			for(Tile tile : world.getTiles()) {
+				drawTile(tile);
+			}
 		}
 		
 		if(showGrid) {
@@ -215,18 +216,6 @@ public final class PlayingState extends UIState {
 		if(key == Input.KEY_SPACE) {
 			showGrid = !showGrid;
 			return;
-		}
-		
-		if(canWalk()) {
-			if(key == Input.KEY_UP) {
-				movePlayer(Direction.UP);
-			} else if(key == Input.KEY_DOWN) {
-				movePlayer(Direction.DOWN);
-			} else if(key == Input.KEY_LEFT) {
-				movePlayer(Direction.LEFT);
-			} else if(key == Input.KEY_RIGHT) {
-				movePlayer(Direction.RIGHT);
-			}
 		}
 		
 	}
