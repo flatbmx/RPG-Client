@@ -36,7 +36,7 @@ public class Client extends StateBasedGame {
 		addState(new PlayingState(gc));
 	}
 	
-	public Client() {
+	Client() {
 		super("RPG-Client");
 		world = new HashWorld("Earth");
 	}
