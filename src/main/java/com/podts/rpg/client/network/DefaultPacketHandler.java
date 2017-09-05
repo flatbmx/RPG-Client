@@ -47,22 +47,23 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 			@Override
 			public void accept(Packet op, Stream s) {
 				EntityPacket p = (EntityPacket) op;
-				synchronized(Client.get().getWorld()) {
+				final World world = Client.get().getWorld();
+				synchronized(world) {
 					switch(p.getUpdateType()) {
 					case UPDATE:
 						if(Player.me.getID() == p.getEntityID()) {
 							Player.me.getPlayerEntity().setLocation(p.getLocation());
 						} else {
-							Entity e = Client.get().getWorld().getEntity(p.getEntityID());
+							Entity e = world.getEntity(p.getEntityID());
 							e.setLocation(p.getLocation());
 						}
 						break;
 					case CREATE:
-						Client.get().getWorld().addEntity(EntityFactory.createEntity(p.getEntityID(), p.getName(), p.getEntityType(), p.getLocation()));
+						world.addEntity(EntityFactory.createEntity(p.getEntityID(), p.getName(), p.getEntityType(), p.getLocation()));
 						break;
 					case DESTROY:
-						Entity e = Client.get().getWorld().getEntity(p.getEntityID());
-						Client.get().getWorld().removeEntity(e);
+						Entity e = world.getEntity(p.getEntityID());
+						world.removeEntity(e);
 						break;
 					default:
 						break;
