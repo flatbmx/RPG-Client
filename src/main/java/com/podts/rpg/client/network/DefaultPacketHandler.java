@@ -7,7 +7,6 @@ import java.util.function.BiConsumer;
 import com.podts.rpg.client.Client;
 import com.podts.rpg.client.model.Entity;
 import com.podts.rpg.client.model.EntityFactory;
-import com.podts.rpg.client.model.EntityType;
 import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.model.Tile;

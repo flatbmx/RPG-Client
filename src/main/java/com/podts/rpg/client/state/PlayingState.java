@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.Client;
+import com.podts.rpg.client.model.Entity;
 import com.podts.rpg.client.model.Locatable;
 import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Location.Direction;
@@ -50,6 +51,9 @@ public final class PlayingState extends UIState {
 			for(Tile tile : world.getTiles()) {
 				drawTile(tile);
 			}
+			for(Entity entity : world.getEntities()) {
+				drawEntity(entity);
+			}
 		}
 		
 		if(showGrid) {
@@ -57,10 +61,8 @@ public final class PlayingState extends UIState {
 		}
 		
 		
-		highlightTileLocation(Player.me.getLocation());
+		drawEntity(Player.me.getPlayerEntity());
 		highlightTileLocation(getHoveringTileLocation(),Color.green);
-		
-		
 		
 	}
 	
@@ -96,12 +98,29 @@ public final class PlayingState extends UIState {
 		g.drawRect(getLocationDisplayX(point), getLocationDisplayY(point), tileSize, tileSize);
 	}
 	
+	private void crossTileLocation(Location point) {
+		crossTileLocation(point, Color.orange);
+	}
+	
+	private void crossTileLocation(Location point, Color color) {
+		g.setLineWidth(1);
+		g.setColor(color);
+		float x = getLocationDisplayX(point);
+		float y = getLocationDisplayY(point);
+		g.drawLine(x, y, x + tileSize, y + tileSize);
+		g.drawLine(x + tileSize, y, x, y + tileSize);
+	}
+	
 	private void drawTile(Tile tile) {
 		g.setColor(tile.getType().getColor());
 		g.fillRect(getLocationDisplayX(tile),
 				getLocationDisplayY(tile),
 				tileSize,
 				tileSize);
+	}
+	
+	private void drawEntity(Entity entity) {
+		crossTileLocation(entity.getLocation(), Color.red);
 	}
 	
 	private float getLocationDisplayX(Locatable loc) {

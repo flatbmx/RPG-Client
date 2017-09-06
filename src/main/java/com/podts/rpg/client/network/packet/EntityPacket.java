@@ -38,6 +38,10 @@ public final class EntityPacket extends Packet {
 		return name;
 	}
 	
+	public String toString() {
+		return "EntityPacket - " + type + ", ID: " + entityID + ", Loc: " + location + ", Name: " + name;
+	}
+	
 	public EntityPacket(UpdateType type, int entityID) {
 		this.type = type;
 		this.entityID = entityID;
