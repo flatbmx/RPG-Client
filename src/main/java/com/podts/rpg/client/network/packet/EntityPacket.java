@@ -65,5 +65,14 @@ public final class EntityPacket extends Packet {
 		entityType = eType;
 		name = null;
 	}
+
+	public EntityPacket(UpdateType type, String name, int entityID, EntityType eType, Location loc) {
+		this.type = type;
+		this.name = name;
+		this.entityID = entityID;
+		location = loc;
+		entityType = eType;
+		name = null;
+	}
 	
 }

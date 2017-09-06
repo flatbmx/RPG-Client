@@ -121,6 +121,7 @@ public final class PlayingState extends UIState {
 	
 	private void drawEntity(Entity entity) {
 		crossTileLocation(entity.getLocation(), Color.red);
+		g.drawString(entity.getName(), getLocationDisplayX(entity), getLocationDisplayY(entity));
 	}
 	
 	private float getLocationDisplayX(Locatable loc) {

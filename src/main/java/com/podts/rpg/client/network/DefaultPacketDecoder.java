@@ -186,15 +186,19 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 						int entityID = buf.readInt();
 						
 						EntityType eType = null;
+						Location loc = null;
 						
 						switch(type) {
 						case DESTROY:
 							return new EntityPacket(type, entityID);
 						case CREATE:
+							String name = readString(buf);
 							int entityType = buf.readByte();
 							eType = entityTypes[entityType];
+							loc = readLocation(buf);
+							return new EntityPacket(type, name, entityID, eType, loc);
 						case UPDATE:
-							Location loc = readLocation(buf);
+							loc = readLocation(buf);
 							return new EntityPacket(type, entityID, eType, loc);
 						}
 						
@@ -232,7 +236,6 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			if(packetConstructors[opCode] != null) {
 				Packet p = packetConstructors[opCode].construct(stream, size - 5, opCode, buf);
 				if(p != null) {
-					//System.out.println("Recieved " + p.getClass().getSimpleName());
 					out.add(p);
 				}
 					
