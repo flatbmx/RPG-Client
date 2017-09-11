@@ -23,6 +23,7 @@ import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.EntityPacket.UpdateType;
 import com.podts.rpg.client.ui.UIManager;
 import com.podts.rpg.client.ui.UIObject.MouseClickType;
+import com.podts.rpg.client.ui.UIWindow;
 
 public final class PlayingState extends UIState {
 	
@@ -42,6 +43,8 @@ public final class PlayingState extends UIState {
 	private long lastStep = 0;
 	
 	private Collection<TileSelection> tileSelections = new HashSet<>();
+	
+	private UIWindow chatWindow;
 	
 	private void drawWorld() {
 		
@@ -211,6 +214,16 @@ public final class PlayingState extends UIState {
 	
 	@Override
 	public void update(GameContainer app, StateBasedGame game, int delta) throws SlickException {
+		
+		Input input = app.getInput();
+		
+		if(input.isKeyPressed(Input.KEY_ENTER)) {
+			if(chatWindow == null) {
+				
+			} else {
+				//Send chat message.
+			}
+		}
 		
 		if(canWalk()) {
 			if(app.getInput().isKeyDown(Input.KEY_UP)) {
