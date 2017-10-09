@@ -3,7 +3,6 @@ package com.podts.rpg.client.network;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
 import com.podts.rpg.client.network.packet.EntityPacket;
-import com.podts.rpg.client.network.packet.LoginPacket;
 import com.podts.rpg.client.network.packet.RSAHandShakePacket;
 import com.podts.rpg.client.state.LoginState;
 
