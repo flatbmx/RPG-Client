@@ -1,6 +1,7 @@
 package com.podts.rpg.client.network;
 
 import java.io.UnsupportedEncodingException;
+import java.security.PrivateKey;
 import java.util.List;
 
 import javax.crypto.Cipher;
@@ -13,9 +14,11 @@ import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Tile;
 import com.podts.rpg.client.model.Tile.TileType;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
+import com.podts.rpg.client.network.packet.AcknowledgePacket;
 import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket;
 import com.podts.rpg.client.network.packet.LoginResponsePacket.LoginResponseType;
+import com.podts.rpg.client.network.packet.MessagePacket;
 import com.podts.rpg.client.network.packet.PlayerInitPacket;
 import com.podts.rpg.client.network.packet.StatePacket;
 import com.podts.rpg.client.network.packet.TilePacket;
@@ -24,6 +27,7 @@ import com.podts.rpg.client.network.packet.TilePacket.TileUpdateType;
 import com.podts.rpg.client.state.States;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
@@ -43,6 +47,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 	private static final int PID_STATE = 4;
 	private static final int PID_ENTITY = 5;
 	private static final int PID_MESSAGE = 6;
+	private static final int PID_ACK = 7;
 	
 	static {
 		packetConstructors = new PacketConstructor[128];
@@ -70,6 +75,13 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			}
 		});
 		
+		addConstructor(PID_ACK, new PacketConstructor() {
+			@Override
+			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
+				return new AcknowledgePacket(buf.readInt());
+			}
+		});
+		
 		addConstructor(PID_LOGINRESPONSE, new PacketConstructor() {
 			private final LoginResponseType[] type = new LoginResponseType[LoginResponseType.values().length];
 			@Override
@@ -82,6 +94,13 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 				type[0] = LoginResponseType.WAIT;
 				type[1] = LoginResponseType.ACCEPT;
 				type[2] = LoginResponseType.DECLINE;
+			}
+		});
+		
+		addConstructor(PID_MESSAGE, new PacketConstructor() {
+			@Override
+			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
+				return new MessagePacket(readEncryptedString(s, buf));
 			}
 		});
 		
@@ -215,6 +234,47 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 		try {
 			return new String(arr, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private static String readEncryptedString(Stream stream, ByteBuf buf) {
+		int encryptedLength = buf.readInt();
+		byte[] encryptedBytes = new byte[encryptedLength];
+		buf.readBytes(encryptedBytes);
+		ByteBuf realBuf = Unpooled.buffer();
+		realBuf.writeBytes(decrypt(encryptedBytes, stream.getSecretKey()));
+		realBuf.resetReaderIndex();
+		int size = realBuf.readInt();
+		String result = null;
+		byte[] realChars = new byte[size];
+		realBuf.readBytes(realChars);
+		try {
+			result = new String(realChars, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public static byte[] decrypt(byte[] bytes, SecretKey secretKey) {
+		try {
+			Cipher cipher = Cipher.getInstance("AES");
+			cipher.init(Cipher.DECRYPT_MODE, secretKey);
+			return cipher.doFinal(bytes);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static byte[] decrypt(byte[] bytes, PrivateKey publicKey) {
+		try {
+			Cipher cipher = Cipher.getInstance("RSA");
+			cipher.init(Cipher.DECRYPT_MODE, publicKey);
+			return cipher.doFinal(bytes);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

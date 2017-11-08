@@ -2,9 +2,12 @@ package com.podts.rpg.client.network.packet;
 
 import com.podts.rpg.client.model.EntityType;
 import com.podts.rpg.client.model.Location;
-import com.podts.rpg.client.network.Packet;
 
-public final class EntityPacket extends Packet {
+public final class EntityPacket extends AcknowledgementPacket {
+	
+	private static final int getDefaultACK() {
+		return -1;
+	}
 	
 	public enum UpdateType {
 		CREATE(),
@@ -38,35 +41,29 @@ public final class EntityPacket extends Packet {
 		return name;
 	}
 	
+	@Override
 	public String toString() {
 		return "EntityPacket - " + type + ", ID: " + entityID + ", Loc: " + location + ", Name: " + name;
 	}
 	
 	public EntityPacket(UpdateType type, int entityID) {
-		this.type = type;
-		this.entityID = entityID;
-		location = null;
-		entityType = null;
-		name = null;
+		this(type, null, entityID, null, null, getDefaultACK());
 	}
 	
 	public EntityPacket(UpdateType type, int entityID, Location l) {
-		this.type = type;
-		this.entityID = entityID;
-		location = l;
-		entityType = null;
-		name = null;
+		this(type, null, entityID, null, l, getDefaultACK());
 	}
 	
 	public EntityPacket(UpdateType type, int entityID, EntityType eType, Location l) {
-		this.type = type;
-		this.entityID = entityID;
-		location = l;
-		entityType = eType;
-		name = null;
+		this(type, null, entityID, eType, l, getDefaultACK());
 	}
-
+	
 	public EntityPacket(UpdateType type, String name, int entityID, EntityType eType, Location loc) {
+		this(type, name, entityID, eType, loc, getDefaultACK());
+	}
+	
+	public EntityPacket(UpdateType type, String name, int entityID, EntityType eType, Location loc, int ack) {
+		super(ack);
 		this.type = type;
 		this.name = name;
 		this.entityID = entityID;
