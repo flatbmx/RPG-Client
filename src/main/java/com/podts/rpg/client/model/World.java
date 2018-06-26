@@ -41,6 +41,8 @@ public abstract class World {
 	public abstract void addEntity(Entity entity);
 	public abstract void removeEntity(Entity entity);
 	
+	public abstract void clear();
+	
 	/**
 	 * Constructs a World object.
 	 * @param name - The name of the world.

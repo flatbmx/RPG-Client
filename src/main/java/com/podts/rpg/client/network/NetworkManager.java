@@ -1,13 +1,16 @@
 package com.podts.rpg.client.network;
 
+import com.podts.rpg.client.Client;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
 import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.RSAHandShakePacket;
 import com.podts.rpg.client.state.LoginState;
+import com.podts.rpg.client.state.States;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
@@ -41,6 +44,17 @@ public class NetworkManager {
 		return stream;
 	}
 	
+	public static void logout() {
+		logout(false);
+	}
+	
+	public static void logout(boolean serverSide) {
+		Client.get().getNetworkManager().close();
+		Client.get().enterState(States.LOGIN.getID());
+		if(serverSide)
+			LoginState.responseText.setText("Disconnected!");
+	}
+	
 	public ChannelFuture connect(String host, int port) {
 		
 		this.host = host;
@@ -54,11 +68,18 @@ public class NetworkManager {
 			b.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				protected void initChannel(SocketChannel channel) throws Exception {
-					channel.pipeline().addLast("frameEncoder", new DefaultFrameEncoder())
+					channel.closeFuture().addListener(new ChannelFutureListener() {
+					    @Override
+					    public void operationComplete(ChannelFuture future) throws Exception {
+					    	NettyStream s = (NettyStream) future.channel();
+					        NetworkManager.logout(s.serverSideClose);
+					    }
+					});
+					channel.pipeline().addLast(new ChannelWatcher())
+					.addLast("frameEncoder", new DefaultFrameEncoder())
 					.addLast("packetEncoder", new DefaultPacketEncoder())
 					.addLast("frameDecoder", new DefaultFrameDecoder())
-					.addLast("packetDecoder", new DefaultPacketDecoder())
-					.addLast(new ChannelWatcher());
+					.addLast("packetDecoder", new DefaultPacketDecoder());
 				}
 			});
 			
@@ -106,13 +127,14 @@ public class NetworkManager {
 		
 		@Override
 	    public void close(ChannelHandlerContext ctx, ChannelPromise promise) {
-	        
+	        NetworkManager.this.close();
 	    }
 		
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 			if(cause.getMessage().equals("An existing connection was forcibly closed by the remote host")) {
-				LoginState.responseText.setText("Disconnected!");
+				NettyStream s = (NettyStream) ctx.channel();
+				s.serverSideClose = true;
 			} else {
 				cause.printStackTrace();
 			}
@@ -142,6 +164,7 @@ public class NetworkManager {
 	}
 
 	public void close() {
+		getStream().close();
 		workerGroup.shutdownGracefully();
 	}
 

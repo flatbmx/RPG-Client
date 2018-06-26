@@ -40,7 +40,14 @@ public class LoginState extends UIState {
 	public static UISecretTextbox passwordBox;
 	
 	@Override
+	public void enter(GameContainer gc, StateBasedGame g) throws SlickException {
+		init(gc, g);
+	}
+	
+	@Override
 	public void init(GameContainer gc, StateBasedGame g) throws SlickException {
+		
+		Client.get().getWorld().clear();
 		
 		UIManager.get().setGameContainer(gc);
 		
@@ -60,7 +67,7 @@ public class LoginState extends UIState {
 		UITextBox addressBox = new UITextBox(120,20);
 		addressBox.setText("localhost");
 		UITextBox portBox = new UITextBox(120,20);
-		portBox.setText("1999");
+		portBox.setText(String.valueOf(Client.DEFAULT_PORT));
 		
 		table.addChild(new UIText("Address:", 75, 20), 0, 0);
 		table.addChild(addressBox, 1, 0);

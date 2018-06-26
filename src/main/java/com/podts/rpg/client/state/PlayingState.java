@@ -217,6 +217,11 @@ public final class PlayingState extends UIState {
 		
 		Input input = app.getInput();
 		
+		if(input.isKeyPressed(Input.KEY_ESCAPE)) {
+			Client.get().getNetworkManager().logout();
+			return;
+		}
+		
 		if(input.isKeyPressed(Input.KEY_ENTER)) {
 			if(chatWindow == null) {
 				

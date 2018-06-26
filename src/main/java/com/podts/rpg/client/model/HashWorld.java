@@ -56,4 +56,10 @@ public final class HashWorld extends World {
 		entities.remove(entity.getID());
 	}
 	
+	@Override
+	public void clear() {
+		tiles.clear();
+		entities.clear();
+	}
+	
 }

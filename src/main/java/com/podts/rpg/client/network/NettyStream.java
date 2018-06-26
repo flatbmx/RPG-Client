@@ -14,6 +14,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 public class NettyStream extends NioSocketChannel implements Stream {
 	
 	private static KeyPairGenerator keyPairGenerator;
+	protected boolean serverSideClose = false;
 	
 	static {
 		try {

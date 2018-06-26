@@ -13,6 +13,7 @@ import com.podts.rpg.client.state.PlayingState;
 
 public class Client extends StateBasedGame {
 	
+	public static final int DEFAULT_PORT = 7000;
 	private static Client instance;
 	
 	public static final Client get() {
@@ -34,6 +35,10 @@ public class Client extends StateBasedGame {
 	public void initStatesList(GameContainer gc) throws SlickException {
 		addState(new LoginState());
 		addState(new PlayingState(gc));
+	}
+	
+	public void changeState(int id) {
+		enterState(id);
 	}
 	
 	Client() {
