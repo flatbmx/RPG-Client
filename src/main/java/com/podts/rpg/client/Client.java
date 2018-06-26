@@ -35,6 +35,7 @@ public class Client extends StateBasedGame {
 	public void initStatesList(GameContainer gc) throws SlickException {
 		addState(new LoginState());
 		addState(new PlayingState(gc));
+		System.out.println("");
 	}
 	
 	public void changeState(int id) {
