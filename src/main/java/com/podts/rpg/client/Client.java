@@ -5,6 +5,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.podts.rpg.client.chat.ChatManager;
 import com.podts.rpg.client.model.HashWorld;
 import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.NetworkManager;
@@ -22,6 +23,7 @@ public class Client extends StateBasedGame {
 	
 	private final World world;
 	private final NetworkManager networkManager = new NetworkManager();
+	private final ChatManager chatManager = new ChatManager();
 	
 	public final World getWorld() {
 		return world;
@@ -29,6 +31,10 @@ public class Client extends StateBasedGame {
 	
 	public final NetworkManager getNetworkManager() {
 		return networkManager;
+	}
+	
+	public final ChatManager getChatManager() {
+		return chatManager;
 	}
 	
 	@Override

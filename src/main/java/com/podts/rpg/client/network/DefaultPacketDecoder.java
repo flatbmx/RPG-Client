@@ -49,6 +49,8 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 	private static final int PID_MESSAGE = 6;
 	private static final int PID_ACK = 7;
 	
+	
+	
 	static {
 		packetConstructors = new PacketConstructor[128];
 
@@ -108,6 +110,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 			private final TileUpdateType[] updateTypes = new TileUpdateType[TileUpdateType.values().length];
 			private final TileSendType[] sendTypes = new TileSendType[TileSendType.values().length];
 			private final TileType[] types = new TileType[TileType.values().length];
+			
 			public void init() {
 				updateTypes[0] = TileUpdateType.CREATE;
 				updateTypes[1] = TileUpdateType.DESTROY;
@@ -121,6 +124,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 				types[3] = TileType.SAND;
 				types[4] = TileType.WATER;
 			}
+			
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
 				TileUpdateType updateType = updateTypes[buf.readByte()];
@@ -280,7 +284,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 		return null;
 	}
 	
-	private static Location readLocation(ByteBuf buf) {
+	private static final Location readLocation(ByteBuf buf) {
 		return new Location(buf.readInt(), buf.readInt(), buf.readInt());
 	}
 	
