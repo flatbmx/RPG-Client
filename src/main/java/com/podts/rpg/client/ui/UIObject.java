@@ -72,7 +72,7 @@ public abstract class UIObject {
 		this.centerX = centerX;
 		return this;
 	}
-
+	
 	public int getX() {
 		return x;
 	}
@@ -103,7 +103,11 @@ public abstract class UIObject {
 	public int getHeight() {
 		return height;
 	}
-
+	
+	public final int getBottomY() {
+		return getX() + getHeight();
+	}
+	
 	public UIObject setHeight(int height) {
 		this.height = height;
 		return this;
@@ -187,8 +191,9 @@ public abstract class UIObject {
 		return BorderColor;
 	}
 
-	public void setBorderColor(Color borderColor) {
+	public UIObject setBorderColor(Color borderColor) {
 		BorderColor = borderColor;
+		return this;
 	}
 
 	public Color getBackgroundColor() {

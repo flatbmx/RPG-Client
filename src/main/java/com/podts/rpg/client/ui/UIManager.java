@@ -7,7 +7,6 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.TrueTypeFont;
 
 /**
@@ -103,7 +102,12 @@ public final class UIManager extends SimpleUIParent {
 	
 	public UIManager setGameContainer(GameContainer newContainer) {
 		gc = newContainer;
+		GraphicsHelper.instance = new GraphicsHelper(newContainer);
 		return this;
+	}
+	
+	public final void clear() {
+		clearChildren();
 	}
 	
 	@Override
@@ -121,16 +125,19 @@ public final class UIManager extends SimpleUIParent {
 		return new UILocation(getWidth()*c.x,getHeight()*c.y);
 	}
 
-
 	@Override
 	public void render(GameContainer gc, Graphics g) {
-		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
 		for(UIObject obj : UIManager.get().getChildren()) {
+			g.setClip(obj.getX(), obj.getY(), obj.getWidth(), obj.getHeight());
 			obj.render(gc, g);
 		}
 		g.setClip(0, 0, gc.getWidth(), gc.getHeight());
 		g.setColor(Color.white);
 		g.drawString("mx " + gc.getInput().getMouseX() + ", my " + gc.getInput().getMouseY(), 0, 0);
+	}
+	
+	UIManager() {
+		
 	}
 	
 }

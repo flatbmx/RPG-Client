@@ -1,6 +1,10 @@
 package com.podts.rpg.client.ui;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 
 import com.podts.rpg.client.ui.UIObject.Corner;
 
@@ -13,6 +17,10 @@ public interface UIParent {
 	 * @return The list of all the children.
 	 */
 	public List<UIObject> getChildren();
+	
+	public default Stream<UIObject> children() {
+		return getChildren().stream();
+	}
 	
 	public int getWidth();
 	public int getHeight();
@@ -36,5 +44,11 @@ public interface UIParent {
 	 * @return The UIParent for chaining.
 	 */
 	public UIParent removeChild(UIObject o);
+	
+	public default UIParent drawChildren(GameContainer gc, Graphics g) {
+		children()
+		.forEach(child -> child.render(gc, g));
+		return this;
+	}
 	
 }

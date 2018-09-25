@@ -7,12 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.Client;
-import com.podts.rpg.client.model.Player;
-import com.podts.rpg.client.network.NettyStream;
 import com.podts.rpg.client.network.NetworkManager;
-import com.podts.rpg.client.network.packet.AESReplyPacket;
-import com.podts.rpg.client.network.packet.LoginPacket;
-import com.podts.rpg.client.network.packet.RSAHandShakePacket;
 import com.podts.rpg.client.ui.UIButton;
 import com.podts.rpg.client.ui.UIManager;
 import com.podts.rpg.client.ui.UISecretTextbox;
@@ -20,12 +15,6 @@ import com.podts.rpg.client.ui.UITable;
 import com.podts.rpg.client.ui.UIText;
 import com.podts.rpg.client.ui.UITextBox;
 import com.podts.rpg.client.ui.UIWindow;
-
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 
 /**
  * A state for when a user has not logged in.

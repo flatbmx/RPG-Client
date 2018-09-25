@@ -25,6 +25,29 @@ public class UIWindow extends SimpleUIParent {
 		this.showTitle = showTitle;
 	}
 	
+	@Override
+	public void render(GameContainer gc, Graphics g) {
+		UILocation topLeft = getCorner(Corner.TOP_LEFT);
+		
+		int lineWidth = 10;
+		
+		//Draw the whole background.
+		g.setClip(topLeft.getX(), topLeft.getY(), getWidth()+1, getHeight()+1);
+		g.setColor(getBackgroundColor());
+		g.fillRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
+		
+		//Draw the border
+		g.setLineWidth(lineWidth);
+		g.setColor(getBorderColor());
+		g.drawRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
+		
+		g.setClip(topLeft.getX() + lineWidth/2, topLeft.getY() + lineWidth/2, getWidth() - lineWidth/2, getHeight() - lineWidth/2);
+		
+		for(UIObject child : getChildren()) {
+			child.render(gc, g);
+		}
+	}
+	
 	public UIWindow(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		setBackgroundColor(UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR);
@@ -40,29 +63,8 @@ public class UIWindow extends SimpleUIParent {
 
 	public UIWindow(int width, int height) {
 		super(width, height);
-	}
-
-	@Override
-	public void render(GameContainer gc, Graphics g) {
-		UILocation topLeft = getCorner(Corner.TOP_LEFT);
-		
-		int lineWidth = 10;
-		
-		//Draw the whole background.
-		g.setClip(topLeft.getX(), topLeft.getY(), getWidth()+1, getHeight()+1);
-		g.setColor(UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR);
-		g.fillRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
-		
-		//Draw the border
-		g.setLineWidth(lineWidth);
-		g.setColor(UIManager.DEFAULT_WINDOW_BORDER_COLOR);
-		g.drawRect(topLeft.getX(), topLeft.getY(), getWidth(), getHeight());
-		
-		g.setClip(topLeft.getX() + lineWidth/2, topLeft.getY() + lineWidth/2, getWidth() - lineWidth/2, getHeight() - lineWidth/2);
-		
-		for(UIObject child : getChildren()) {
-			child.render(gc, g);
-		}
+		setBackgroundColor(UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR);
+		setBorderColor(UIManager.DEFAULT_WINDOW_BORDER_COLOR);
 	}
 	
 }

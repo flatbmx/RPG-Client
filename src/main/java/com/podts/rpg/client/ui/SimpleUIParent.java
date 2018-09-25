@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.podts.rpg.client.ui.UIObject.MouseClickType;
-
 public abstract class SimpleUIParent extends UIObject implements UIParent {
 	
 	public SimpleUIParent(int x, int y, int width, int height) {
@@ -38,7 +36,8 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 	}
 	
 	public SimpleUIParent removeChild(UIObject o) {
-		if(!children.remove(o)) return this;
+		if(!children.remove(o))
+			return this;
 		o.parent = null;
 		if(o.autoSizing) o.autoSizing = false;
 		compact();

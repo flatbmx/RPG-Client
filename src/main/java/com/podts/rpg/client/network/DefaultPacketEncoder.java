@@ -91,6 +91,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 				buf.writeBytes(p.getKeyPair().getPublic().getEncoded());
 			}
 		});
+		
 		encoders.put(LoginPacket.class, new PacketEncoder() {
 			@Override
 			public void encode(Stream s, Packet op, ByteBuf buf) {
@@ -101,6 +102,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 				writeEncryptedString(p.getPassword(), s, buf);
 			}
 		});
+		
 		encoders.put(MessagePacket.class, new PacketEncoder() {
 			@Override
 			public void encode(Stream s, Packet op, ByteBuf buf) {
@@ -110,6 +112,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 				writeEncryptedString(p.getMessage(), s, buf);
 			}
 		});
+		
 		encoders.put(EntityPacket.class, new PacketEncoder() {
 			@Override
 			public void encode(Stream s, Packet op, ByteBuf buf) {

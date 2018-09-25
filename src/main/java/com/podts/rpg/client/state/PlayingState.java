@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.Client;
+import com.podts.rpg.client.chat.ChatMessage;
 import com.podts.rpg.client.model.Entity;
 import com.podts.rpg.client.model.Locatable;
 import com.podts.rpg.client.model.Location;
@@ -19,10 +20,13 @@ import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.model.Tile;
 import com.podts.rpg.client.model.TileSelection;
 import com.podts.rpg.client.model.World;
+import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.EntityPacket.UpdateType;
+import com.podts.rpg.client.ui.GraphicsHelper;
 import com.podts.rpg.client.ui.UIManager;
 import com.podts.rpg.client.ui.UIObject.MouseClickType;
+import com.podts.rpg.client.ui.UITextBox;
 import com.podts.rpg.client.ui.UIWindow;
 
 public final class PlayingState extends UIState {
@@ -35,7 +39,7 @@ public final class PlayingState extends UIState {
 	
 	private float tileSize;
 	
-	private int ax, ay, cx, cy;
+	private int ax, ay, centerX, centerY;
 	
 	private final GameContainer app;
 	private final Graphics g;
@@ -44,7 +48,103 @@ public final class PlayingState extends UIState {
 	
 	private Collection<TileSelection> tileSelections = new HashSet<>();
 	
-	private UIWindow chatWindow;
+	private ChatWindow chatWindow;
+	
+	private final GameContainer getGameContainer() {
+		return app;
+	}
+	
+	private final Graphics getGraphics() {
+		return g;
+	}
+	
+	private final ChatWindow getChatWindow() {
+		return chatWindow;
+	}
+	
+	private float getTileSize() {
+		return tileSize;
+	}
+	
+	private class ChatWindow extends UIWindow {
+		
+		private class ChattingBox extends UITextBox {
+			
+			private ChatWindow getChatWindow() {
+				return ChatWindow.this;
+			}
+			
+			ChattingBox() {
+				setX(0)
+				.setY(getChatWindow().getBottomY() - 12)	//12px above bottom of window, bottom row of lines of text.
+				.setBorderColor(Color.transparent)
+				.setBackgroundColor(Color.transparent);
+			}
+			
+		}
+		
+		private final ChattingBox chatBox = new ChattingBox();
+		
+		final boolean isChatting() {
+			return !getChildren().isEmpty();
+		}
+		
+		final ChatWindow setChatting(boolean isChatting) {
+			if(isChatting) {
+				if(!isChatting())
+					addChild(chatBox);
+			} else {
+				removeChild(chatBox);
+			}
+			return this;
+		}
+		
+		@Override
+		public void render(GameContainer app, Graphics g) {
+			//Draws chat messages from bottom to top.
+			int y = getBottomY();
+			
+			//Move up 12 for chat input.
+			//Give horizontal line 1 px of padding
+			y -= 13;
+			GraphicsHelper.get().drawHorizontalLine(y);
+			--y;
+			
+			//Draw all messages
+			synchronized(Client.get().getChatManager()) {
+				for(ChatMessage message : Client.get().getChatManager().getMessages()) {
+					y -= 12;
+					g.setColor(message.getChatColor());
+					g.drawString(message.getText(), 0, y);
+				}
+			}
+			
+			//Draws the currentlyChatting window if need be
+			drawChildren(app, g);
+			
+		}
+		
+		private Color createAlphaBackgroundColor() {
+			return new Color(UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getRed()
+					, UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getGreen()
+					, UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getBlue()
+					, 200);
+		}
+		
+		private Color createAlphaBorderColor() {
+			return new Color(UIManager.DEFAULT_WINDOW_BORDER_COLOR.getRed()
+					, UIManager.DEFAULT_WINDOW_BORDER_COLOR.getGreen()
+					, UIManager.DEFAULT_WINDOW_BORDER_COLOR.getBlue()
+					, 200);
+		}
+		
+		ChatWindow() {
+			super(getGameContainer().getWidth(), 200);
+			setBackgroundColor(createAlphaBackgroundColor());
+			setBorderColor(createAlphaBorderColor());
+		}
+		
+	}
 	
 	private void drawWorld() {
 		
@@ -65,7 +165,11 @@ public final class PlayingState extends UIState {
 		
 		
 		drawEntity(Player.me.getPlayerEntity());
-		highlightTileLocation(getHoveringTileLocation(),Color.green);
+		
+		highlightTileLocation(getHoveringTileLocation(), Color.green);
+		
+		//Draw UI windows including possibly chat window.
+		UIManager.get().render(getGameContainer(), getGraphics());
 		
 	}
 	
@@ -98,7 +202,7 @@ public final class PlayingState extends UIState {
 	private void highlightTileLocation(Location point, Color color) {
 		g.setLineWidth(1);
 		g.setColor(color);
-		g.drawRect(getLocationDisplayX(point), getLocationDisplayY(point), tileSize, tileSize);
+		g.drawRect(getLocationDisplayX(point), getLocationDisplayY(point), getTileSize(), getTileSize());
 	}
 	
 	private void crossTileLocation(Location point) {
@@ -110,16 +214,16 @@ public final class PlayingState extends UIState {
 		g.setColor(color);
 		float x = getLocationDisplayX(point);
 		float y = getLocationDisplayY(point);
-		g.drawLine(x, y, x + tileSize, y + tileSize);
-		g.drawLine(x + tileSize, y, x, y + tileSize);
+		g.drawLine(x, y, x + getTileSize(), y + getTileSize());
+		g.drawLine(x + getTileSize(), y, x, y + getTileSize());
 	}
 	
 	private void drawTile(Tile tile) {
 		g.setColor(tile.getType().getColor());
 		g.fillRect(getLocationDisplayX(tile),
 				getLocationDisplayY(tile),
-				tileSize,
-				tileSize);
+				getTileSize(),
+				getTileSize());
 	}
 	
 	private void drawEntity(Entity entity) {
@@ -128,22 +232,22 @@ public final class PlayingState extends UIState {
 	}
 	
 	private float getLocationDisplayX(Locatable loc) {
-		return (loc.getLocation().getX() - Player.me.getLocation().getX()) * tileSize + cx - tileSize/2;
+		return (loc.getLocation().getX() - Player.me.getLocation().getX()) * getTileSize() + centerX - getTileSize()/2;
 	}
 	
 	private float getLocationDisplayY(Locatable loc) {
-		return (loc.getLocation().getY() - Player.me.getLocation().getY()) * tileSize + cy - tileSize/2;
+		return (loc.getLocation().getY() - Player.me.getLocation().getY()) * getTileSize() + centerY - getTileSize()/2;
 	}
 	
 	private Location getHoveringTileLocation() {
 		int mx = app.getInput().getMouseX();
 		int my = app.getInput().getMouseY();
 		
-		float tx = mx - cx - tileSize/2;
-		float ty = my - cy - tileSize/2;
+		float tx = mx - centerX - getTileSize()/2;
+		float ty = my - centerY - getTileSize()/2;
 		
-		tx /= tileSize;
-		ty /= tileSize;
+		tx /= getTileSize();
+		ty /= getTileSize();
 		
 		tx += Player.me.getLocation().getX();
 		ty += Player.me.getLocation().getY();
@@ -155,17 +259,6 @@ public final class PlayingState extends UIState {
 		this.zoom = zoom;
 		tileSize = (float) (DEFAULT_TILE_SIZE * zoom);
 	}
-	
-	@Override
-	public void enter(GameContainer app, StateBasedGame game) throws SlickException {
-		UIManager.get().clearChildren();
-		ax = app.getWidth();
-		ay = app.getHeight();
-		cx = ax/2;
-		cy = ay/2;
-		setZoom(1);
-		System.out.println("We are now playing as player " + Player.me.getID());
-	}
 
 	@Override
 	public final int getID() {
@@ -176,10 +269,23 @@ public final class PlayingState extends UIState {
 	public void init(GameContainer app, StateBasedGame game) throws SlickException {
 		
 	}
-
+	
+	@Override
+	public void enter(GameContainer app, StateBasedGame game) throws SlickException {
+		UIManager.get().clear();
+		ax = app.getWidth();
+		ay = app.getHeight();
+		centerX = ax/2;
+		centerY = ay/2;
+		setZoom(1);
+		System.out.println("We are now playing as player " + Player.me.getID());
+		
+		UIManager.get().addChild(getChatWindow());
+	}
+	
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		
+		UIManager.get().clear();
 	}
 
 	@Override
@@ -218,12 +324,13 @@ public final class PlayingState extends UIState {
 		Input input = app.getInput();
 		
 		if(input.isKeyPressed(Input.KEY_ESCAPE)) {
-			Client.get().getNetworkManager().logout();
+			NetworkManager.logout();
 			return;
 		}
 		
+		//TODO is this handled by UIManager with focused textbox?
 		if(input.isKeyPressed(Input.KEY_ENTER)) {
-			if(chatWindow == null) {
+			if(getChatWindow().isChatting()) {
 				
 			} else {
 				//Send chat message.
@@ -250,12 +357,11 @@ public final class PlayingState extends UIState {
 	
 	@Override
 	public void keyPressed(int key, char c) {
-		super.keyPressed(key, c);
 		if(key == Input.KEY_SPACE) {
 			showGrid = !showGrid;
 			return;
 		}
-		
+		super.keyPressed(key, c);
 	}
 	
 	private void movePlayer(Direction dir) {
@@ -268,6 +374,7 @@ public final class PlayingState extends UIState {
 	public PlayingState(GameContainer app) {
 		this.app = app;
 		this.g = app.getGraphics();
+		chatWindow = new ChatWindow();
 	}
 	
 }

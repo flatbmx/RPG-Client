@@ -4,8 +4,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
-import com.podts.rpg.client.ui.UIObject.MouseClickType;
-
 public class UITextBox extends UIObject{
 	
 	public static final String focusCharater = "|";

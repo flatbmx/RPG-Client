@@ -20,7 +20,7 @@ public class ChatManager {
 	}
 	
 	public Stream<ChatMessage> messages() {
-		return chatMessages.stream();
+		return getMessages().stream();
 	}
 	
 	public ChatManager addMessage(ChatMessage message) {
