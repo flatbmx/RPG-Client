@@ -27,6 +27,7 @@ public class UIWindow extends SimpleUIParent {
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) {
+		g.setClip(0, 0, 1000, 1000);
 		UILocation topLeft = getCorner(Corner.TOP_LEFT);
 		
 		int lineWidth = 10;

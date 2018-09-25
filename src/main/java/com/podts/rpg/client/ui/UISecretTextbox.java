@@ -23,12 +23,13 @@ public class UISecretTextbox extends UITextBox {
 	}
 	
 	@Override
-	public void setText(String text) {
+	public UISecretTextbox setText(String text) {
 		super.setText(text);
 		String newDisplay = "";
 		for(int i=0; i<text.length(); ++i)
 			newDisplay += "*";
 		displayText = newDisplay;
+		return this;
 	}
 	
 	public UISecretTextbox(int x, int y, int width, int height) {

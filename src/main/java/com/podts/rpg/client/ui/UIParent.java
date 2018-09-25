@@ -51,4 +51,6 @@ public interface UIParent {
 		return this;
 	}
 	
+	public UIParent setCompactable(boolean compact);
+	
 }

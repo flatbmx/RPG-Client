@@ -55,8 +55,14 @@ public class UITextBox extends UIObject{
 		return text;
 	}
 
-	public void setText(String text) {
+	public UITextBox setText(String text) {
 		this.text = text;
+		return this;
 	}
-
+	
+	public UITextBox clear() {
+		setText("");
+		return this;
+	}
+	
 }

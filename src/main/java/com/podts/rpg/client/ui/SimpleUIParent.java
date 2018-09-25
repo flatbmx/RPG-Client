@@ -19,8 +19,15 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 		super();
 	}
 	
+	private boolean compactable = true;
 	private final LinkedList<UIObject> children = new LinkedList<UIObject>();
 	private final List<UIObject> safeChildren = Collections.unmodifiableList(children);
+	
+	@Override
+	public UIParent setCompactable(boolean compact) {
+		compactable = compact;
+		return this;
+	}
 	
 	@Override
 	public List<UIObject> getChildren() {
@@ -80,6 +87,8 @@ public abstract class SimpleUIParent extends UIObject implements UIParent {
 	}
 	
 	protected void compact() {
+		if(!compactable)
+			return;
 		if(children.isEmpty()) return;
 		int totalHeight = getHeight();
 		Iterator<UIObject> it = children.iterator();

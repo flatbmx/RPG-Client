@@ -23,6 +23,7 @@ import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.EntityPacket.UpdateType;
+import com.podts.rpg.client.network.packet.MessagePacket;
 import com.podts.rpg.client.ui.GraphicsHelper;
 import com.podts.rpg.client.ui.UIManager;
 import com.podts.rpg.client.ui.UIObject.MouseClickType;
@@ -75,10 +76,12 @@ public final class PlayingState extends UIState {
 			}
 			
 			ChattingBox() {
+				setWidth(getChatWindow().getWidth());
+				setHeight(12);
 				setX(0)
-				.setY(getChatWindow().getBottomY() - 12)	//12px above bottom of window, bottom row of lines of text.
-				.setBorderColor(Color.transparent)
-				.setBackgroundColor(Color.transparent);
+				.setY(getChatWindow().getHeight() - 12)	//12px above bottom of window, bottom row of lines of text.
+				//.setBorderColor(Color.transparent)
+				.setBackgroundColor(Color.red);
 			}
 			
 		}
@@ -91,10 +94,18 @@ public final class PlayingState extends UIState {
 		
 		final ChatWindow setChatting(boolean isChatting) {
 			if(isChatting) {
-				if(!isChatting())
+				if(!isChatting()) {
 					addChild(chatBox);
+					UIManager.get().setFocus(chatBox);
+				}
 			} else {
+				if(!chatBox.getText().isEmpty()) {
+					//Send to server
+					Client.get().getNetworkManager().sendPacket(new MessagePacket(chatBox.getText()));
+					chatBox.clear();
+				}
 				removeChild(chatBox);
+				UIManager.get().setFocus(null);
 			}
 			return this;
 		}
@@ -121,27 +132,29 @@ public final class PlayingState extends UIState {
 			
 			//Draws the currentlyChatting window if need be
 			drawChildren(app, g);
-			
+			super.render(app, g);
 		}
 		
 		private Color createAlphaBackgroundColor() {
 			return new Color(UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getRed()
 					, UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getGreen()
 					, UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getBlue()
-					, 200);
+					, 0);
 		}
 		
 		private Color createAlphaBorderColor() {
 			return new Color(UIManager.DEFAULT_WINDOW_BORDER_COLOR.getRed()
 					, UIManager.DEFAULT_WINDOW_BORDER_COLOR.getGreen()
 					, UIManager.DEFAULT_WINDOW_BORDER_COLOR.getBlue()
-					, 200);
+					, 0);
 		}
 		
 		ChatWindow() {
 			super(getGameContainer().getWidth(), 200);
+			setY(getGameContainer().getHeight() - 200);
 			setBackgroundColor(createAlphaBackgroundColor());
 			setBorderColor(createAlphaBorderColor());
+			setCompactable(false);
 		}
 		
 	}
@@ -272,6 +285,7 @@ public final class PlayingState extends UIState {
 	
 	@Override
 	public void enter(GameContainer app, StateBasedGame game) throws SlickException {
+		UIManager.get().setCompactable(false);
 		UIManager.get().clear();
 		ax = app.getWidth();
 		ay = app.getHeight();
@@ -280,12 +294,14 @@ public final class PlayingState extends UIState {
 		setZoom(1);
 		System.out.println("We are now playing as player " + Player.me.getID());
 		
+		chatWindow = new ChatWindow();
 		UIManager.get().addChild(getChatWindow());
 	}
 	
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		UIManager.get().clear();
+		UIManager.get().setCompactable(true);
 	}
 
 	@Override
@@ -330,11 +346,7 @@ public final class PlayingState extends UIState {
 		
 		//TODO is this handled by UIManager with focused textbox?
 		if(input.isKeyPressed(Input.KEY_ENTER)) {
-			if(getChatWindow().isChatting()) {
-				
-			} else {
-				//Send chat message.
-			}
+			getChatWindow().setChatting(!getChatWindow().isChatting());
 		}
 		
 		if(canWalk()) {
@@ -374,7 +386,6 @@ public final class PlayingState extends UIState {
 	public PlayingState(GameContainer app) {
 		this.app = app;
 		this.g = app.getGraphics();
-		chatWindow = new ChatWindow();
 	}
 	
 }

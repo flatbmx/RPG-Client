@@ -44,6 +44,11 @@ public class NetworkManager {
 		return stream;
 	}
 	
+	public final NetworkManager sendPacket(Packet p) {
+		getStream().sendPacket(p);
+		return this;
+	}
+	
 	public static void logout() {
 		logout(false);
 	}

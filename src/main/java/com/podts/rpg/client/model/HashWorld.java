@@ -33,7 +33,8 @@ public final class HashWorld extends World {
 
 	@Override
 	public void removeTile(Tile tile) {
-		tiles.remove(tile.getLocation());
+		if(tile != null)
+			tiles.remove(tile.getLocation());
 	}
 	
 	@Override
@@ -53,7 +54,8 @@ public final class HashWorld extends World {
 	
 	@Override
 	public void removeEntity(Entity entity) {
-		entities.remove(entity.getID());
+		if(entity != null)
+			entities.remove(entity.getID());
 	}
 	
 	@Override

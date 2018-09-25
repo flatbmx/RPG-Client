@@ -105,7 +105,7 @@ public abstract class UIObject {
 	}
 	
 	public final int getBottomY() {
-		return getX() + getHeight();
+		return getY() + getHeight();
 	}
 	
 	public UIObject setHeight(int height) {
