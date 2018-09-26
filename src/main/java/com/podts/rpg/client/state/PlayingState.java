@@ -2,6 +2,7 @@ package com.podts.rpg.client.state;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.ListIterator;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -78,18 +79,29 @@ public final class PlayingState extends UIState {
 			
 			ChattingBox() {
 				setWidth(getChatWindow().getWidth())
-				.setHeight(14)
+				.setHeight(15)
 				.setX(0)
-				.setY(getChatWindow().getHeight() - 14)	//14px above bottom of window, bottom row of lines of text.
+				.setY(getChatWindow().getHeight() - 15)	//14px above bottom of window, bottom row of lines of text.
 				.setBackgroundColor(Color.red);
 			}
 			
 		}
 		
 		private final ChattingBox chatBox = new ChattingBox();
+		private ListIterator<String> entryIterator;
 		
 		final boolean isChatting() {
 			return !getChildren().isEmpty();
+		}
+		
+		final ChatWindow setChatText(String text) {
+			chatBox.setText(text);
+			return this;
+		}
+		
+		final ChatWindow toggleChatting() {
+			setChatting(!isChatting());
+			return this;
 		}
 		
 		final ChatWindow setChatting(boolean isChatting) {
@@ -101,7 +113,10 @@ public final class PlayingState extends UIState {
 			} else {
 				if(!chatBox.getText().isEmpty()) {
 					//Send to server
-					Client.get().getNetworkManager().sendPacket(new MessagePacket(chatBox.getText()));
+					String entry = chatBox.getText();
+					Client.get().getNetworkManager().sendPacket(new MessagePacket(entry));
+					Client.get().getChatManager().addEntry(entry);
+					entryIterator = null;
 					chatBox.clear();
 				}
 				removeChild(chatBox);
@@ -117,7 +132,7 @@ public final class PlayingState extends UIState {
 			
 			//Move up 12 for chat input.
 			//Give horizontal line 1 px of padding
-			y -= 15;
+			y -= 16;
 			GraphicsHelper.get().drawHorizontalLine(y);
 			y -= 4;
 			
@@ -125,7 +140,7 @@ public final class PlayingState extends UIState {
 			synchronized(Client.get().getChatManager()) {
 				for(ChatMessage message : Client.get().getChatManager().getMessages()) {
 					y -= 13;
-					g.setColor(Color.yellow);
+					g.setColor(Color.red);
 					g.drawString(message.getText(), 0, y);
 				}
 			}
@@ -351,19 +366,18 @@ public final class PlayingState extends UIState {
 			return;
 		}
 		
-		//TODO is this handled by UIManager with focused textbox?
 		if(input.isKeyPressed(Input.KEY_ENTER)) {
-			getChatWindow().setChatting(!getChatWindow().isChatting());
+			getChatWindow().toggleChatting();
 		}
 		
-		if(canWalk()) {
-			if(app.getInput().isKeyDown(Input.KEY_UP)) {
+		if(!isChatting()) {
+			if(input.isKeyDown(Input.KEY_UP)) {
 				movePlayer(Direction.UP);
-			} else if(app.getInput().isKeyDown(Input.KEY_DOWN)) {
+			} else if(input.isKeyDown(Input.KEY_DOWN)) {
 				movePlayer(Direction.DOWN);
-			} else if(app.getInput().isKeyDown(Input.KEY_LEFT)) {
+			} else if(input.isKeyDown(Input.KEY_LEFT)) {
 				movePlayer(Direction.LEFT);
-			} else if(app.getInput().isKeyDown(Input.KEY_RIGHT)) {
+			} else if(input.isKeyDown(Input.KEY_RIGHT)) {
 				movePlayer(Direction.RIGHT);
 			}
 		}
@@ -379,6 +393,30 @@ public final class PlayingState extends UIState {
 		if(key == Input.KEY_SPACE) {
 			if(!isChatting()) {
 				showGrid = !showGrid;
+				return;
+			}
+		}
+		if(isChatting()) {
+			ChatWindow w = getChatWindow();
+			if(key == Input.KEY_UP) {
+				if(w.entryIterator == null) {
+					w.entryIterator = Client.get().getChatManager().getRecentEntriesIterator();
+				}
+				if(w.entryIterator.hasNext()) {
+					w.setChatText(w.entryIterator.next());
+				}
+				return;
+			}
+			if(key == Input.KEY_DOWN) {
+				if(w.entryIterator != null) {
+					if(w.entryIterator.hasPrevious()) {
+						w.setChatText(w.entryIterator.previous());
+					} else {
+						w.entryIterator = null;
+						w.chatBox.clear();
+					}
+				}
+				return;
 			}
 		}
 		if(c == '/') {
@@ -390,6 +428,8 @@ public final class PlayingState extends UIState {
 	}
 	
 	private void movePlayer(Direction dir) {
+		if(!canWalk())
+			return;
 		lastStep = System.currentTimeMillis();
 		Location newLocation = dir.MoveFromLocation(Player.me.getLocation());
 		EntityPacket packet = new EntityPacket(UpdateType.UPDATE, Player.me.getPlayerEntity().getID(), newLocation);

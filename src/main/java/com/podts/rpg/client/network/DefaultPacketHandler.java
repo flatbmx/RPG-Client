@@ -83,7 +83,6 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 		addHandler(MessagePacket.class, (op, stream) -> {
 			MessagePacket p = (MessagePacket) op;
 			ChatMessage message = new ChatMessage(p.getMessage());
-			System.out.println("Got message " + message);
 			synchronized(Client.get().getChatManager()) {
 				Client.get().getChatManager().addMessage(message);
 			}

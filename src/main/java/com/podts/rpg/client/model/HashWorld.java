@@ -27,9 +27,7 @@ public final class HashWorld extends World {
 
 	@Override
 	public void addTile(Tile newTile) {
-		int oldSize = tiles.size();
 		tiles.put(newTile.getLocation(), newTile);
-		Client.getLogger().info("Added " + newTile + " from size " + oldSize + " to " + tiles.size());
 	}
 	
 	@Override

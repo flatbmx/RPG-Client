@@ -53,7 +53,7 @@ public class LoginState extends UIState {
 			protected void handleTextInput(String character) {
 				//Do not allow spaces in username.
 				if(" ".equals(character)) return;
-				handleTextInput(character);
+				super.handleTextInput(character);
 			}
 		};
 		passwordBox = new UISecretTextbox(120, 20);
