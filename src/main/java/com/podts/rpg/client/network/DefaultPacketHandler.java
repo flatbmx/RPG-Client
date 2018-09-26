@@ -93,23 +93,29 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 			TilePacket p = (TilePacket) op;
 			World world = Client.get().getWorld();
 			TileUpdateType updateType = p.getUpdateType();
-			if(TileSendType.GROUP.equals(p.getType())) {
-				Tile[][] tiles = p.getTiles();
-				for(int i=0; i<tiles.length; ++i) {
-					for(int j=0; j<tiles[i].length; ++j) {
-						if(TileUpdateType.CREATE.equals(updateType)) {
-							world.addTile(tiles[i][j]);
-						} else {
-							world.removeTile(tiles[i][j]);
+			synchronized(world) {
+				if(TileSendType.GROUP.equals(p.getType())) {
+					Tile[][] tiles = p.getTiles();
+					for(int i=0; i<tiles.length; ++i) {
+						for(int j=0; j<tiles[i].length; ++j) {
+							if(TileUpdateType.CREATE.equals(updateType)) {
+								world.addTile(tiles[i][j]);
+							} else {
+								world.removeTile(tiles[i][j]);
+							}
 						}
-						
+					}
+				} else if(TileSendType.SINGLE.equals(p.getType())) {
+					if(TileUpdateType.CREATE.equals(updateType)) {
+						world.addTile(p.getTile());
+					} else {
+						if(p.getTile() != null) {
+							world.removeTile(p.getTile());
+						} else {
+							Client.getLogger().warning("Recieved destroy Tile but there is no tile located at " + p.getLocation());
+						}
 					}
 				}
-			} else if(TileSendType.SINGLE.equals(p.getType())) {
-				if(TileUpdateType.CREATE.equals(updateType))
-					world.addTile(p.getTile());
-				else
-					world.removeTile(p.getTile());
 			}
 		});
 		

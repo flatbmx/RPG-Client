@@ -2,17 +2,20 @@ package com.podts.rpg.client.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import com.podts.rpg.client.Client;
 
 public final class HashWorld extends World {
 	
-	private final Map<Location,Tile> tiles = new ConcurrentHashMap<>();
+	private final Map<Location,Tile> tiles = new HashMap<>();
 	private final Collection<Tile> safeTiles = Collections.unmodifiableCollection(tiles.values());
 	
-	private final Map<Integer,Entity> entities = new ConcurrentHashMap<>();
+	private final Map<Integer,Entity> entities = new HashMap<>();
 	private final Collection<Entity> safeEntities = Collections.unmodifiableCollection(entities.values());
 	
+	@Override
 	public Collection<Tile> getTiles() {
 		return safeTiles;
 	}
@@ -24,13 +27,11 @@ public final class HashWorld extends World {
 
 	@Override
 	public void addTile(Tile newTile) {
+		int oldSize = tiles.size();
 		tiles.put(newTile.getLocation(), newTile);
+		Client.getLogger().info("Added " + newTile + " from size " + oldSize + " to " + tiles.size());
 	}
 	
-	public HashWorld(String name) {
-		super(name);
-	}
-
 	@Override
 	public void removeTile(Tile tile) {
 		if(tile != null)
@@ -60,8 +61,13 @@ public final class HashWorld extends World {
 	
 	@Override
 	public void clear() {
+		Client.getLogger().info("Clearing world");
 		tiles.clear();
 		entities.clear();
+	}
+	
+	public HashWorld(String name) {
+		super(name);
 	}
 	
 }

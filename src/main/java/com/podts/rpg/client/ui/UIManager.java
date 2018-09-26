@@ -9,6 +9,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.TrueTypeFont;
 
+import com.podts.rpg.client.Client;
+
 /**
  * A class that manages the entire Games user interface.
  *
@@ -27,7 +29,7 @@ public final class UIManager extends SimpleUIParent {
 	private GameContainer gc;
 	private UIObject focus;
 	
-	public static final TrueTypeFont DEFAULT_FONT = new TrueTypeFont(new Font("Courier",Font.BOLD,12), true);
+	public static final TrueTypeFont DEFAULT_FONT = new TrueTypeFont(new Font("Lucida Console", Font.BOLD, 12), true);
 	public static final Color DEFAULT_FONT_COLOR = new Color(255,255,255);
 	
 	public static final Color DEFAULT_WINDOW_BORDER_COLOR = new Color(100,100,100);
@@ -42,15 +44,21 @@ public final class UIManager extends SimpleUIParent {
 	}
 	
 	public UIManager setFocus(UIObject o) {
-		if(focus != null) focus.focused = false;
+		if(focus != null)
+			focus.focused = false;
+		
 		focus = o;
-		if(o != null) o.focused = true;
+		
+		if(o != null)
+			o.focused = true;
 		return this;
 	}
 	
 	public String getFocusCharacter(UIObject o) {
-		if(!o.focused) return "";
-		if(System.currentTimeMillis() % 750 < 375) return UITextBox.focusCharater;
+		if(!o.focused)
+			return "";
+		if(System.currentTimeMillis() % 750 < 375)
+			return UITextBox.DEFAULT_FOCUS_CHARACTER;
 		return "";
 	}
 	
@@ -95,7 +103,7 @@ public final class UIManager extends SimpleUIParent {
 			UIObject o = UIManager.get().getFocus();
 			if(o instanceof UITextBox) {
 				UITextBox box = (UITextBox) o;
-				box.handleTextInput("" + c);
+				box.handleTextInput(String.valueOf(c));
 			}
 		}
 	}
@@ -103,6 +111,7 @@ public final class UIManager extends SimpleUIParent {
 	public UIManager setGameContainer(GameContainer newContainer) {
 		gc = newContainer;
 		GraphicsHelper.instance = new GraphicsHelper(newContainer);
+		gc.getGraphics().setFont(DEFAULT_FONT);
 		return this;
 	}
 	

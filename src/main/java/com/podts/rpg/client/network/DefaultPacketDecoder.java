@@ -134,7 +134,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 						TileType type = types[buf.readByte()];
 						Location location = readLocation(buf);
 						Tile tile = new Tile(type, location);
-						return new TilePacket(tile, updateType);
+						return new TilePacket(tile, location, updateType);
 					} else if(sendType.equals(TileSendType.GROUP)) {
 						Location topLeft = readLocation(buf);
 						int width = buf.readInt();
@@ -151,7 +151,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 					if(sendType.equals(TileSendType.SINGLE)) {
 						Location location = readLocation(buf);
 						Tile tile = Client.get().getWorld().getTile(location);
-						return new TilePacket(tile, updateType);
+						return new TilePacket(tile, location, updateType);
 					} else if(sendType.equals(TileSendType.GROUP)) {
 						Location topLeft = readLocation(buf);
 						int width = buf.readInt();

@@ -31,6 +31,11 @@ public class ChatManager {
 		return this;
 	}
 	
+	public ChatManager clear() {
+		chatMessages.clear();
+		return this;
+	}
+	
 	public ChatManager(int maxSize) {
 		this.maxSize = maxSize;
 	}

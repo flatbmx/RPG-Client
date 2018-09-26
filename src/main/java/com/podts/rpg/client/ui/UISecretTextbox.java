@@ -11,10 +11,12 @@ public class UISecretTextbox extends UITextBox {
 	}
 	
 	@Override
-	protected void handleBackSpace() {
-		if(displayText.length() == 0) return;
-		super.handleBackSpace();
-		displayText = displayText.substring(0, displayText.length()-1);
+	protected UISecretTextbox handleBackSpace() {
+		if(displayText.length() > 0) {
+			super.handleBackSpace();
+			displayText = displayText.substring(0, displayText.length()-1);
+		}
+		return this;
 	}
 	
 	@Override

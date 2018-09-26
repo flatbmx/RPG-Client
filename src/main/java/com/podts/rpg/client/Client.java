@@ -1,5 +1,7 @@
 package com.podts.rpg.client;
 
+import java.util.logging.Logger;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
@@ -16,9 +18,14 @@ public class Client extends StateBasedGame {
 	
 	public static final int DEFAULT_PORT = 7000;
 	private static Client instance;
+	private static Logger logger = new GameLogger("Client");
 	
 	public static final Client get() {
 		return instance;
+	}
+	
+	public static final Logger getLogger() {
+		return logger;
 	}
 	
 	private final World world;
@@ -41,7 +48,6 @@ public class Client extends StateBasedGame {
 	public void initStatesList(GameContainer gc) throws SlickException {
 		addState(new LoginState());
 		addState(new PlayingState(gc));
-		System.out.println("");
 	}
 	
 	public void changeState(int id) {

@@ -169,7 +169,9 @@ public class NetworkManager {
 	}
 
 	public void close() {
-		getStream().close();
+		NettyStream stream = getStream();
+		if(stream != null)
+			getStream().close();
 		workerGroup.shutdownGracefully();
 	}
 

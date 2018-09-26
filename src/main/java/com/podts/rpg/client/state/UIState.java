@@ -79,7 +79,7 @@ public abstract class UIState implements GameState {
 	public void keyPressed(int key, char c) {
 		if(key == 14) {
 			UIManager.get().handleKeyPress(key);
-		} else if(Character.isLetterOrDigit(c)) {
+		} else if(!Character.toString(c).trim().isEmpty() || c == ' ') {
 			UIManager.get().handleTextInput(c);
 		}
 	}

@@ -36,8 +36,6 @@ public class LoginState extends UIState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame g) throws SlickException {
 		
-		Client.get().getWorld().clear();
-		
 		UIManager.get().setGameContainer(gc);
 		
 		UIWindow loginWindow = new UIWindow(500, 300);
@@ -50,7 +48,14 @@ public class LoginState extends UIState {
 		table.setCenterX(true)
 		.setCenterY(true);
 		
-		userNameBox = new UITextBox(120,20);
+		userNameBox = new UITextBox(120,20) {
+			@Override
+			protected void handleTextInput(String character) {
+				//Do not allow spaces in username.
+				if(" ".equals(character)) return;
+				handleTextInput(character);
+			}
+		};
 		passwordBox = new UISecretTextbox(120, 20);
 		
 		UITextBox addressBox = new UITextBox(120,20);
@@ -77,6 +82,8 @@ public class LoginState extends UIState {
 				int port = Integer.parseInt(portBox.getText());
 				
 				responseText.setText("Connecting");
+				Client.get().getWorld().clear();
+				Client.get().getChatManager().clear();
 				
 				NetworkManager netManager = Client.get().getNetworkManager();
 				

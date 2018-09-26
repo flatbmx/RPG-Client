@@ -1,5 +1,7 @@
 package com.podts.rpg.client.model;
 
+import java.util.Objects;
+
 public class Location implements Locatable {
 	
 	public enum Direction {
@@ -51,19 +53,23 @@ public class Location implements Locatable {
 	
 	@Override
 	public String toString() {
-		return x + ", " + y + ", " + z;
+		return "[" + x + ", " + y + ", " + z + "]";
 	}
 	
 	@Override
 	public int hashCode() {
-		return 79254 * 37 + x*25 + y*78 + z*112;
+		return Objects.hash(getX(), getY(), getZ());
 	}
 	
 	@Override
 	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(this == o) return true;
 		if(o instanceof Location) {
 			Location oL = (Location) o;
-			return x == oL.x && y == oL.y && z == oL.z;
+			return x == oL.x
+					&& y == oL.y
+					&& z == oL.z;
 		}
 		return false;
 	}

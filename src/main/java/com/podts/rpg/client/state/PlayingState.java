@@ -32,6 +32,7 @@ import com.podts.rpg.client.ui.UIWindow;
 
 public final class PlayingState extends UIState {
 	
+	private static Color TILE_HOVER_COLOR = Color.orange;
 	private static final int DEFAULT_TILE_SIZE = 64;
 	private static final int WALK_DELAY = 75;
 	
@@ -76,11 +77,10 @@ public final class PlayingState extends UIState {
 			}
 			
 			ChattingBox() {
-				setWidth(getChatWindow().getWidth());
-				setHeight(12);
-				setX(0)
-				.setY(getChatWindow().getHeight() - 12)	//12px above bottom of window, bottom row of lines of text.
-				//.setBorderColor(Color.transparent)
+				setWidth(getChatWindow().getWidth())
+				.setHeight(14)
+				.setX(0)
+				.setY(getChatWindow().getHeight() - 14)	//14px above bottom of window, bottom row of lines of text.
 				.setBackgroundColor(Color.red);
 			}
 			
@@ -117,15 +117,15 @@ public final class PlayingState extends UIState {
 			
 			//Move up 12 for chat input.
 			//Give horizontal line 1 px of padding
-			y -= 13;
+			y -= 15;
 			GraphicsHelper.get().drawHorizontalLine(y);
-			--y;
+			y -= 4;
 			
 			//Draw all messages
 			synchronized(Client.get().getChatManager()) {
 				for(ChatMessage message : Client.get().getChatManager().getMessages()) {
-					y -= 12;
-					g.setColor(message.getChatColor());
+					y -= 13;
+					g.setColor(Color.yellow);
 					g.drawString(message.getText(), 0, y);
 				}
 			}
@@ -139,21 +139,14 @@ public final class PlayingState extends UIState {
 			return new Color(UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getRed()
 					, UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getGreen()
 					, UIManager.DEFAULT_WINDOW_BACKGROUND_COLOR.getBlue()
-					, 0);
-		}
-		
-		private Color createAlphaBorderColor() {
-			return new Color(UIManager.DEFAULT_WINDOW_BORDER_COLOR.getRed()
-					, UIManager.DEFAULT_WINDOW_BORDER_COLOR.getGreen()
-					, UIManager.DEFAULT_WINDOW_BORDER_COLOR.getBlue()
-					, 0);
+					, 50);
 		}
 		
 		ChatWindow() {
 			super(getGameContainer().getWidth(), 200);
 			setY(getGameContainer().getHeight() - 200);
 			setBackgroundColor(createAlphaBackgroundColor());
-			setBorderColor(createAlphaBorderColor());
+			setBorderColor(getBackgroundColor());
 			setCompactable(false);
 		}
 		
@@ -172,18 +165,24 @@ public final class PlayingState extends UIState {
 			}
 		}
 		
-		if(showGrid) {
+		if(isShowingGrid()) {
 			drawGrid();
 		}
 		
 		
 		drawEntity(Player.me.getPlayerEntity());
 		
-		highlightTileLocation(getHoveringTileLocation(), Color.green);
+		drawSelectedTiles();
+		
+		highlightTileLocation(getHoveringTileLocation());
 		
 		//Draw UI windows including possibly chat window.
 		UIManager.get().render(getGameContainer(), getGraphics());
 		
+	}
+	
+	private boolean isShowingGrid() {
+		return showGrid;
 	}
 	
 	private void drawGrid() {
@@ -204,18 +203,22 @@ public final class PlayingState extends UIState {
 		
 	}
 	
+	private void drawSelectedTiles() {
+		
+	}
+	
 	private void highlightTile(Tile tile) {
 		highlightTileLocation(tile.getLocation());
-	}
-	
-	private void highlightTileLocation(Location point) {
-		highlightTileLocation(point, Color.orange);
-	}
-	
+	}	
+
 	private void highlightTileLocation(Location point, Color color) {
 		g.setLineWidth(1);
 		g.setColor(color);
 		g.drawRect(getLocationDisplayX(point), getLocationDisplayY(point), getTileSize(), getTileSize());
+	}
+	
+	private void highlightTileLocation(Location point) {
+		highlightTileLocation(point, TILE_HOVER_COLOR);
 	}
 	
 	private void crossTileLocation(Location point) {
@@ -334,6 +337,10 @@ public final class PlayingState extends UIState {
 		}
 	}
 	
+	private boolean isChatting() {
+		return getChatWindow().isChatting();
+	}
+	
 	@Override
 	public void update(GameContainer app, StateBasedGame game, int delta) throws SlickException {
 		
@@ -370,8 +377,14 @@ public final class PlayingState extends UIState {
 	@Override
 	public void keyPressed(int key, char c) {
 		if(key == Input.KEY_SPACE) {
-			showGrid = !showGrid;
-			return;
+			if(!isChatting()) {
+				showGrid = !showGrid;
+			}
+		}
+		if(c == '/') {
+			if(!getChatWindow().isChatting()) {
+				getChatWindow().setChatting(!getChatWindow().isChatting());
+			}
 		}
 		super.keyPressed(key, c);
 	}
