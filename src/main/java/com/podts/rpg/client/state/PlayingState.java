@@ -314,6 +314,7 @@ public final class PlayingState extends UIState {
 		
 		chatWindow = new ChatWindow();
 		UIManager.get().addChild(getChatWindow());
+		
 	}
 	
 	@Override
@@ -370,6 +371,8 @@ public final class PlayingState extends UIState {
 			getChatWindow().toggleChatting();
 		}
 		
+		//Move Player with Arrow Keys or WASD if not Chatting
+		
 		if(!isChatting()) {
 			if(input.isKeyDown(Input.KEY_UP)) {
 				movePlayer(Direction.UP);
@@ -378,6 +381,18 @@ public final class PlayingState extends UIState {
 			} else if(input.isKeyDown(Input.KEY_LEFT)) {
 				movePlayer(Direction.LEFT);
 			} else if(input.isKeyDown(Input.KEY_RIGHT)) {
+				movePlayer(Direction.RIGHT);
+			}
+		
+		}
+		if(!isChatting()) {
+			if(input.isKeyDown(Input.KEY_W)) {
+				movePlayer(Direction.UP);
+			} else if(input.isKeyDown(Input.KEY_S)) {
+				movePlayer(Direction.DOWN);
+			} else if(input.isKeyDown(Input.KEY_A)) {
+				movePlayer(Direction.LEFT);
+			} else if(input.isKeyDown(Input.KEY_D)) {
 				movePlayer(Direction.RIGHT);
 			}
 		}
