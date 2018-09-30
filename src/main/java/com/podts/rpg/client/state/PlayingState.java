@@ -258,16 +258,17 @@ public final class PlayingState extends UIState {
 	}
 	
 	private void drawTile(Tile tile) {
-		if(tile.getType().equals(TileType.GRASS)) {
-			drawImageTile(tile);
-		} else {
+		if(tile.getType().equals(TileType.VOID)) {
 			drawColorTile(tile);
+		} else {
+			drawImageTile(tile);
 		}
 	}
 	
 	private void drawImageTile(Tile tile) {
-		Image grassImage = Client.get().getResources().getImage("Grass");
-		Image scaled = grassImage.getScaledCopy((int)getTileSize(), (int)getTileSize());
+		Image tileImage = Client.get().getResources().getImage(tile.getType().name().toLowerCase());
+		int size = (int)Math.ceil(getTileSize());
+		Image scaled = tileImage.getScaledCopy(size, size);
 		g.drawImage(scaled, getLocationDisplayX(tile),
 				getLocationDisplayY(tile));
 	}

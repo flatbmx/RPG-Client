@@ -59,6 +59,10 @@ public class Client extends StateBasedGame {
 		enterState(id);
 	}
 	
+	public void loadResources() throws SlickException {
+		getResources().init();
+	}
+	
 	Client() {
 		super("RPG-Client");
 		world = new HashWorld("Earth");
@@ -75,8 +79,6 @@ public class Client extends StateBasedGame {
 			app.setMaximumLogicUpdateInterval(60);
 			app.setAlwaysRender(true);
 			app.setVerbose(true);
-			
-			instance.getResources().init();
 			
 			app.start();
 		} catch (SlickException e) {

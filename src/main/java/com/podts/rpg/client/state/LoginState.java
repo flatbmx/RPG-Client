@@ -36,6 +36,8 @@ public class LoginState extends UIState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame g) throws SlickException {
 		
+		Client.get().loadResources();
+		
 		UIManager.get().setGameContainer(gc);
 		
 		UIWindow loginWindow = new UIWindow(500, 300);
