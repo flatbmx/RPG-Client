@@ -31,6 +31,7 @@ public class Client extends StateBasedGame {
 	private final World world;
 	private final NetworkManager networkManager = new NetworkManager();
 	private final ChatManager chatManager = new ChatManager();
+	private final Resources resources = new Resources();
 	
 	public final World getWorld() {
 		return world;
@@ -42,6 +43,10 @@ public class Client extends StateBasedGame {
 	
 	public final ChatManager getChatManager() {
 		return chatManager;
+	}
+	
+	public final Resources getResources() {
+		return resources;
 	}
 	
 	@Override
@@ -58,7 +63,7 @@ public class Client extends StateBasedGame {
 		super("RPG-Client");
 		world = new HashWorld("Earth");
 	}
-
+	
 	public static void main(String[] args) {
 		
 		instance = new Client();
@@ -70,6 +75,9 @@ public class Client extends StateBasedGame {
 			app.setMaximumLogicUpdateInterval(60);
 			app.setAlwaysRender(true);
 			app.setVerbose(true);
+			
+			instance.getResources().init();
+			
 			app.start();
 		} catch (SlickException e) {
 			e.printStackTrace();
