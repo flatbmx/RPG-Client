@@ -259,7 +259,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 		return null;
 	}
 	
-	private static String readEncryptedString(Stream stream, ByteBuf buf) {
+	private static String readEncryptedString(NetworkStream stream, ByteBuf buf) {
 		int encryptedLength = buf.readInt();
 		byte[] encryptedBytes = new byte[encryptedLength];
 		buf.readBytes(encryptedBytes);

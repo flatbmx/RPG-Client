@@ -6,7 +6,7 @@ import javax.crypto.SecretKey;
 
 import com.podts.rpg.client.network.packet.ActionSender;
 
-public interface Stream {
+public interface NetworkStream {
 	
 	public boolean isOpen();
 	

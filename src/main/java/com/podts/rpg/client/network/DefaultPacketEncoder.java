@@ -45,12 +45,12 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 			return;
 		}
 		
-		Stream s = (Stream) c.channel();
+		NetworkStream s = (NetworkStream) c.channel();
 		en.encode(s, p, buf);
 		
 	}
 	
-	private static void writeEncryptedString(String string, Stream stream, ByteBuf buf) {
+	private static void writeEncryptedString(String string, NetworkStream stream, ByteBuf buf) {
 		try {
 			ByteBuf plainBuf = Unpooled.buffer();
 			byte[] plain = string.getBytes("UTF-8");
@@ -85,13 +85,13 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 	}
 	
 	private interface PacketEncoder {
-		public void encode(Stream s, Packet p, ByteBuf buf);
+		public void encode(NetworkStream s, Packet p, ByteBuf buf);
 	}
 	
 	public DefaultPacketEncoder() {
 		encoders.put(RSAHandShakePacket.class, new PacketEncoder() {
 			@Override
-			public void encode(Stream s, Packet op, ByteBuf buf) {
+			public void encode(NetworkStream s, Packet op, ByteBuf buf) {
 				if(!(op instanceof RSAHandShakePacket)) throw new IllegalArgumentException();
 				RSAHandShakePacket p = (RSAHandShakePacket) op;
 				buf.writeByte(PID_RSAHANDSHAKE);
@@ -101,7 +101,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 		
 		encoders.put(LoginPacket.class, new PacketEncoder() {
 			@Override
-			public void encode(Stream s, Packet op, ByteBuf buf) {
+			public void encode(NetworkStream s, Packet op, ByteBuf buf) {
 				if(!(op instanceof LoginPacket)) throw new IllegalArgumentException();
 				LoginPacket p = (LoginPacket) op;
 				buf.writeByte(PID_LOGIN);
@@ -112,7 +112,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 		
 		encoders.put(MessagePacket.class, new PacketEncoder() {
 			@Override
-			public void encode(Stream s, Packet op, ByteBuf buf) {
+			public void encode(NetworkStream s, Packet op, ByteBuf buf) {
 				if(!(op instanceof MessagePacket)) throw new IllegalArgumentException();
 				MessagePacket p = (MessagePacket) op;
 				buf.writeByte(PID_MESSAGE);
@@ -122,7 +122,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 		
 		encoders.put(EntityPacket.class, new PacketEncoder() {
 			@Override
-			public void encode(Stream s, Packet op, ByteBuf buf) {
+			public void encode(NetworkStream s, Packet op, ByteBuf buf) {
 				if(!(op instanceof EntityPacket)) throw new IllegalArgumentException();
 				EntityPacket p = (EntityPacket) op;
 				buf.writeByte(PID_MOVE);
@@ -132,7 +132,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 		
 		encoders.put(TileSelectionPacket.class, new PacketEncoder() {
 			@Override
-			public void encode(Stream s, Packet op, ByteBuf buf) {
+			public void encode(NetworkStream s, Packet op, ByteBuf buf) {
 				if(!(op instanceof TileSelectionPacket)) throw new IllegalArgumentException();
 				TileSelectionPacket p = (TileSelectionPacket) op;
 				buf.writeByte(PID_TILESELECTION);

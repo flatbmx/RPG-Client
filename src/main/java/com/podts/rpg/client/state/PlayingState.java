@@ -258,7 +258,7 @@ public final class PlayingState extends UIState {
 	}
 	
 	private void drawTile(Tile tile) {
-		if(tile.getType().equals(TileType.VOID)) {
+		if(tile.isVoid()) {
 			drawColorTile(tile);
 		} else {
 			drawImageTile(tile);

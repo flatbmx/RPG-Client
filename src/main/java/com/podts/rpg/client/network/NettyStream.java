@@ -11,7 +11,7 @@ import com.podts.rpg.client.network.packet.ActionSender;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public class NettyStream extends NioSocketChannel implements Stream {
+public class NettyStream extends NioSocketChannel implements NetworkStream {
 	
 	private static KeyPairGenerator keyPairGenerator;
 	protected boolean serverSideClose = false;

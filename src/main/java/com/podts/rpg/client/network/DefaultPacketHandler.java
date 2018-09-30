@@ -29,7 +29,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 	
-	private static final Map<Class<?>,BiConsumer<Packet,Stream>> handlers = new HashMap<>();
+	private static final Map<Class<?>,BiConsumer<Packet,NetworkStream>> handlers = new HashMap<>();
 	
 	static {
 		
@@ -120,7 +120,7 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 		
 	}
 	
-	private static final void addHandler(Class<?> c, BiConsumer<Packet,Stream> handler) {
+	private static final void addHandler(Class<?> c, BiConsumer<Packet,NetworkStream> handler) {
 		if(handlers.containsKey(c))
 			throw new IllegalArgumentException("There is already a packet handler for " + c.getSimpleName());
 		handlers.put(c, handler);
@@ -129,10 +129,10 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 	@Override
 	protected void channelRead0(ChannelHandlerContext c, Packet op) throws Exception {
 		
-		BiConsumer<Packet,Stream> handler = handlers.get(op.getClass());
+		BiConsumer<Packet,NetworkStream> handler = handlers.get(op.getClass());
 		
 		if(handler != null) {
-			handler.accept(op, (Stream)c.channel());
+			handler.accept(op, (NetworkStream)c.channel());
 		} else {
 			System.out.println("WARNING: Recieved unhandled " + op.getClass().getSimpleName());
 		}

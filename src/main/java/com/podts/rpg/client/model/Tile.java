@@ -47,6 +47,14 @@ public final class Tile implements Locatable {
 		return location;
 	}
 	
+	public final boolean isVoid() {
+		return isType(TileType.VOID);
+	}
+	
+	public final boolean isType(TileType type) {
+		return Objects.equals(getType(), type);
+	}
+	
 	public boolean isTraversable() {
 		return type.isTraversable();
 	}
