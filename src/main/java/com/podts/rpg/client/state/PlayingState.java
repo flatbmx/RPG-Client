@@ -402,10 +402,12 @@ public final class PlayingState extends UIState {
 	public void onMouseClick(MouseClickType type, int x, int y) {
 		if(type.equals(MouseClickType.LEFT_CLICK)) {
 			Tile tile = getHoveringTile();
-			if(selectedTiles.contains(tile)) {
-				selectedTiles.remove(tile);
-			} else {
-				selectTile(tile);
+			if(tile != null) {
+				if(selectedTiles.contains(tile)) {
+					selectedTiles.remove(tile);
+				} else {
+					selectTile(tile);
+				}
 			}
 		} else if(MouseClickType.RIGHT_CLICK.equals(type)) {
 			clearSelectedTiles();
