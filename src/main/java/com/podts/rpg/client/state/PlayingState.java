@@ -7,6 +7,7 @@ import java.util.ListIterator;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -19,7 +20,7 @@ import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Location.Direction;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.model.Tile;
-import com.podts.rpg.client.model.TileSelection;
+import com.podts.rpg.client.model.Tile.TileType;
 import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.network.packet.EntityPacket;
@@ -257,6 +258,21 @@ public final class PlayingState extends UIState {
 	}
 	
 	private void drawTile(Tile tile) {
+		if(tile.getType().equals(TileType.GRASS)) {
+			drawImageTile(tile);
+		} else {
+			drawColorTile(tile);
+		}
+	}
+	
+	private void drawImageTile(Tile tile) {
+		Image grassImage = Client.get().getResources().getImage("Grass");
+		Image scaled = grassImage.getScaledCopy((int)getTileSize(), (int)getTileSize());
+		g.drawImage(scaled, getLocationDisplayX(tile),
+				getLocationDisplayY(tile));
+	}
+	
+	private void drawColorTile(Tile tile) {
 		g.setColor(tile.getType().getColor());
 		g.fillRect(getLocationDisplayX(tile),
 				getLocationDisplayY(tile),

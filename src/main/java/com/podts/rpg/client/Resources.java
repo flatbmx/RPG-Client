@@ -24,7 +24,9 @@ public class Resources {
 	
 	void init() throws SlickException {
 		
-		
+		loadImage("Grass", "res/Grass.png");
+		loadImage("Sand", "res/Sand.png");
+		loadImage("Water", "res/Water.png");
 		
 	}
 	
