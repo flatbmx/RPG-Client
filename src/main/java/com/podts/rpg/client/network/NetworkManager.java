@@ -177,6 +177,7 @@ public class NetworkManager {
 		if(stream != null)
 			getStream().close();
 		workerGroup.shutdownGracefully();
+		
 	}
 
 	

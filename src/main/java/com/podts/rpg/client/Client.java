@@ -1,5 +1,6 @@
 package com.podts.rpg.client;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.newdawn.slick.AppGameContainer;
@@ -9,6 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.podts.rpg.client.chat.ChatManager;
 import com.podts.rpg.client.model.HashWorld;
+import com.podts.rpg.client.model.Tile;
 import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.state.LoginState;
@@ -63,12 +65,28 @@ public class Client extends StateBasedGame {
 		getResources().init();
 	}
 	
+	public final boolean isPlaying() {
+		return getCurrentState() instanceof PlayingState;
+	}
+	
+	public PlayingState getPlayingState() {
+		return (PlayingState) getCurrentState();
+	}
+	
+	public void setSelectedTiles(Collection<Tile> tiles) {
+		getPlayingState().setSelectedTiles(tiles);
+	}
+	
 	Client() {
 		super("RPG-Client");
 		world = new HashWorld("Earth");
 	}
 	
 	public static void main(String[] args) {
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			Client.get().getNetworkManager().close();
+		}));
 		
 		instance = new Client();
 		AppGameContainer app;

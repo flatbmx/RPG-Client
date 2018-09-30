@@ -19,6 +19,7 @@ import com.podts.rpg.client.network.packet.MessagePacket;
 import com.podts.rpg.client.network.packet.PlayerInitPacket;
 import com.podts.rpg.client.network.packet.StatePacket;
 import com.podts.rpg.client.network.packet.TilePacket;
+import com.podts.rpg.client.network.packet.TileSelectionPacket;
 import com.podts.rpg.client.network.packet.TilePacket.TileSendType;
 import com.podts.rpg.client.network.packet.TilePacket.TileUpdateType;
 import com.podts.rpg.client.state.LoginState;
@@ -86,6 +87,11 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 			synchronized(Client.get().getChatManager()) {
 				Client.get().getChatManager().addMessage(message);
 			}
+		});
+		
+		addHandler(TileSelectionPacket.class, (op, s) -> {
+			TileSelectionPacket p = (TileSelectionPacket) op;
+			Client.get().setSelectedTiles(p.getTiles());
 		});
 		
 		addHandler(TilePacket.class, (op, s) -> {

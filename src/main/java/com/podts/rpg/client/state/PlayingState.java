@@ -346,8 +346,10 @@ public final class PlayingState extends UIState {
 	
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		clearSelectedTiles();
 		UIManager.get().clear();
 		UIManager.get().setCompactable(true);
+		Client.get().getNetworkManager().close();
 	}
 
 	@Override
@@ -371,14 +373,28 @@ public final class PlayingState extends UIState {
 		
 	}
 	
-	private void selectTile(Tile tile) {
+	public void selectTile(Tile tile) {
 		if(selectedTiles.add(tile)) {
 			Client.get().getNetworkManager().sendPacket(new TileSelectionPacket(getSelectedTiles()));
 		}
 	}
 	
-	private void clearSelectedTiles() {
+	public void clearSelectedTile(boolean update) {
 		selectedTiles.clear();
+		if(update)
+			sendServerSelectedTiles();
+	}
+	
+	public void clearSelectedTiles() {
+		clearSelectedTile(false);
+	}
+	
+	public void setSelectedTiles(Collection<Tile> tiles) {
+		clearSelectedTiles();
+		selectedTiles.addAll(tiles);
+	}
+	
+	private final void sendServerSelectedTiles() {
 		Client.get().getNetworkManager().sendPacket(new TileSelectionPacket(getSelectedTiles()));
 	}
 	
