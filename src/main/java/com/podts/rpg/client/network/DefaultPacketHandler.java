@@ -121,7 +121,8 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 	}
 	
 	private static final void addHandler(Class<?> c, BiConsumer<Packet,Stream> handler) {
-		if(handlers.containsKey(c)) throw new IllegalArgumentException("There is already a packet handler for " + c.getSimpleName());
+		if(handlers.containsKey(c))
+			throw new IllegalArgumentException("There is already a packet handler for " + c.getSimpleName());
 		handlers.put(c, handler);
 	}
 	

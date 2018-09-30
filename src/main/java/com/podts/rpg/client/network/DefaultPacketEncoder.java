@@ -2,6 +2,7 @@ package com.podts.rpg.client.network;
 
 import java.io.UnsupportedEncodingException;
 import java.security.PublicKey;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,12 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
 import com.podts.rpg.client.model.Location;
-import com.podts.rpg.client.network.packet.*;
+import com.podts.rpg.client.model.Tile;
+import com.podts.rpg.client.network.packet.EntityPacket;
+import com.podts.rpg.client.network.packet.LoginPacket;
+import com.podts.rpg.client.network.packet.MessagePacket;
+import com.podts.rpg.client.network.packet.RSAHandShakePacket;
+import com.podts.rpg.client.network.packet.TileSelectionPacket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -22,6 +28,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 	private static final byte PID_LOGIN = 1;
 	private static final int PID_MOVE = 2;
 	private static final int PID_MESSAGE = 3;
+	private static final int PID_TILESELECTION = 4;
 	
 	private final Map<Class<?>,PacketEncoder> encoders = new HashMap<>();
 	
@@ -122,6 +129,21 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 				writeLocation(p.getLocation(), buf);
 			}
 		});
+		
+		encoders.put(TileSelectionPacket.class, new PacketEncoder() {
+			@Override
+			public void encode(Stream s, Packet op, ByteBuf buf) {
+				if(!(op instanceof TileSelectionPacket)) throw new IllegalArgumentException();
+				TileSelectionPacket p = (TileSelectionPacket) op;
+				buf.writeByte(PID_TILESELECTION);
+				Collection<Tile> tiles = p.getTiles();
+				buf.writeInt(tiles.size());
+				for(Tile tile : tiles) {
+					writeLocation(tile.getLocation(), buf);
+				}
+			}
+		});
+		
 	}
 	
 	private static final void writeLocation(Location loc, ByteBuf buf) {

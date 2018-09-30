@@ -2,6 +2,8 @@ package com.podts.rpg.client.network;
 
 import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.crypto.Cipher;
@@ -24,6 +26,7 @@ import com.podts.rpg.client.network.packet.StatePacket;
 import com.podts.rpg.client.network.packet.TilePacket;
 import com.podts.rpg.client.network.packet.TilePacket.TileSendType;
 import com.podts.rpg.client.network.packet.TilePacket.TileUpdateType;
+import com.podts.rpg.client.network.packet.TileSelectionPacket;
 import com.podts.rpg.client.state.States;
 
 import io.netty.buffer.ByteBuf;
@@ -48,6 +51,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 	private static final int PID_ENTITY = 5;
 	private static final int PID_MESSAGE = 6;
 	private static final int PID_ACK = 7;
+	private static final int PID_TILESELECTION = 8;
 	
 	
 	
@@ -186,6 +190,18 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 				int id = buf.readInt();
 				Location point = readLocation(buf);
 				return new PlayerInitPacket(id, point);
+			}
+		});
+		
+		addConstructor(PID_TILESELECTION, new PacketConstructor() {
+			@Override
+			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
+				int total = buf.readInt();
+				Collection<Tile> tiles = new HashSet<>();
+				for(int i=0; i<total; ++i) {
+					tiles.add(Client.get().getWorld().getTile(readLocation(buf)));
+				}
+				return new TileSelectionPacket(tiles);
 			}
 		});
 		

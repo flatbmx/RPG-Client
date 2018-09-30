@@ -25,6 +25,7 @@ import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.network.packet.EntityPacket;
 import com.podts.rpg.client.network.packet.EntityPacket.UpdateType;
 import com.podts.rpg.client.network.packet.MessagePacket;
+import com.podts.rpg.client.network.packet.TileSelectionPacket;
 import com.podts.rpg.client.ui.GraphicsHelper;
 import com.podts.rpg.client.ui.UIManager;
 import com.podts.rpg.client.ui.UIObject.MouseClickType;
@@ -49,7 +50,7 @@ public final class PlayingState extends UIState {
 	
 	private long lastStep = 0;
 	
-	private Collection<TileSelection> tileSelections = new HashSet<>();
+	private Collection<Tile> selectedTiles = new HashSet<>();
 	
 	private ChatWindow chatWindow;
 	
@@ -167,6 +168,10 @@ public final class PlayingState extends UIState {
 		
 	}
 	
+	private Collection<? extends Tile> getSelectedTiles() {
+		return selectedTiles;
+	}
+	
 	private void drawWorld() {
 		
 		World world = Client.get().getWorld();
@@ -219,7 +224,9 @@ public final class PlayingState extends UIState {
 	}
 	
 	private void drawSelectedTiles() {
-		
+		for(Tile tile : getSelectedTiles()) {
+			highlightTile(tile);
+		}
 	}
 	
 	private void highlightTile(Tile tile) {
@@ -268,6 +275,10 @@ public final class PlayingState extends UIState {
 	
 	private float getLocationDisplayY(Locatable loc) {
 		return (loc.getLocation().getY() - Player.me.getLocation().getY()) * getTileSize() + centerY - getTileSize()/2;
+	}
+	
+	private Tile getHoveringTile() {
+		return Client.get().getWorld().getTile(getHoveringTileLocation());
 	}
 	
 	private Location getHoveringTileLocation() {
@@ -343,10 +354,28 @@ public final class PlayingState extends UIState {
 		
 	}
 	
+	private void selectTile(Tile tile) {
+		if(selectedTiles.add(tile)) {
+			Client.get().getNetworkManager().sendPacket(new TileSelectionPacket(getSelectedTiles()));
+		}
+	}
+	
+	private void clearSelectedTiles() {
+		selectedTiles.clear();
+		Client.get().getNetworkManager().sendPacket(new TileSelectionPacket(getSelectedTiles()));
+	}
+	
 	@Override
 	public void onMouseClick(MouseClickType type, int x, int y) {
 		if(type.equals(MouseClickType.LEFT_CLICK)) {
-			
+			Tile tile = getHoveringTile();
+			if(selectedTiles.contains(tile)) {
+				selectedTiles.remove(tile);
+			} else {
+				selectTile(tile);
+			}
+		} else if(MouseClickType.RIGHT_CLICK.equals(type)) {
+			clearSelectedTiles();
 		} else if(MouseClickType.MIDDLE_CLICK.equals(type)) {
 			setZoom(1);
 		}
@@ -410,7 +439,12 @@ public final class PlayingState extends UIState {
 			if(key == Input.KEY_DOWN) {
 				if(w.entryIterator != null) {
 					if(w.entryIterator.hasPrevious()) {
-						w.setChatText(w.entryIterator.previous());
+						if(!w.entryIterator.hasNext()) {
+							w.entryIterator.previous();
+							if(w.entryIterator.hasPrevious())
+								w.setChatText(w.entryIterator.previous());
+						} else
+							w.setChatText(w.entryIterator.previous());
 					} else {
 						w.entryIterator = null;
 						w.chatBox.clear();
@@ -420,8 +454,9 @@ public final class PlayingState extends UIState {
 			}
 		}
 		if(c == '/') {
-			if(!getChatWindow().isChatting()) {
-				getChatWindow().setChatting(!getChatWindow().isChatting());
+			if(!isChatting()) {
+				getChatWindow().toggleChatting();
+				return;
 			}
 		}
 		super.keyPressed(key, c);
