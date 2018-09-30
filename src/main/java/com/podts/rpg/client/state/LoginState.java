@@ -30,7 +30,7 @@ public class LoginState extends UIState {
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame g) throws SlickException {
-		init(gc, g);
+		//init(gc, g);
 	}
 	
 	@Override

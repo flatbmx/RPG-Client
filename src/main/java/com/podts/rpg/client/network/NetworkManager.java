@@ -1,5 +1,7 @@
 package com.podts.rpg.client.network;
 
+import java.net.InetSocketAddress;
+
 import com.podts.rpg.client.Client;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.network.packet.AESReplyPacket;
@@ -61,6 +63,8 @@ public class NetworkManager {
 	}
 	
 	public ChannelFuture connect(String host, int port) {
+		
+		Client.getLogger().info("Attempting to connect to " + host + " on port " + port);
 		
 		this.host = host;
 		this.port = port;
