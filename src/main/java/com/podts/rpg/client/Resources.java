@@ -27,7 +27,7 @@ public class Resources {
 		loadImage("grass", "res/Grass.png");
 		loadImage("sand", "res/Sand.png");
 		loadImage("water", "res/Water.png");
-		
+		loadImage("dirt", "res/Dirt.png");
 	}
 	
 	Resources() {
