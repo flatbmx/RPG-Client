@@ -20,7 +20,6 @@ import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Location.Direction;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.model.Tile;
-import com.podts.rpg.client.model.Tile.TileType;
 import com.podts.rpg.client.model.World;
 import com.podts.rpg.client.network.NetworkManager;
 import com.podts.rpg.client.network.packet.EntityPacket;

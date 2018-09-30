@@ -28,9 +28,12 @@ public class LoginState extends UIState {
 	public static UITextBox userNameBox;
 	public static UISecretTextbox passwordBox;
 	
+	private UIWindow loginWindow;
+	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame g) throws SlickException {
-		//init(gc, g);
+		UIManager.get().clearChildren().addChild(loginWindow);
+		UIManager.get().setFocus(userNameBox);
 	}
 	
 	@Override
@@ -40,7 +43,7 @@ public class LoginState extends UIState {
 		
 		UIManager.get().setGameContainer(gc);
 		
-		UIWindow loginWindow = new UIWindow(500, 300);
+		loginWindow = new UIWindow(500, 300);
 		loginWindow.setCenterX(true)
 		.setCenterY(true)
 		.setCenterParentX(true)
@@ -99,9 +102,6 @@ public class LoginState extends UIState {
 		loginWindow.addChild(table);
 		loginWindow.addChild(responseText);
 		loginWindow.addChild(loginButton);
-		
-		UIManager.get().clearChildren().addChild(loginWindow);
-		UIManager.get().setFocus(userNameBox);
 	}
 	
 	@Override
