@@ -2,6 +2,7 @@ package com.podts.rpg.client.state;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.ListIterator;
 
 import org.newdawn.slick.Color;
@@ -51,6 +52,7 @@ public final class PlayingState extends UIState {
 	private long lastStep = 0;
 	
 	private Collection<Tile> selectedTiles = new HashSet<>();
+	private LinkedList<Tile> walkingPath = new LinkedList<>();
 	
 	private ChatWindow chatWindow;
 	
@@ -170,6 +172,34 @@ public final class PlayingState extends UIState {
 	
 	private Collection<? extends Tile> getSelectedTiles() {
 		return selectedTiles;
+	}
+	
+	private LinkedList<Tile> getWalkingPath() {
+		return walkingPath;
+	}
+	
+	private ListIterator<Tile> walkingIterator() {
+		return getWalkingPath().listIterator();
+	}
+	
+	private Tile getLastStep() {
+		Tile last = getWalkingPath().getLast();
+		if(last == null)
+			last = Client.get().getWorld().getTile(Player.me.getLocation());
+		return last;
+	}
+	
+	private World getWorld() {
+		return Client.get().getWorld();
+	}
+	
+	private Tile getTile(Location loc) {
+		return getWorld().getTile(loc);
+	}
+	
+	public void addStep(Direction dir) {
+		Tile latest = getLastStep();
+		walkingPath.addLast(getTile(latest.getLocation().shift(dir)));
 	}
 	
 	private void drawWorld() {
@@ -437,25 +467,13 @@ public final class PlayingState extends UIState {
 		//Move Player with Arrow Keys or WASD if not Chatting
 		
 		if(!isChatting()) {
-			if(input.isKeyDown(Input.KEY_UP)) {
+			if(input.isKeyDown(Input.KEY_UP) || input.isKeyDown(Input.KEY_W)) {
 				movePlayer(Direction.UP);
-			} else if(input.isKeyDown(Input.KEY_DOWN)) {
+			} else if(input.isKeyDown(Input.KEY_DOWN) || input.isKeyDown(Input.KEY_S)) {
 				movePlayer(Direction.DOWN);
-			} else if(input.isKeyDown(Input.KEY_LEFT)) {
+			} else if(input.isKeyDown(Input.KEY_LEFT) || input.isKeyDown(Input.KEY_A)) {
 				movePlayer(Direction.LEFT);
-			} else if(input.isKeyDown(Input.KEY_RIGHT)) {
-				movePlayer(Direction.RIGHT);
-			}
-		
-		}
-		if(!isChatting()) {
-			if(input.isKeyDown(Input.KEY_W)) {
-				movePlayer(Direction.UP);
-			} else if(input.isKeyDown(Input.KEY_S)) {
-				movePlayer(Direction.DOWN);
-			} else if(input.isKeyDown(Input.KEY_A)) {
-				movePlayer(Direction.LEFT);
-			} else if(input.isKeyDown(Input.KEY_D)) {
+			} else if(input.isKeyDown(Input.KEY_RIGHT) || input.isKeyDown(Input.KEY_D)) {
 				movePlayer(Direction.RIGHT);
 			}
 		}
@@ -505,7 +523,6 @@ public final class PlayingState extends UIState {
 		if(c == '/') {
 			if(!isChatting()) {
 				getChatWindow().toggleChatting();
-				return;
 			}
 		}
 		super.keyPressed(key, c);

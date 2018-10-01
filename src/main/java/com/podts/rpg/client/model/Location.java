@@ -82,6 +82,10 @@ public class Location implements Locatable {
 		return this;
 	}
 	
+	public Location shift(Direction dir) {
+		return new Location(x + dir.dx, y + dir.dy, getZ());
+	}
+	
 	public Location() {
 		
 	}
