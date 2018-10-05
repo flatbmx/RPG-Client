@@ -56,6 +56,8 @@ public final class PlayingState extends UIState {
 	
 	private ChatWindow chatWindow;
 	
+	private Location currentHoveringLocation;
+	
 	private final GameContainer getGameContainer() {
 		return app;
 	}
@@ -224,7 +226,7 @@ public final class PlayingState extends UIState {
 		
 		drawSelectedTiles();
 		
-		highlightTileLocation(getHoveringTileLocation());
+		highlightTileLocation(findHoveringLocation());
 		
 		//Draw UI windows including possibly chat window.
 		UIManager.get().render(getGameContainer(), getGraphics());
@@ -323,11 +325,11 @@ public final class PlayingState extends UIState {
 		return (loc.getLocation().getY() - Player.me.getLocation().getY()) * getTileSize() + centerY - getTileSize()/2;
 	}
 	
-	private Tile getHoveringTile() {
-		return Client.get().getWorld().getTile(getHoveringTileLocation());
+	private Tile findHoveringTile() {
+		return Client.get().getWorld().getTile(findHoveringLocation());
 	}
 	
-	private Location getHoveringTileLocation() {
+	private Location findHoveringLocation() {
 		int mx = app.getInput().getMouseX();
 		int my = app.getInput().getMouseY();
 		
@@ -341,6 +343,10 @@ public final class PlayingState extends UIState {
 		ty += Player.me.getLocation().getY();
 		
 		return new Location((int)Math.ceil(tx),(int)Math.ceil(ty), Player.me.getLocation().getZ());
+	}
+	
+	private Location getHoveringLocation() {
+		return currentHoveringLocation;
 	}
 	
 	private void setZoom(double zoom) {
@@ -394,6 +400,22 @@ public final class PlayingState extends UIState {
 	}
 	
 	@Override
+	public void mouseMoved(int oldX, int oldY, int newX, int newY) {
+		Location oldHover = getHoveringLocation();
+		Location newHover = findHoveringLocation();
+		if(!newHover.equals(oldHover)) {
+			currentHoveringLocation = newHover;
+			onHoverLocationChange(oldHover, newHover);
+		}
+	}
+	
+	private void onHoverLocationChange(Location oldLoc, Location newLoc) {
+		
+		
+		
+	}
+	
+	@Override
 	public void mouseDragged(int oldX, int oldY, int newX, int newY) {
 		
 	}
@@ -431,7 +453,7 @@ public final class PlayingState extends UIState {
 	@Override
 	public void onMouseClick(MouseClickType type, int x, int y) {
 		if(type.equals(MouseClickType.LEFT_CLICK)) {
-			Tile tile = getHoveringTile();
+			Tile tile = findHoveringTile();
 			if(tile != null) {
 				if(selectedTiles.contains(tile)) {
 					selectedTiles.remove(tile);

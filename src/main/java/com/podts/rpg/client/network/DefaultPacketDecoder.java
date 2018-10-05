@@ -2,6 +2,7 @@ package com.podts.rpg.client.network;
 
 import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -196,10 +197,10 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 		addConstructor(PID_TILESELECTION, new PacketConstructor() {
 			@Override
 			public Packet construct(NettyStream s, int size, byte opCode, ByteBuf buf) {
-				int total = buf.readInt();
+				Collection<Location> locs = readPlaneLocations(buf);
 				Collection<Tile> tiles = new HashSet<>();
-				for(int i=0; i<total; ++i) {
-					tiles.add(Client.get().getWorld().getTile(readLocation(buf)));
+				for(Location point : locs) {
+					tiles.add(Client.get().getWorld().getTile(point));
 				}
 				return new TileSelectionPacket(tiles);
 			}
@@ -302,6 +303,26 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 	
 	private static final Location readLocation(ByteBuf buf) {
 		return new Location(buf.readInt(), buf.readInt(), buf.readInt());
+	}
+	
+	private static final Collection<Location> readPlaneLocations(ByteBuf buf, int total) {
+		Location[] locs = new Location[total];
+		Location first = readLocation(buf);
+		final int z = first.getZ();
+		int i = 0;
+		locs[i++] = first;
+		while(i < total) {
+			locs[i++] = readPlaneLocation(z, buf);
+		}
+		return Arrays.asList(locs);
+	}
+	
+	private static final Collection<Location> readPlaneLocations(ByteBuf buf) {
+		return readPlaneLocations(buf, buf.readInt());
+	}
+	
+	private static final Location readPlaneLocation(int z, ByteBuf buf) {
+		return new Location(buf.readInt(), buf.readInt(), z);
 	}
 	
 	@Override
