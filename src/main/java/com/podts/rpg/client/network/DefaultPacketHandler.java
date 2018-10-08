@@ -50,6 +50,7 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 				case UPDATE:
 					if(Player.me.getPlayerEntity().getID() == p.getEntityID()) {
 						Player.me.getPlayerEntity().setLocation(p.getLocation());
+						Client.get().getPlayingState().onTilePositionChange();
 					} else {
 						Entity e = world.getEntity(p.getEntityID());
 						e.setLocation(p.getLocation());

@@ -8,6 +8,22 @@ package com.podts.rpg.client.model;
 
 public interface Locatable {
 	
+	public static int getWalkingDistance(Locatable a, Locatable b) {
+		return getWalkingDistance(a.getLocation(), b.getLocation());
+	}
+	
+	public static int getWalkingDistance(Location a, Location b) {
+		return a.getX() - b.getX() + a.getY() - b.getY();
+	}
+	
 	public Location getLocation();
+	
+	public default boolean isAt(Locatable loc) {
+		return getLocation().equals(loc.getLocation());
+	}
+	
+	public default int getWalkingDistance(Locatable other) {
+		return getWalkingDistance(this, other);
+	}
 	
 }

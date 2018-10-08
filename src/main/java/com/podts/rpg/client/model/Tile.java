@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import org.newdawn.slick.Color;
 
-import com.podts.rpg.client.model.Location.Direction;
-
 public final class Tile implements Locatable {
 	
 	public enum TileType {
@@ -13,7 +11,7 @@ public final class Tile implements Locatable {
 		GRASS(Color.green.darker()),
 		DIRT(new Color(139,69,19)),
 		SAND(Color.yellow),
-		WATER(new Color(125,125,255),false);
+		WATER(new Color(125,125,255), false);
 		
 		private final boolean traversable;
 		private final Color color;

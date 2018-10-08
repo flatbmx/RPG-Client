@@ -2,8 +2,10 @@ package com.podts.rpg.client.state;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Optional;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -19,6 +21,8 @@ import com.podts.rpg.client.model.Entity;
 import com.podts.rpg.client.model.Locatable;
 import com.podts.rpg.client.model.Location;
 import com.podts.rpg.client.model.Location.Direction;
+import com.podts.rpg.client.model.path.ListPath;
+import com.podts.rpg.client.model.path.Path;
 import com.podts.rpg.client.model.Player;
 import com.podts.rpg.client.model.Tile;
 import com.podts.rpg.client.model.World;
@@ -228,6 +232,8 @@ public final class PlayingState extends UIState {
 		
 		highlightTileLocation(findHoveringLocation());
 		
+		drawWalkingPath();
+		
 		//Draw UI windows including possibly chat window.
 		UIManager.get().render(getGameContainer(), getGraphics());
 		
@@ -253,6 +259,21 @@ public final class PlayingState extends UIState {
 			g.drawLine(0, getLocationDisplayY(point), ax, getLocationDisplayY(point));
 		}
 		
+	}
+	
+	private void drawWalkingPath() {
+		if(getWalkingPath().isEmpty())
+			return;
+		Locatable prev = Player.me.getLocation();
+		Iterator<Tile> it = walkingIterator();
+		while(it.hasNext()) {
+			Tile next = it.next();
+			getGraphics().drawLine(getLocationDisplayCenterX(prev)
+					, getLocationDisplayCenterY(prev)
+					, getLocationDisplayCenterX(next)
+					, getLocationDisplayCenterY(next));
+			prev = next;
+		}
 	}
 	
 	private void drawSelectedTiles() {
@@ -321,8 +342,16 @@ public final class PlayingState extends UIState {
 		return (loc.getLocation().getX() - Player.me.getLocation().getX()) * getTileSize() + centerX - getTileSize()/2;
 	}
 	
+	private float getLocationDisplayCenterX(Locatable loc) {
+		return getLocationDisplayX(loc) + getTileSize()/2;
+	}
+	
 	private float getLocationDisplayY(Locatable loc) {
 		return (loc.getLocation().getY() - Player.me.getLocation().getY()) * getTileSize() + centerY - getTileSize()/2;
+	}
+	
+	private float getLocationDisplayCenterY(Locatable loc) {
+		return getLocationDisplayY(loc) + getTileSize()/2;
 	}
 	
 	private Tile findHoveringTile() {
@@ -352,6 +381,7 @@ public final class PlayingState extends UIState {
 	private void setZoom(double zoom) {
 		this.zoom = zoom;
 		tileSize = (float) (DEFAULT_TILE_SIZE * zoom);
+		onTilePositionChange();
 	}
 
 	@Override
@@ -401,6 +431,10 @@ public final class PlayingState extends UIState {
 	
 	@Override
 	public void mouseMoved(int oldX, int oldY, int newX, int newY) {
+		onTilePositionChange();
+	}
+	
+	public void onTilePositionChange() {
 		Location oldHover = getHoveringLocation();
 		Location newHover = findHoveringLocation();
 		if(!newHover.equals(oldHover)) {
@@ -409,9 +443,18 @@ public final class PlayingState extends UIState {
 		}
 	}
 	
+	/**
+	 * Called when the mouse is hovering over a new location than before.
+	 * @param oldLoc - the old location that the mouse was hovering over
+	 * @param newLoc - the new location  that the mouse is currently hovering over
+	 */
 	private void onHoverLocationChange(Location oldLoc, Location newLoc) {
 		
-		
+		Optional<ListPath> path = Client.get().getWorld().getPath(Player.me, newLoc);
+		walkingPath.clear();
+		if(path.isPresent()) {
+			walkingPath.addAll(path.get().getTiles());
+		}
 		
 	}
 	
