@@ -22,6 +22,8 @@ public abstract class PathFinder {
 	protected Optional<ListPath> findPath(Tile start, Tile finish) {
 		if(start == null || finish == null)
 			return Optional.empty();
+		if(!start.isTraversable() || !finish.isTraversable())
+			return Optional.empty();
 		return doFindPath(start, finish);
 	}
 	

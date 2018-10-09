@@ -21,17 +21,17 @@ public final class HashWorld extends World {
 	}
 	
 	@Override
-	public Tile getTile(Location loc) {
+	public synchronized Tile getTile(Location loc) {
 		return tiles.get(loc);
 	}
 
 	@Override
-	public void addTile(Tile newTile) {
+	public synchronized void addTile(Tile newTile) {
 		tiles.put(newTile.getLocation(), newTile);
 	}
 	
 	@Override
-	public void removeTile(Tile tile) {
+	public synchronized void removeTile(Tile tile) {
 		if(tile != null)
 			tiles.remove(tile.getLocation());
 	}

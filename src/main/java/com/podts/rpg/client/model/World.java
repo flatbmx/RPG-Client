@@ -1,18 +1,11 @@
 package com.podts.rpg.client.model;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
-import com.podts.rpg.client.model.Location.Direction;
-import com.podts.rpg.client.model.path.CompundPathFinder;
+import com.podts.rpg.client.model.path.CompoundPathFinder;
 import com.podts.rpg.client.model.path.ListPath;
-import com.podts.rpg.client.model.path.Path;
 import com.podts.rpg.client.model.path.PathFinder;
-import com.podts.rpg.client.model.path.ReferencePath;
-import com.podts.rpg.client.model.path.StraightPathFinder;
 
 public abstract class World {
 	
@@ -59,9 +52,9 @@ public abstract class World {
 	
 	public abstract void clear();
 	
-	private final PathFinder pathFinder = new CompundPathFinder();
+	private final PathFinder pathFinder = new CompoundPathFinder(500);
 	
-	public Optional<ListPath> getPath(Locatable start, Locatable finish) {
+	public synchronized Optional<ListPath> getPath(Locatable start, Locatable finish) {
 		return pathFinder.findPath(start, finish);
 	}
 	

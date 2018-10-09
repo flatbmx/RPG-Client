@@ -1,42 +1,54 @@
 package com.podts.rpg.client.model.path;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 
-import com.podts.rpg.client.model.Location.Direction;
 import com.podts.rpg.client.Client;
+import com.podts.rpg.client.model.Location.Direction;
 import com.podts.rpg.client.model.Tile;
 
 public class StarPathFinder extends PathFinder {
-
+	
+	public static final int DEFAULT_MAX_LENGTH = 10;
+	
+	private final int maxLength;
+	
 	@Override
 	protected Optional<ListPath> doFindPath(Tile start, Tile finish) {
 		Queue<Path> paths = new PriorityQueue<>(constructPathComparator(finish));
-		Optional<ListPath> result = expandPath(new ReferencePath(start), finish, paths);
+		Set<Tile> walkedOn = new HashSet<>();
+		Optional<ListPath> result = expandPath(new ReferencePath(start), finish, paths, walkedOn);
 		if(result.isPresent())
 			return result;
 		while(!paths.isEmpty()) {
 			Path currentPath = paths.poll();
-			result = expandPath(currentPath, finish, paths);
+			result = expandPath(currentPath, finish, paths, walkedOn);
 			if(result.isPresent())
 				return result;
 		}
 		return result;
 	}
 	
-	private static Optional<ListPath> expandPath(Path path, Tile finish, Queue<Path> paths) {
+	private Optional<ListPath> expandPath(Path path, Tile finish, Queue<Path> paths, Set<Tile> walkedOn) {
 		Tile end = path.getFinish();
 		for(Direction dir : Direction.values()) {
 			Tile newEnd = Client.get().getWorld().getTile(end.getLocation().shift(dir));
 			if(newEnd == null) continue;
 			if(!newEnd.isTraversable()) continue;
-			if(!path.contains(newEnd)) {
+			if(!walkedOn.contains(newEnd)) {
 				Path newPath = path.extend(newEnd);
-				if(newEnd.isAt(finish))
+				if(newEnd.isAt(finish)) {
+					newPath.getStart();
 					return Optional.of(newPath.finalizePath());
+				}
+				if(newPath.getLength() >= maxLength)
+					continue;
 				paths.add(newPath);
+				walkedOn.add(newEnd);
 			}
 		}
 		return Optional.empty();
@@ -44,11 +56,16 @@ public class StarPathFinder extends PathFinder {
 	
 	private static final Comparator<Path> constructPathComparator(final Tile finish) {
 		return (a,b) -> {
-			int aDistance = a.getFinish().getWalkingDistance(finish);
-			int bDistance = b.getFinish().getWalkingDistance(finish);
-			int diff = aDistance - bDistance;
-			return diff*2 + (a.getLength() - b.getLength());
+			return a.getLength() - b.getLength();
 		};
+	}
+	
+	public StarPathFinder(int maxLength) {
+		this.maxLength = maxLength;
+	}
+	
+	public StarPathFinder() {
+		this(DEFAULT_MAX_LENGTH);
 	}
 	
 }

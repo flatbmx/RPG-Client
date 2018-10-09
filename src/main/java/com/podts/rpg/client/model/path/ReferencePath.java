@@ -25,7 +25,9 @@ public class ReferencePath extends Path {
 
 	@Override
 	public Tile getStart() {
-		return getReference().getStart();
+		if(hasReference())
+			return getReference().getStart();
+		return getFinish();
 	}
 
 	@Override

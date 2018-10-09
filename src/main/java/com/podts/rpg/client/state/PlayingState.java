@@ -264,8 +264,8 @@ public final class PlayingState extends UIState {
 	private void drawWalkingPath() {
 		if(getWalkingPath().isEmpty())
 			return;
-		Locatable prev = Player.me.getLocation();
 		Iterator<Tile> it = walkingIterator();
+		Tile prev = it.next();
 		while(it.hasNext()) {
 			Tile next = it.next();
 			getGraphics().drawLine(getLocationDisplayCenterX(prev)
@@ -450,9 +450,10 @@ public final class PlayingState extends UIState {
 	 */
 	private void onHoverLocationChange(Location oldLoc, Location newLoc) {
 		
-		Optional<ListPath> path = Client.get().getWorld().getPath(Player.me, newLoc);
+		Optional<ListPath> path = getWorld().getPath(Player.me, newLoc);
 		walkingPath.clear();
 		if(path.isPresent()) {
+			path.get().getStart();
 			walkingPath.addAll(path.get().getTiles());
 		}
 		

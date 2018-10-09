@@ -10,10 +10,12 @@ import com.podts.rpg.client.model.Tile;
  * @author David
  *
  */
-public class CompundPathFinder extends PathFinder {
+public class CompoundPathFinder extends PathFinder {
+	
+	public static final int DEFAULT_MAX_LENGTH = 50;
 	
 	private final PathFinder straight = new StraightPathFinder();
-	private final PathFinder star = new StarPathFinder();
+	private final PathFinder star;
 	
 	@Override
 	protected Optional<ListPath> doFindPath(Tile start, Tile finish) {
@@ -22,5 +24,13 @@ public class CompundPathFinder extends PathFinder {
 			return result;
 		return star.doFindPath(start, finish);
 	}
-
+	
+	public CompoundPathFinder(int maxLength) {
+		star = new StarPathFinder(maxLength);
+	}
+	
+	public CompoundPathFinder() {
+		this(DEFAULT_MAX_LENGTH);
+	}
+	
 }
