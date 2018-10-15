@@ -6,58 +6,79 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public class Location implements Locatable {
 	
 	public enum Direction {
 		UP(0,-1),
+		TOP_LEFT(1,-1),
 		LEFT(-1,0),
+		BOTTOM_LEFT(-1,-1),
 		DOWN(0,1),
-		RIGHT(1,0);
+		BOTTOM_RIGHT(1,-1),
+		RIGHT(1,0),
+		TOP_RIGHT(-1,1);
 		
 		private static final Direction[] vals = Direction.values();
+		private static final Direction[] diagVals = new Direction[4];
 		private static final List<Direction> all = Collections.unmodifiableList(Arrays.asList(vals));
+		private static final List<Direction> diagAll;
 		
-		public static Collection<Direction> all() {
+		static {
+			diagAll = Collections.unmodifiableList(Arrays.asList(diagVals));
+			int i = 0;
+			for(Direction d : vals) {
+				if(d.isDiagonal())
+					diagVals[i++] = d;
+			}
+		}
+		
+		public static Collection<Direction> getAll() {
 			return all;
 		}
 		
-		public static final Stream<Direction> stream() {
-			return all().stream();
+		public static Collection<Direction> getDiagonals() {
+			return diagAll;
 		}
 		
-		public static final Optional<Direction> get(Locatable first, Locatable second) {
+		public static Stream<Direction> all() {
+			return getAll().stream();
+		}
+		
+		public static Stream<Direction> diagonals() {
+			return getDiagonals().stream();
+		}
+		
+		public static Optional<Direction> get(Locatable first, Locatable second) {
 			return get(first.getLocation(), second.getLocation());
 		}
 		
-		public static final Optional<Direction> get(Location first, Location second) {
-			int dx = Integer.signum(second.getX() - first.getX());
-			int dy = Integer.signum(second.getY() - first.getY());
-			if((dx != 0 && dy != 0) ||
-					(dx == 0 && dy == 0))
-				return Optional.empty();
+		public static Optional<Direction> get(int dx, int dy) {
+			if((Math.abs(dx) > 0 || Math.abs(dy) > 0)) {
+				if(Math.abs(dx) != Math.abs(dy))
+					return Optional.empty();
+			}
+			
+			dx = Integer.signum(dx);
+			dy = Integer.signum(dy);
+			
 			for(Direction dir : vals) {
 				if(dir.getX() == dx && dir.getY() == dy)
 					return Optional.of(dir);
 			}
-			return Optional.empty();
+			throw new AssertionError("No direction found after filter! Method should be re-evaluated!");
 		}
 		
-		public static final Optional<Direction> get(int dx, int dy) {
-			if(dx != 0 && dy != 0)
-				return Optional.empty();
-			dx = Integer.signum(dx);
-			dy = Integer.signum(dy);
-			for(Direction d : vals) {
-				if(d.getX() == dx && d.getY() == dy)
-					return Optional.of(d);
-			}
-			return Optional.empty();
+		public static Optional<Direction> get(Location first, Location second) {
+			int dx = second.getX() - first.getX();
+			int dy = second.getY() - first.getY();
+			return get(dx, dy);
 		}
 		
 		private final int dx, dy;
+		private final boolean isDiagonal;
 		
 		public int getX(int distance) {
 			return dx * distance;
@@ -75,8 +96,32 @@ public class Location implements Locatable {
 			return dy;
 		}
 		
+		public final boolean isDiagonal() {
+			return isDiagonal;
+		}
+		
+		public Direction left(int amount) {
+			return convert(RelationalDirection.LEFT, amount);
+		}
+		
+		public Direction left() {
+			return left(1);
+		}
+		
+		public Direction right(int amount) {
+			return convert(RelationalDirection.RIGHT, amount);
+		}
+		
+		public Direction right() {
+			return right(1);
+		}
+		
 		public final Direction opposite() {
 			return convert(RelationalDirection.BACKWARD);
+		}
+		
+		public final Direction convert(RelationalDirection d, int i) {
+			return d.convert(this, i);
 		}
 		
 		public final Direction convert(RelationalDirection d) {
@@ -94,34 +139,44 @@ public class Location implements Locatable {
 		private Direction(int dx, int dy) {
 			this.dx = dx;
 			this.dy = dy;
+			isDiagonal = dx != 0 && dy != 0;
 		}
 		
 	}
 	
 	public enum RelationalDirection {
 		
-		FORWARD(d -> d),
-		BACKWARD(d -> Direction.vals[(d.ordinal() + 2) % Direction.vals.length] ),
-		LEFT(d -> Direction.vals[(d.ordinal() + 1) % Direction.vals.length] ),
-		RIGHT(d -> Direction.vals[Math.floorMod(d.ordinal() - 1, Direction.vals.length)] );
+		FORWARD((d,i) -> d),
+		BACKWARD((d,i) -> Direction.vals[(d.ordinal() + 4) % Direction.vals.length] ),
+		LEFT((d,i) -> Direction.vals[(d.ordinal() + i) % Direction.vals.length] ),
+		RIGHT((d,i) -> Direction.vals[Math.floorMod(d.ordinal() - i, Direction.vals.length)] );
 		
 		private static final RelationalDirection[] vals = RelationalDirection.values();
+		private static final List<RelationalDirection> all = Collections.unmodifiableList(Arrays.asList(vals));
 		
-		public static final Stream<RelationalDirection> stream() {
-			return Stream.of(vals);
+		public static Collection<RelationalDirection> getAll() {
+			return all;
 		}
 		
-		private UnaryOperator<Direction> operator;
+		public static Stream<RelationalDirection> stream() {
+			return getAll().stream();
+		}
+		
+		private final BiFunction<Direction,Integer,Direction> operator;
+		
+		public Direction convert(Direction d, int i) {
+			return operator.apply(d, i);
+		}
 		
 		public Direction convert(Direction d) {
-			return operator.apply(d);
+			return convert(d, 1);
 		}
 		
 		public boolean turns() {
-			return ordinal() > 2;
+			return ordinal() > 1;
 		}
 		
-		private RelationalDirection(UnaryOperator<Direction> operator) {
+		private RelationalDirection(BiFunction<Direction,Integer,Direction> operator) {
 			this.operator = operator;
 		}
 		
