@@ -190,16 +190,24 @@ public abstract class UIObject {
 	public Color getBorderColor() {
 		return BorderColor;
 	}
-
+	
+	public final boolean hasBorderColor() {
+		return getBorderColor() != null;
+	}
+	
 	public UIObject setBorderColor(Color borderColor) {
 		BorderColor = borderColor;
 		return this;
 	}
-
+	
 	public Color getBackgroundColor() {
 		return backgroundColor;
 	}
-
+	
+	public final boolean hasBackgroundColor() {
+		return getBackgroundColor() != null;
+	}
+	
 	public void setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
 	}

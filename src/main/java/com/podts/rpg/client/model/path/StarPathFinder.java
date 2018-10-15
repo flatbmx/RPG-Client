@@ -56,7 +56,10 @@ public class StarPathFinder extends PathFinder {
 	
 	private static final Comparator<Path> constructPathComparator(final Tile finish) {
 		return (a,b) -> {
-			return a.getLength() - b.getLength();
+			int lengthDiff = a.getLength() - b.getLength();
+			if(lengthDiff != 0)
+				return lengthDiff;
+			return a.getTurns() - b.getTurns();
 		};
 	}
 	

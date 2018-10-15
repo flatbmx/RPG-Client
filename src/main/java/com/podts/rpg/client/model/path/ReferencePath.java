@@ -1,13 +1,15 @@
 package com.podts.rpg.client.model.path;
 
 import java.util.Collection;
+import java.util.Optional;
 
+import com.podts.rpg.client.model.Location.Direction;
 import com.podts.rpg.client.model.Tile;
 
 public class ReferencePath extends Path {
 	
 	private final Path reference;
-	private final int size;
+	private final int size, turns;
 	private final Tile last;
 	
 	private final boolean hasReference() {
@@ -22,7 +24,12 @@ public class ReferencePath extends Path {
 	public int getLength() {
 		return size;
 	}
-
+	
+	@Override
+	public int getTurns() {
+		return turns;
+	}
+	
 	@Override
 	public Tile getStart() {
 		if(hasReference())
@@ -63,9 +70,27 @@ public class ReferencePath extends Path {
 		return result;
 	}
 	
+	@Override
+	public Optional<Direction> getLastDirection() {
+		if(getLength() < 2)
+			return Optional.empty();
+		return Optional.of(Direction.get(getReference().getFinish(), getFinish()).get());
+	}
+	
 	ReferencePath(Path reference, Tile last) {
 		this.reference = reference;
 		this.last = last;
+		int newTurns = 0;
+		if(hasReference()) {
+			newTurns += getReference().getTurns();
+			Optional<Direction> lastDir = getReference().getLastDirection();
+			if(lastDir.isPresent()) {
+				if(!lastDir.get().equals(Direction.get(getReference().getFinish(),getFinish()))) {
+					++newTurns;
+				}
+			}
+		}
+		turns = newTurns;
 		size = reference.getLength() + 1;
 	}
 	
@@ -73,6 +98,7 @@ public class ReferencePath extends Path {
 		reference = null;
 		last = start;
 		size = 1;
+		turns = 0;
 	}
 	
 }

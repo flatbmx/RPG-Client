@@ -158,9 +158,9 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 						Tile tile = Client.get().getWorld().getTile(location);
 						return new TilePacket(tile, location, updateType);
 					} else if(sendType.equals(TileSendType.GROUP)) {
-						Location topLeft = readLocation(buf);
 						int width = buf.readInt();
 						int height = buf.readInt();
+						Location topLeft = readLocation(buf);
 						Tile[][] tiles = new Tile[width][height];
 						for(int y=0; y<height; ++y) {
 							for(int x=0; x<height; ++x) {

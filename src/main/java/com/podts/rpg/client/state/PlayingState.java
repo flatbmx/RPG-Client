@@ -155,7 +155,6 @@ public final class PlayingState extends UIState {
 			}
 			
 			//Draws the currentlyChatting window if need be
-			drawChildren(app, g);
 			super.render(app, g);
 		}
 		

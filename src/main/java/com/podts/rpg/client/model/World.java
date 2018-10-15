@@ -11,14 +11,7 @@ public abstract class World {
 	
 	private String worldname;
 	
-	/**
-	 * Gets the name of the World.
-	 * @return worldname - The name of the world.
-	 */
-	
-	@SuppressWarnings("unused")
-	private final String getName() { 
-		
+	public final String getName() { 
 		return worldname;
 	}
 	
@@ -26,12 +19,8 @@ public abstract class World {
 	 * Sets the name of the World.
 	 * @param newname - The new name of the World.
 	 */
-	
-	@SuppressWarnings("unused")
-	private void setName(String newname) {
-		
+	void setName(String newname) {
 		worldname = newname;
-		
 	}
 	
 	public abstract Collection<Tile> getTiles();
@@ -56,6 +45,11 @@ public abstract class World {
 	
 	public synchronized Optional<ListPath> getPath(Locatable start, Locatable finish) {
 		return pathFinder.findPath(start, finish);
+	}
+	
+	@Override
+	public String toString() {
+		return "[World - " + getName() + "]";
 	}
 	
 	/**
