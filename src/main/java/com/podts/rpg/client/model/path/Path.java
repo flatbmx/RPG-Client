@@ -1,6 +1,7 @@
 package com.podts.rpg.client.model.path;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Optional;
 
 import com.podts.rpg.client.Client;
@@ -28,5 +29,26 @@ public abstract class Path {
 	public abstract void insert(Collection<Tile> coll);
 	
 	public abstract ListPath finalizePath();
+	
+	@Override
+	public String toString() {
+		if(getLength() < 2)
+			return "[Empty]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
+		Iterator<Tile> it = finalizePath().getTiles().iterator();
+		Tile oldTile = it.next();
+		Tile newTile;
+		while(it.hasNext()) {
+			newTile = it.next();
+			Direction dir = Direction.get(oldTile, newTile).get();
+			builder.append(dir);
+			oldTile = newTile;
+			if(it.hasNext())
+				builder.append(", ");
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 	
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.podts.rpg.client.model.path.CompoundPathFinder;
 import com.podts.rpg.client.model.path.ListPath;
 import com.podts.rpg.client.model.path.PathFinder;
+import com.podts.rpg.client.model.path.StarPathFinder;
 
 public abstract class World {
 	
@@ -41,7 +42,7 @@ public abstract class World {
 	
 	public abstract void clear();
 	
-	private final PathFinder pathFinder = new CompoundPathFinder(500);
+	private final PathFinder pathFinder = new StarPathFinder(200);
 	
 	public synchronized Optional<ListPath> getPath(Locatable start, Locatable finish) {
 		return pathFinder.findPath(start, finish);

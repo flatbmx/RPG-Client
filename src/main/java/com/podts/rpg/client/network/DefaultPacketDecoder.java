@@ -44,15 +44,16 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 		c.init();
 	}
 	
-	private static final int PID_AESREPLY = 0;
-	private static final int PID_LOGINRESPONSE = 1;
-	private static final int PID_TILE = 2;
-	private static final int PID_INIT = 3;
-	private static final int PID_STATE = 4;
-	private static final int PID_ENTITY = 5;
-	private static final int PID_MESSAGE = 6;
-	private static final int PID_ACK = 7;
-	private static final int PID_TILESELECTION = 8;
+	private static final byte PID_AESREPLY = 0;
+	private static final byte PID_LOGINRESPONSE = 1;
+	private static final byte PID_PING = 2;
+	private static final byte PID_TILE = 3;
+	private static final byte PID_INIT = 4;
+	private static final byte PID_STATE = 5;
+	private static final byte PID_ENTITY = 6;
+	private static final byte PID_MESSAGE = 7;
+	private static final byte PID_ACK = 8;
+	private static final byte PID_TILESELECTION = 9;
 	
 	
 	
@@ -71,7 +72,7 @@ class DefaultPacketDecoder extends ByteToMessageDecoder {
 					byte[] secretBytes = c.doFinal(encryptedBytes);
 
 					SecretKey secret = new SecretKeySpec(secretBytes, 0, secretBytes.length, "AES");
-
+					
 					return new AESReplyPacket(secret);
 
 				} catch (Exception e) {

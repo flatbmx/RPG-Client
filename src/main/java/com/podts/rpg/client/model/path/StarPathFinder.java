@@ -35,7 +35,7 @@ public class StarPathFinder extends PathFinder {
 	
 	private Optional<ListPath> expandPath(Path path, Tile finish, Queue<Path> paths, Set<Tile> walkedOn) {
 		Tile end = path.getFinish();
-		for(Direction dir : Direction.values()) {
+		for(Direction dir : Direction.getAll()) {
 			Tile newEnd = Client.get().getWorld().getTile(end.getLocation().shift(dir));
 			if(newEnd == null) continue;
 			if(!newEnd.isTraversable()) continue;

@@ -40,6 +40,7 @@ class DefaultPacketHandler extends SimpleChannelInboundHandler<Packet> {
 			if(p.getType().equals(LoginResponseType.DECLINE)) {
 				Client.get().getNetworkManager().close();
 			}
+			Client.getLogger().info("Handled LoginResponse");
 		});
 		
 		addHandler(EntityPacket.class, (op, s) -> {

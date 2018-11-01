@@ -56,7 +56,7 @@ public class Location implements Locatable {
 		}
 		
 		public static Optional<Direction> get(int dx, int dy) {
-			if((Math.abs(dx) > 0 || Math.abs(dy) > 0)) {
+			if((Math.abs(dx) > 1 || Math.abs(dy) > 1)) {
 				if(Math.abs(dx) != Math.abs(dy))
 					return Optional.empty();
 			}

@@ -24,11 +24,12 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 	
-	private static final byte PID_RSAHANDSHAKE = 0;
-	private static final byte PID_LOGIN = 1;
-	private static final int PID_MOVE = 2;
-	private static final int PID_MESSAGE = 3;
-	private static final int PID_TILESELECTION = 4;
+	private static final int PID_RSAHANDSHAKE = 0;
+	private static final int PID_LOGINREQUEST = 1;
+	private static final int PID_PING = 2;
+	private static final int PID_MOVE = 3;
+	private static final int PID_MESSAGE = 4;
+	private static final int PID_TILESELECTION = 5;
 	
 	private final Map<Class<?>,PacketEncoder> encoders = new HashMap<>();
 	
@@ -104,7 +105,7 @@ class DefaultPacketEncoder extends MessageToByteEncoder<Packet> {
 			public void encode(NetworkStream s, Packet op, ByteBuf buf) {
 				if(!(op instanceof LoginPacket)) throw new IllegalArgumentException();
 				LoginPacket p = (LoginPacket) op;
-				buf.writeByte(PID_LOGIN);
+				buf.writeByte(PID_LOGINREQUEST);
 				writeEncryptedString(p.getUsername(), s, buf);
 				writeEncryptedString(p.getPassword(), s, buf);
 			}
