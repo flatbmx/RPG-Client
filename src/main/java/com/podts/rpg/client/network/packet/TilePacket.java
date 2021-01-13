@@ -19,7 +19,6 @@ public final class TilePacket extends Packet {
 	private final TileUpdateType updateType;
 	private final TileSendType sendType;
 	private final Tile tile;
-	private final Location location;
 	private final Tile[][] tiles;
 	
 	public TileUpdateType getUpdateType() {
@@ -34,19 +33,57 @@ public final class TilePacket extends Packet {
 		return tile;
 	}
 	
+	public boolean isGroup() {
+		return TileSendType.GROUP.equals(sendType);
+	}
+	
+	public boolean isSingle() {
+		return TileSendType.SINGLE.equals(sendType);
+	}
+	
 	public Location getLocation() {
-		return location;
+		return getTile().getLocation();
 	}
 	
 	public Tile[][] getTiles() {
 		return tiles;
 	}
 	
+	public boolean isCreate() {
+		return TileUpdateType.CREATE.equals(updateType);
+	}
+	
+	public boolean isDestroy() {
+		return TileUpdateType.DESTROY.equals(updateType);
+	}
+	
+	public static final TilePacket constructCreate(Tile tile) {
+		return new TilePacket(tile, TileUpdateType.CREATE);
+	}
+	
+	public static final TilePacket constructCreate(Tile[][] tiles) {
+		return new TilePacket(tiles, TileUpdateType.CREATE);
+	}
+	
+	public static final TilePacket constructDestroy(Tile tile) {
+		return new TilePacket(tile, TileUpdateType.DESTROY);
+	}
+	
+	public static final TilePacket constructDestroy(Tile[][] tiles) {
+		return new TilePacket(tiles, TileUpdateType.DESTROY);
+	}
+	
+	TilePacket(Tile tile, TileUpdateType updateType) {
+		sendType = TileSendType.SINGLE;
+		this.updateType = updateType;
+		this.tile = tile;
+		tiles = null;
+	}
+	
 	public TilePacket(Tile tile, Location location, TileUpdateType updateType) {
 		sendType = TileSendType.SINGLE;
 		this.updateType = updateType;
 		this.tile = tile;
-		this.location = location;
 		tiles = null;
 	}
 	
@@ -55,7 +92,6 @@ public final class TilePacket extends Packet {
 		this.updateType = updateType;
 		this.tiles = tiles;
 		tile = null;
-		location = null;
 	}
 	
 }

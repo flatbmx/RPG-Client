@@ -18,6 +18,8 @@ import com.podts.rpg.client.state.PlayingState;
 
 public class Client extends StateBasedGame {
 	
+	public static final int CLIENT_WIDTH = 1280;
+	public static final int CLIENT_HEIGHT = 720;
 	public static final int DEFAULT_PORT = 7000;
 	private static Client instance;
 	private static Logger logger = new GameLogger("Client");
@@ -92,7 +94,7 @@ public class Client extends StateBasedGame {
 		AppGameContainer app;
 		try {
 			app = new AppGameContainer(get());
-			app.setDisplayMode(800,600,false);
+			app.setDisplayMode(CLIENT_WIDTH,CLIENT_HEIGHT,false);
 			app.setTargetFrameRate(60);
 			app.setMaximumLogicUpdateInterval(60);
 			app.setAlwaysRender(true);
